@@ -1,0 +1,35 @@
+{
+  "name": "messagepilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent-operated Apple messaging and computer toolkit",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "npm run build && npm test",
+    "gateway": "tsx src/cli.ts gateway",
+    "worker": "tsx src/cli.ts worker",
+    "mcp": "tsx src/cli.ts mcp",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "native:build": "swift build --package-path native -c release",
+    "apple:generate": "cd apple && xcodegen generate",
+    "format": "prettier --write src tests scripts/*.ts examples docs README.md THIRD_PARTY.md package.json tsconfig.json",
+    "demo": "tsx scripts/fixture-demo.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.28.0",
+    "ws": "^8.18.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.18.1",
+    "prettier": "^3.9.9",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}

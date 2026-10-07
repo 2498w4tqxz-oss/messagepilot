@@ -1,0 +1,9 @@
+{
+  "accountId": "agent-one",
+  "workerId": "fixture-one",
+  "identity": "agent-one@example.com",
+  "url": "ws://127.0.0.1:4380/worker",
+  "tokenEnv": "MP_WORKER_ONE_TOKEN",
+  "spool": "state/fixture-one.sqlite",
+  "mode": "fixture"
+}

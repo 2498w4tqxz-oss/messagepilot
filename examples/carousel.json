@@ -1,0 +1,22 @@
+{
+  "expectedRevision": 0,
+  "body": {
+    "title": "Choose a destination",
+    "summary": "Two options from your agent",
+    "items": [
+      {
+        "id": "one",
+        "title": "First option",
+        "subtitle": "A useful summary",
+        "linkURL": "https://example.com/one"
+      },
+      {
+        "id": "two",
+        "title": "Second option",
+        "subtitle": "Another useful summary",
+        "linkURL": "https://example.com/two"
+      }
+    ],
+    "actions": ["Choose first", "Choose second"]
+  }
+}

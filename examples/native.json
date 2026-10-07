@@ -1,0 +1,11 @@
+{
+  "accountId": "agent-one",
+  "expectedIdentity": "agent-one@example.com",
+  "expectedOSUser": "agentone",
+  "workspace": "/Users/agentone/MessagePilot/workspace",
+  "allowedBundles": ["com.apple.MobileSMS", "com.apple.findmy"],
+  "enableComputer": true,
+  "enableExperimentalEffects": false,
+  "toolkitPath": "/Users/agentone/MessagePilot",
+  "nodeExecutable": "/opt/homebrew/bin/node"
+}

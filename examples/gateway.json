@@ -1,0 +1,30 @@
+{
+  "host": "127.0.0.1",
+  "port": 4380,
+  "database": "state/bridge.sqlite",
+  "accounts": [
+    {
+      "id": "agent-one",
+      "identity": "agent-one@example.com",
+      "workerTokenEnv": "MP_WORKER_ONE_TOKEN",
+      "deviceTokenEnv": "MP_DEVICE_ONE_TOKEN"
+    },
+    {
+      "id": "agent-two",
+      "identity": "agent-two@example.com",
+      "workerTokenEnv": "MP_WORKER_TWO_TOKEN"
+    }
+  ],
+  "agents": [
+    {
+      "id": "agent-one-client",
+      "tokenEnv": "MESSAGEPILOT_AGENT_TOKEN",
+      "accounts": ["agent-one"]
+    },
+    {
+      "id": "agent-two-client",
+      "tokenEnv": "MP_AGENT_TWO_TOKEN",
+      "accounts": ["agent-two"]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "purpose": "messagepilot-agent-device",
+  "deviceId": "REPLACE_WITH_DEDICATED_DEVICE_ID",
+  "allowedBundles": ["com.apple.MobileSMS", "dev.messagepilot.app"]
+}

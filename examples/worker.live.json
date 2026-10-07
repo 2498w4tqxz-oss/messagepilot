@@ -1,0 +1,12 @@
+{
+  "accountId": "agent-one",
+  "workerId": "agent-one-vm",
+  "identity": "agent-one@example.com",
+  "url": "wss://bridge.example.com/worker",
+  "tokenEnv": "MP_WORKER_ONE_TOKEN",
+  "spool": "/Users/agentone/MessagePilot/state/worker.sqlite",
+  "mode": "live",
+  "expectedOSUser": "agentone",
+  "nativeBinary": "/Users/agentone/MessagePilot/native/.build/release/messagepilot-native",
+  "nativeConfig": "/Users/agentone/MessagePilot/native.local.json"
+}

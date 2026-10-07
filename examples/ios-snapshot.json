@@ -1,0 +1,5 @@
+{
+  "bundleId": "com.apple.MobileSMS",
+  "launch": false,
+  "actions": [{ "action": "snapshot" }, { "action": "screenshot" }]
+}
