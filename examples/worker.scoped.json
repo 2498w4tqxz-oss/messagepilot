@@ -1,0 +1,13 @@
+{
+  "accountId": "scoped-account",
+  "workerId": "scoped-mac",
+  "identity": "explicit-chat-enrollment",
+  "url": "ws://127.0.0.1:4380/worker",
+  "tokenEnv": "MESSAGEPILOT_SCOPED_WORKER_TOKEN",
+  "spool": "state/scoped-worker.sqlite",
+  "mode": "live",
+  "nativeBinary": "native/.build/release/messagepilot-scoped",
+  "nativeConfig": "native.scoped.local.json",
+  "expectedOSUser": "YOUR_MACOS_USERNAME",
+  "enableToolkit": false
+}

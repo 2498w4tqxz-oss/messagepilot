@@ -14,6 +14,7 @@ export class Worker {
   private busy = new Set<string>();
   private welcomed = false;
   private nativeReady = false;
+  private allowedChatIds?: string[];
   constructor(
     private options: {
       url: string;
@@ -32,7 +33,7 @@ export class Worker {
       "PRAGMA journal_mode=WAL;PRAGMA synchronous=FULL;CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY,data TEXT NOT NULL);",
     );
     native.onEvent((data) => {
-      if (this.stopped) return;
+      if (this.stopped || this.allowedChatIds !== undefined) return;
       const sourceId = randomUUID();
       this.spool
         .prepare("INSERT INTO events VALUES(?,?)")
@@ -51,6 +52,7 @@ export class Worker {
       throw new Error(
         "Native Apple identity does not match the enrolled account",
       );
+    this.allowedChatIds = await this.native.chatScope?.();
     this.nativeReady = true;
     this.connect();
   }
@@ -74,6 +76,7 @@ export class Worker {
                 workerId: this.options.workerId,
                 identity: this.options.identity,
                 capabilities,
+                allowedChatIds: this.allowedChatIds,
               }),
             );
         })
@@ -86,6 +89,8 @@ export class Worker {
         const frame = JSON.parse(raw.toString());
         if (frame.type === "welcome") {
           this.welcomed = true;
+          if (this.allowedChatIds !== undefined)
+            this.spool.exec("DELETE FROM events");
           for (const event of this.spool
             .prepare("SELECT * FROM events ORDER BY rowid")
             .all())

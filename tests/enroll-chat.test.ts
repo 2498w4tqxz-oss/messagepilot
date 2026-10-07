@@ -1,0 +1,20 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { DatabaseSync } from "node:sqlite";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { resolveDirectChat } from "../src/enroll-chat.js";
+test("enrollment resolves exact direct recipient without group or unrelated inbox fallback", (t) => {
+  const dir = mkdtempSync(join(tmpdir(), "messagepilot-enroll-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const path = join(dir, "db.sqlite");
+  const db = new DatabaseSync(path);
+  db.exec(`CREATE TABLE chat(ROWID INTEGER PRIMARY KEY,guid TEXT,chat_identifier TEXT,service_name TEXT);CREATE TABLE handle(ROWID INTEGER PRIMARY KEY,id TEXT);CREATE TABLE chat_handle_join(chat_id INTEGER,handle_id INTEGER);
+ INSERT INTO chat VALUES(1,'direct','+15555550100','iMessage'),(2,'group','group','iMessage'),(3,'other','+15555550200','iMessage');
+ INSERT INTO handle VALUES(1,'+15555550100'),(2,'+15555550200');INSERT INTO chat_handle_join VALUES(1,1),(2,1),(2,2),(3,2);`);
+  db.close();
+  assert.equal(resolveDirectChat("+15555550100", path).chatId, "direct");
+  assert.throws(() => resolveDirectChat("+15555550300", path), /Expected one/);
+  assert.throws(() => resolveDirectChat("%", path), /exact E.164/);
+});

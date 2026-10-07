@@ -6,6 +6,7 @@ import { operations, type Capability, type Operation } from "./protocol.js";
 export interface NativeTransport {
   identity(): Promise<string>;
   capabilities(): Promise<Capability[]>;
+  chatScope?(): Promise<string[] | undefined>;
   execute(
     operation: Operation,
     args: Record<string, unknown>,
@@ -96,6 +97,10 @@ export class NativeProcess implements NativeTransport {
   }
   async identity() {
     return (await this.request("identity")).identity as string;
+  }
+  async chatScope() {
+    return (await this.request("identity")).allowedChatIds as
+      string[] | undefined;
   }
   capabilities() {
     return this.request("capabilities") as Promise<Capability[]>;

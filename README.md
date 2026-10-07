@@ -21,7 +21,9 @@ The native Messages adapter uses the MIT-licensed `beeper/platform-imessage` lib
 
 ## Verification boundary
 
-The TypeScript gateway is exercised with real HTTP/WebSocket connections and synthetic Apple transports. The native worker and Apple targets are compiled locally. **No live Apple account, Messages database, personal device, SIP setting, or Find My data was accessed during development.**
+**Rich messaging has now been exercised in one explicitly authorized self-chat with SIP enabled.** All four text styles, eight text animations, four bubble effects and eight screen effects produced matching outgoing and incoming self-chat payloads with delivered status. Editing, unsending, six standard Tapbacks and their removal, replies, PNG, GIF and video were also exercised. See the [live verification record](docs/RICH_MESSAGING_VERIFICATION.md) for the exact evidence and limits.
+
+The gateway passes 39 local tests, including a compiled Swift worker against an isolated fixture database. Apple app/VM targets remain compile-verified; separate iPhone visual confirmation and broader app/device acceptance remain outstanding. For personal-account testing, [chat-restricted enrollment](docs/CHAT_SCOPES.md) uses a separate worker that queries only explicitly permitted conversations and exposes no general computer tools.
 
 `compiled` is not `device-tested`. Effects use exact Accessibility selectors and need calibration for the worker's macOS version and language. Phone UI automation requires an enrolled physical device, Developer Mode, and a properly signed test runner. Compiling the runner does not prove an installed app's UI selectors. Native read state does not assert that a remote recipient received a read receipt. See [capability and verification details](docs/CAPABILITIES.md).
 
@@ -90,6 +92,7 @@ Use `GET /v1/accounts/{account}/commands/{id}` for the receipt. Use `GET /v1/acc
 
 - Images, GIFs, videos, and files: `messages.send` with a `filePath` inside the worker workspace. Transfer assets and retrieve screenshots with `files.write` / `files.read` in base64 chunks up to 256 KiB. The agent can also prepare assets using its virtual computer. Text containing links uses normal Messages preview behavior; Apple controls final rendering.
 - Replies: `messages.send` with `replyTo` set to an observed message ID.
+- Native bold, italic, underline and strikethrough: `messages.format`, optionally over a UTF-16 range. Custom font families are not native Messages text styles.
 - Text, bubble, and screen effects: `messages.effect`, explicitly enabled after UI selector calibration on the dedicated worker. No injection is performed.
 - Cards/carousels: write versioned card data with `bridge_card_put` or `PUT /cards/{id}`; load and send it from the MessagePilot Messages extension. Installed recipients get the interactive layout; other clients get the alternate native message layout. Card URLs carry IDs, not credentials. There is no public web fallback page.
 - Stickers: the included extension creates text stickers. Arbitrary sticker UI and third-party iMessage apps can be operated through the enrolled iOS harness; do not mislabel an image attachment as a native sticker.
@@ -115,7 +118,7 @@ The benchmark reports **loopback request-to-fixture-worker latency with a durabl
 - Idempotency keys are scoped to an account and fingerprint the operation and arguments.
 - A successful API enqueue means `queued`, not sent. Native results and account events provide the next level of evidence.
 - An uncertain submitted operation is never blindly retried. On crash/disconnect, it becomes `outcome_unknown`; reconcile against Messages before deciding what to do.
-- Native events observed while the worker is connected to the native process are spooled and replayed until gateway acknowledgement. A fully stopped native process cannot capture events. After restart, use chat/history reads to reconcile the missed interval.
+- In full-account mode, native events observed while the worker is connected to the native process are spooled and replayed until gateway acknowledgement. A fully stopped native process cannot capture events. After restart, use chat/history reads to reconcile the missed interval.
 - `completed` means the adapter returned successfully; inspect its result. UI action completion, compiler exit codes, message submission, delivery, and recipient read state are distinct.
 - Source message text is data. The bridge does not translate an incoming message into a privileged tool command.
 - Arbitrary computer execution is intentionally powerful and opt-in. A workspace path check is not an OS sandbox. The dedicated VM is the isolation boundary.

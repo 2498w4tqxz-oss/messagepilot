@@ -8,6 +8,7 @@ import { FixtureTransport, NativeProcess } from "./native.js";
 import { configSchema } from "./protocol.js";
 import { startMCP } from "./mcp.js";
 import { createApp } from "./scaffold.js";
+import { resolveDirectChat } from "./enroll-chat.js";
 import { ToolkitTransport } from "./toolkit.js";
 const [command, file, ...rest] = process.argv.slice(2);
 const secret = (key: string) => {
@@ -17,7 +18,13 @@ const secret = (key: string) => {
   return v;
 };
 async function main() {
-  if (command === "gateway") {
+  if (command === "scope-resolve") {
+    if (!file)
+      throw new Error("Usage: scope-resolve <exact-E.164-number-or-email>");
+    process.stdout.write(
+      JSON.stringify(resolveDirectChat(file), null, 2) + "\n",
+    );
+  } else if (command === "gateway") {
     if (!file) throw new Error("Usage: gateway config.json");
     const config = configSchema.parse(JSON.parse(readFileSync(file, "utf8")));
     config.database = resolve(config.database);

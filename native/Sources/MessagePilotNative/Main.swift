@@ -4,6 +4,7 @@ import IMessage
 import PlatformSDK
 
 struct NativeConfig: Decodable {
+  let allowedChatIds: [String]?
   let accountId: String
   let expectedIdentity: String
   let expectedOSUser: String
@@ -48,6 +49,10 @@ final class Output: @unchecked Sendable {
       }
       let config = try JSONDecoder().decode(
         NativeConfig.self, from: Data(contentsOf: URL(fileURLWithPath: args[i + 1])))
+      guard config.allowedChatIds == nil else {
+        throw BridgeFailure(
+          "Use messagepilot-scoped for chat-restricted accounts; full-account bootstrap refused")
+      }
       guard NSUserName() == config.expectedOSUser else {
         throw BridgeFailure("OS user does not match the dedicated worker configuration")
       }
@@ -121,6 +126,15 @@ final class Output: @unchecked Sendable {
       PlatformSDK.PaginationArg(
         cursor: $0, direction: p["direction"] as? String == "after" ? .after : .before)
     }
+    for key in ["messageId", "replyTo"] {
+      if let id = p[key] as? String {
+        guard let reference = try await api.resolveMessageReference(messageID: id),
+          reference.threadID == chat
+        else {
+          throw BridgeFailure("Message reference does not belong to the requested chat")
+        }
+      }
+    }
     switch method {
     case "identity":
       return [
@@ -135,7 +149,7 @@ final class Output: @unchecked Sendable {
       ]
       return
         (basic + [
-          "messages.effect", "computer.exec", "computer.input", "computer.apps",
+          "messages.effect", "messages.format", "computer.exec", "computer.input", "computer.apps",
           "computer.screenshot", "files.read", "files.write",
           "apps.build", "apps.create",
           "apps.ios.run",
@@ -149,7 +163,8 @@ final class Output: @unchecked Sendable {
           let available =
             computer
             ? config.enableComputer && (!toolkit || config.toolkitPath != nil)
-            : name == "messages.effect" ? config.enableExperimentalEffects : true
+            : ["messages.effect", "messages.format"].contains(name)
+              ? config.enableExperimentalEffects : true
           return [
             "operation": name, "available": available, "path": "sip-enabled-native",
             "verification": available ? "compiled" : "unavailable",
@@ -206,6 +221,14 @@ final class Output: @unchecked Sendable {
     case "apps.interact":
       return try await ax.interact(
         bundle: allowedBundle(p), actions: p["actions"] as? [[String: Any]] ?? [])
+    case "messages.format":
+      guard config.enableExperimentalEffects else {
+        throw BridgeFailure("Formatting requires calibrated native UI")
+      }
+      _ = try await api.getThreadActivityStatus(threadID: chat)
+      return try await ax.sendFormatted(
+        text: try required(p, "text"), styles: p["styles"] as? [String] ?? [],
+        range: p["range"] as? [String: Int])
     case "messages.effect":
       guard config.enableExperimentalEffects else {
         throw BridgeFailure("Effects adapter is disabled until calibrated on the dedicated worker")

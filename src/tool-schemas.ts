@@ -1,4 +1,10 @@
 import { z } from "zod";
+import {
+  formattingSchema,
+  textEffects,
+  bubbleEffects,
+  screenEffects,
+} from "./rich-messages.js";
 import type { Operation } from "./protocol.js";
 import { connectionSchema } from "./mcp-host.js";
 import { workflowSchema, iosActionSchema } from "./imessage-apps.js";
@@ -205,20 +211,63 @@ export const toolSchemas: Record<
   "chats.read": z.object(chat),
   "chats.unread": z.object(chat),
   "chats.typing": z.object({ ...chat, active: z.boolean() }),
-  "messages.effect": z.object({
+  "messages.features": z.object({}),
+  "messages.inspect": z.object({
     ...chat,
-    text: z.string(),
-    effect: z
-      .string()
-      .describe("Exact visible effect label, such as Jitter or Invisible Ink."),
-    kind: z.enum(["text", "bubble", "screen"]),
-    selectors: z
-      .record(z.string())
-      .optional()
-      .describe(
-        "Calibrated composer/apps/effects/format/send labels for this OS and locale.",
-      ),
+    messageId: z.string().optional(),
+    view: z
+      .enum(["transcript", "apps", "format", "effects", "message-menu"])
+      .optional(),
   }),
+  "messages.draft.discard": z.object({
+    ...chat,
+    expectedText: z.string().min(1),
+  }),
+  "messages.format": formattingSchema,
+  "messages.effect": z
+    .object({
+      ...chat,
+      text: z.string().min(1).max(10000),
+      effect: z
+        .string()
+        .describe(
+          "Exact visible effect label, such as Jitter or Invisible Ink.",
+        ),
+      kind: z.enum(["text", "bubble", "screen"]),
+      range: z
+        .object({
+          start: z.number().int().min(0),
+          length: z.number().int().min(1),
+        })
+        .optional(),
+      selectors: z
+        .record(z.string())
+        .optional()
+        .describe(
+          "Calibrated composer/apps/effects/format/send labels for this OS and locale.",
+        ),
+    })
+    .superRefine((v, ctx) => {
+      if (
+        v.range &&
+        (v.kind !== "text" || v.range.start + v.range.length > v.text.length)
+      )
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Range requires a valid text-effect substring",
+        });
+      const names: readonly string[] =
+        v.kind === "text"
+          ? textEffects
+          : v.kind === "bubble"
+            ? bubbleEffects
+            : screenEffects;
+      if (!names.includes(v.effect))
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Effect does not belong to the requested effect kind",
+        });
+    }),
   "apps.snapshot": z.object({
     bundleId: z.string().optional(),
     depth: z.number().int().min(1).max(15).optional(),

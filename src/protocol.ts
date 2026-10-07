@@ -41,6 +41,10 @@ export const operations = [
   "chats.unread",
   "chats.typing",
   "messages.effect",
+  "messages.format",
+  "messages.draft.discard",
+  "messages.inspect",
+  "messages.features",
   "apps.interact",
   "apps.snapshot",
   "computer.exec",
@@ -55,6 +59,8 @@ export const operations = [
 ] as const;
 export type Operation = (typeof operations)[number];
 export const readOperations = new Set<Operation>([
+  "messages.inspect",
+  "messages.features",
   "device.activity.list",
   "mcp.registry.search",
   "mcp.registry.get",
@@ -122,6 +128,7 @@ export const workerFrame = z.discriminatedUnion("type", [
     type: z.literal("hello"),
     accountId: z.string(),
     workerId: z.string(),
+    allowedChatIds: z.array(z.string()).optional(),
     identity: z.string(),
     role: z.enum(["computer", "device"]).default("computer"),
     capabilities: z.array(
@@ -183,6 +190,7 @@ export const configSchema = z.object({
         id: z.string().regex(/^[a-zA-Z0-9_-]+$/),
         identity: z.string().min(1),
         workerTokenEnv: z.string(),
+        allowedChatIds: z.array(z.string().min(1)).optional(),
         deviceTokenEnv: z.string().optional(),
       }),
     )
@@ -194,6 +202,7 @@ export const configSchema = z.object({
         tokenEnv: z.string(),
         accounts: z.array(z.string()),
         operations: z.array(z.enum(operations)).optional(),
+        chats: z.record(z.array(z.string().min(1))).optional(),
       }),
     )
     .min(1),

@@ -11,6 +11,7 @@ export type Principal = {
   accounts: string[];
   operations?: Operation[];
   cardOnly?: boolean;
+  chats?: Record<string, string[]>;
 };
 export class Auth {
   constructor(

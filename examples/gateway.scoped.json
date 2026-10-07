@@ -1,0 +1,21 @@
+{
+  "host": "127.0.0.1",
+  "port": 4380,
+  "database": "state/scoped-gateway.sqlite",
+  "accounts": [
+    {
+      "id": "scoped-account",
+      "identity": "explicit-chat-enrollment",
+      "workerTokenEnv": "MESSAGEPILOT_SCOPED_WORKER_TOKEN",
+      "allowedChatIds": ["EXACT_CHAT_ID_FROM_SCOPE_RESOLVE"]
+    }
+  ],
+  "agents": [
+    {
+      "id": "scoped-agent",
+      "tokenEnv": "MESSAGEPILOT_SCOPED_AGENT_TOKEN",
+      "accounts": ["scoped-account"],
+      "chats": { "scoped-account": ["EXACT_CHAT_ID_FROM_SCOPE_RESOLVE"] }
+    }
+  ]
+}

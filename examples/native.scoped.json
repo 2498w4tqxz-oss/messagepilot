@@ -1,0 +1,8 @@
+{
+  "accountId": "scoped-account",
+  "expectedIdentity": "explicit-chat-enrollment",
+  "expectedOSUser": "YOUR_MACOS_USERNAME",
+  "allowedChatIds": ["EXACT_CHAT_ID_FROM_SCOPE_RESOLVE"],
+  "enableUI": false,
+  "workspace": "/absolute/path/to/approved-media"
+}

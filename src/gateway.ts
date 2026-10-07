@@ -12,6 +12,12 @@ import {
   type Capability,
 } from "./protocol.js";
 import { toolSchemas } from "./tool-schemas.js";
+import {
+  chatScope,
+  assertChatScope,
+  scopedOperation,
+  visibleEvent,
+} from "./chat-scope.js";
 import { Passkeys } from "./passkeys.js";
 type Session = {
   socket: WebSocket;
@@ -55,7 +61,10 @@ export class Gateway {
   readonly wss: WebSocketServer;
   readonly passkeys?: Passkeys;
   private sessions = new Map<string, Session>();
-  private streams = new Map<string, Set<ServerResponse>>();
+  private streams = new Map<
+    string,
+    Map<ServerResponse, string[] | undefined>
+  >();
   private heartbeat: NodeJS.Timeout;
   private closing = false;
   constructor(
@@ -91,6 +100,11 @@ export class Gateway {
       try {
         if (req.url !== "/worker") throw new Error("Invalid path");
         const account = this.auth.worker(req.headers.authorization);
+        if (
+          account.role === "device" &&
+          account.account.allowedChatIds !== undefined
+        )
+          throw new Error("Restricted account cannot pair a general device");
         this.wss.handleUpgrade(req, socket, head, (ws) =>
           this.attach(ws, account.account, account.role),
         );
@@ -116,7 +130,8 @@ export class Gateway {
   }
   private emit(account: string, source: string, kind: string, data: unknown) {
     const event = this.store.event(account, source, kind, data);
-    for (const res of this.streams.get(account) ?? []) {
+    for (const [res, scope] of this.streams.get(account) ?? []) {
+      if (!visibleEvent(scope, event)) continue;
       if (
         !res.write(
           `id: ${event.sequence}\nevent: ${kind}\ndata: ${JSON.stringify(event)}\n\n`,
@@ -153,6 +168,18 @@ export class Gateway {
             frame.identity.toLowerCase() !== account.identity.toLowerCase()
           )
             throw new Error("Identity mismatch");
+          if (
+            role === "computer" &&
+            (account.allowedChatIds !== undefined ||
+              frame.allowedChatIds !== undefined) &&
+            (account.allowedChatIds === undefined ||
+              frame.allowedChatIds === undefined ||
+              JSON.stringify([...account.allowedChatIds].sort()) !==
+                JSON.stringify([...frame.allowedChatIds].sort()))
+          )
+            throw new Error(
+              "Worker chat scope does not match account enrollment",
+            );
           if (this.sessions.has(key))
             throw new Error(
               "Account already has an active worker for this role",
@@ -184,6 +211,10 @@ export class Gateway {
           throw new Error("Worker not enrolled");
         session.lastSeen = Date.now();
         if (frame.type === "event") {
+          if (account.allowedChatIds !== undefined)
+            throw new Error(
+              "Restricted workers cannot publish account-wide events",
+            );
           const allowed =
             role === "device"
               ? [
@@ -276,6 +307,18 @@ export class Gateway {
       return;
     const command = this.store.next(account, role === "device", lane);
     if (!command) return;
+    try {
+      assertChatScope(
+        this.config.accounts.find((a) => a.id === account)?.allowedChatIds,
+        command,
+      );
+    } catch {
+      this.store.transition(account, command.id, "queued", "failed", {
+        error: "Command no longer permitted by account chat scope",
+      });
+      queueMicrotask(() => this.dispatch(account));
+      return;
+    }
     if (
       !s.capabilities.some(
         (c) => c.operation === command.operation && c.available,
@@ -379,6 +422,12 @@ export class Gateway {
     }
     if (url.pathname === "/v1/device-events" && req.method === "POST") {
       const binding = this.auth.worker(req.headers.authorization);
+      if (binding.account.allowedChatIds !== undefined)
+        throw new PilotError(
+          "chat_forbidden",
+          "Restricted account cannot ingest general device events",
+          403,
+        );
       if (binding.role !== "device")
         throw new PilotError(
           "forbidden",
@@ -415,6 +464,7 @@ export class Gateway {
       throw new PilotError("not_found", "Unknown endpoint", 404);
     const account = decodeURIComponent(segments[2]);
     const agent = this.auth.agent(req.headers.authorization, account);
+    const scope = chatScope(this.config, agent, account);
     const resource = segments[3],
       id = segments[4];
     if (
@@ -425,6 +475,15 @@ export class Gateway {
       throw new PilotError(
         "forbidden",
         "Passkey sessions grant private card access only",
+        403,
+      );
+    if (
+      scope !== undefined &&
+      !["commands", "capabilities", "events"].includes(resource ?? "")
+    )
+      throw new PilotError(
+        "chat_forbidden",
+        "This endpoint is not available to a chat-restricted credential",
         403,
       );
     if (resource === "passkeys") {
@@ -512,12 +571,15 @@ export class Gateway {
       ].filter((s): s is Session => !!s);
       reply(res, 200, {
         accountId: account,
+        allowedChatIds: scope,
         online: sessions.length > 0,
         workerIds: sessions.map((s) => s.workerId),
         capabilities: sessions
           .flatMap((s) => s.capabilities)
           .filter(
-            (c) => !agent.operations || agent.operations.includes(c.operation),
+            (c) =>
+              (!agent.operations || agent.operations.includes(c.operation)) &&
+              (scope === undefined || scopedOperation(c.operation)),
           ),
       });
       return;
@@ -543,6 +605,7 @@ export class Gateway {
         parsed.data.operation === "computer.input",
       );
       parsed.data.args = args.data;
+      assertChatScope(scope, parsed.data);
       const command = this.store.enqueue(account, parsed.data);
       reply(res, 202, command);
       this.dispatch(account);
@@ -552,6 +615,7 @@ export class Gateway {
       const command = this.store.get(account, id);
       if (!command) throw new PilotError("not_found", "Command not found", 404);
       this.auth.agent(req.headers.authorization, account, command.operation);
+      assertChatScope(scope, command);
       reply(res, 200, command);
       return;
     }
@@ -559,6 +623,7 @@ export class Gateway {
       const command = this.store.get(account, id);
       if (!command) throw new PilotError("not_found", "Command not found", 404);
       this.auth.agent(req.headers.authorization, account, command.operation);
+      assertChatScope(scope, command);
       if (!this.store.transition(account, id, "queued", "cancelled"))
         throw new PilotError(
           "already_dispatched",
@@ -578,7 +643,13 @@ export class Gateway {
       if (!Number.isSafeInteger(after) || after < 0)
         throw new PilotError("invalid_cursor", "Expected nonnegative integer");
       if (url.searchParams.get("stream") !== "1") {
-        reply(res, 200, this.store.events(account, after));
+        reply(
+          res,
+          200,
+          this.store
+            .events(account, after)
+            .filter((event) => visibleEvent(scope, event)),
+        );
         return;
       }
       res.writeHead(200, {
@@ -590,16 +661,18 @@ export class Gateway {
       let cursor = after;
       while (true) {
         const page = this.store.events(account, cursor, 1000);
-        for (const event of page)
+        for (const event of page.filter((event) => visibleEvent(scope, event)))
           res.write(
             `id: ${event.sequence}\nevent: ${event.kind}\ndata: ${JSON.stringify(event)}\n\n`,
           );
         if (page.length < 1000) break;
         cursor = page.at(-1)!.sequence;
       }
-      const set = this.streams.get(account) ?? new Set<ServerResponse>();
+      const set =
+        this.streams.get(account) ??
+        new Map<ServerResponse, string[] | undefined>();
       this.streams.set(account, set);
-      set.add(res);
+      set.set(res, scope);
       const ping = setInterval(() => res.write(": keepalive\n\n"), 15000);
       res.on("close", () => {
         clearInterval(ping);
@@ -682,7 +755,8 @@ export class Gateway {
     }
     this.sessions.clear();
     for (const socket of this.wss.clients) socket.terminate();
-    for (const set of this.streams.values()) for (const res of set) res.end();
+    for (const set of this.streams.values())
+      for (const res of set.keys()) res.end();
     await Promise.all([
       new Promise<void>((resolve) => this.server.close(() => resolve())),
       new Promise<void>((resolve) => this.wss.close(() => resolve())),

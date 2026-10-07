@@ -3,7 +3,7 @@
 MessagePilot carries actions and events. Keep reasoning, conversation policy and task planning in your agent. Connected MCP servers expose external tools through the account worker without moving the agent runtime into the bridge.
 
 1. Query `bridge_capabilities(accountId)` once after connection and after a worker reconnect.
-2. Read chats; retain exact chat/message IDs scoped to the account. Never route by a display name or a global active-account variable.
+2. Inspect `allowedChatIds` in capabilities. In restricted mode, use only those enrolled IDs; chat enumeration is unavailable. Retain exact chat/message IDs scoped to the account. Never route by a display name or a global active-account variable.
 3. Submit a typed operation with a unique idempotency key. Persist the command ID in your own agent state.
 4. Use `waitMs` only when immediate completion matters. Otherwise consume events or query `bridge_command_status` later.
 5. On `outcome_unknown`, inspect account history and relevant UI before deciding whether another command is appropriate. Reusing the same key returns the same uncertain receipt; it does not send again.
@@ -57,7 +57,7 @@ Transport results are not delivery claims. A compiler can complete with a nonzer
 }
 ```
 
-Those labels are examples, not live observations. Use the worker's `apps_snapshot` and exact selectors before enabling effects.
+Those labels are examples for the full-account adapter. Restricted workers reject selector overrides and use their calibrated native controls. Use `messages_inspect` for the permitted conversation, and `messages_features` for a catalog (not an availability guarantee). See [chat scopes](CHAT_SCOPES.md).
 
 `apps_interact` accepts `press`, `showMenu`, `setValue`, `focus`, and `waitFor`. Each action needs an ID from the most recent snapshot or an exact Accessibility attribute selector. Ambiguous matches fail. `apps_ios_run` supports taps, long presses, text, swipes, waits, picker/slider adjustments, gestures, observed coordinate taps/drags, snapshots, and screenshots on an explicitly enrolled device. Named `imessage_recipe` / `imessage_run` workflows cover Send Later, native Polls and GIPHY; see [app workflows](IMESSAGE_APPS.md).
 
@@ -76,3 +76,20 @@ For a recipient to fetch private live card state, their installed app must be pa
 - Computer execution grants substantial control over that account's VM. Give that capability only to the owning agent.
 - SSE cursors are durable gateway sequence numbers. Clients deduplicate by sequence when reconnecting.
 - The native adapter verifies local account evidence once at startup. Never switch signed-in identities under a running worker; stop and re-enroll it.
+
+## Native formatting
+
+```json
+{
+  "operation": "messages.format",
+  "args": {
+    "chatId": "OBSERVED_CHAT_ID",
+    "text": "Hello world",
+    "styles": ["bold", "italic"],
+    "range": { "start": 6, "length": 5 }
+  },
+  "idempotencyKey": "format-47"
+}
+```
+
+Ranges use UTF-16 offsets. Omit `range` to style the whole message. To discard a failed authored draft, use `messages.draft.discard` with its exact `expectedText`; a different draft is rejected. Scoped reads return the latest 50 messages and reject cursor pagination. Incoming scoped updates currently require explicit reads; broad native event batches are suppressed.

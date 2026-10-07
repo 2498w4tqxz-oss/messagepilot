@@ -237,6 +237,54 @@ import Foundation
     }
     return ["receipt": "ui-actions-completed", "count": actions.count, "delivery": "not-asserted"]
   }
+  func sendFormatted(text: String, styles: [String], range: [String: Int]?) async throws -> [String:
+    Any]
+  {
+    let bundle = "com.apple.MobileSMS"
+    let composer = try find(
+      bundle: bundle, action: ["selector": [kAXIdentifierAttribute: "messageBodyField"]])
+    guard (attribute(composer, kAXValueAttribute) as? String ?? "").isEmpty else {
+      throw BridgeFailure("Composer has a draft")
+    }
+    let labels = [
+      "bold": "Bold", "italic": "Italic", "underline": "Underline",
+      "strikethrough": "Strikethrough",
+    ]
+    guard !styles.isEmpty, styles.allSatisfy({ labels[$0] != nil }) else {
+      throw BridgeFailure("Unsupported native text style")
+    }
+    var selected = CFRange(
+      location: range?["start"] ?? 0, length: range?["length"] ?? (text as NSString).length)
+    guard selected.location >= 0, selected.length > 0,
+      selected.location + selected.length <= (text as NSString).length
+    else { throw BridgeFailure("Invalid formatting range") }
+    guard
+      AXUIElementSetAttributeValue(composer, kAXValueAttribute as CFString, text as CFString)
+        == .success,
+      let value = AXValueCreate(.cfRange, &selected),
+      AXUIElementSetAttributeValue(composer, kAXSelectedTextRangeAttribute as CFString, value)
+        == .success
+    else { throw BridgeFailure("Cannot author/select text") }
+    for style in styles {
+      _ = try await interact(
+        bundle: bundle,
+        actions: [
+          [
+            "action": "press",
+            "selector": [kAXRoleAttribute: kAXMenuItemRole, kAXTitleAttribute: labels[style]!],
+          ]
+        ])
+      let menu = try find(
+        bundle: bundle,
+        action: ["selector": [kAXRoleAttribute: kAXMenuBarItemRole, kAXTitleAttribute: "Format"]])
+      guard AXUIElementPerformAction(menu, "AXCancel" as CFString) == .success else {
+        throw BridgeFailure("Format menu did not release input")
+      }
+    }
+    _ = AXUIElementSetAttributeValue(composer, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+    return try await input(
+      bundle: bundle, actions: [["action": "activate"], ["action": "key", "keyCode": 36]])
+  }
   func sendEffect(text: String, effect: String, kind: String, selectors: [String: String])
     async throws -> [String: Any]
   {

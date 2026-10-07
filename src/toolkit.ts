@@ -1,3 +1,4 @@
+import { richFeatures } from "./rich-messages.js";
 import type { NativeTransport } from "./native.js";
 import { Registry } from "./registry.js";
 import { MCPHost } from "./mcp-host.js";
@@ -38,20 +39,31 @@ export class ToolkitTransport implements NativeTransport {
   ) {
     this.mcp = new MCPHost(env);
   }
+  chatScope() {
+    return this.native.chatScope?.() ?? Promise.resolve(undefined);
+  }
   identity() {
     return this.native.identity();
   }
   async capabilities(): Promise<Capability[]> {
     const native = await this.native.capabilities();
+    const restricted = (await this.chatScope()) !== undefined;
     const dependencies: Record<string, string> = {
       "apple.tools.run": "computer.exec",
       "imessage.run": "apps.ios.run",
     };
     return [
       ...native,
+      {
+        operation: "messages.features",
+        available: true,
+        path: "feature-catalog",
+        verification: "compiled",
+      },
       ...toolkitOperations.map((operation) => {
         const available =
           this.enabled &&
+          !restricted &&
           (!dependencies[operation] ||
             native.some(
               (c) => c.operation === dependencies[operation] && c.available,
@@ -82,9 +94,10 @@ export class ToolkitTransport implements NativeTransport {
     operation: Operation,
     a: Record<string, any>,
   ): Promise<unknown> {
+    if (operation === "messages.features") return richFeatures;
     if (!(toolkitOperations as readonly string[]).includes(operation))
       return this.native.execute(operation, a);
-    if (!this.enabled)
+    if (!this.enabled || (await this.chatScope()) !== undefined)
       throw new Error(
         "Enable the toolkit in this dedicated worker's configuration",
       );

@@ -1,0 +1,403 @@
+{
+  "environment": {
+    "macOS": "27.2",
+    "build": "26B5086k",
+    "locale": "English",
+    "SIP": "enabled"
+  },
+  "scope": "One explicitly authorized self-chat; recipient and native message IDs omitted",
+  "evidenceBoundary": "Native sender state and incoming self-chat copies. Separate iPhone visual confirmation is not assumed.",
+  "cases": [
+    {
+      "case": "BOLD formatting.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextBoldAttributeName": "1"
+        }
+      ]
+    },
+    {
+      "case": "Balloons screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKHappyBirthdayEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Big text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "5"
+        }
+      ]
+    },
+    {
+      "case": "Bloom text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "6"
+        }
+      ]
+    },
+    {
+      "case": "Celebration screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKSparklesEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Confetti screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKConfettiEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Echo screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKEchoEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Explode text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "12"
+        }
+      ]
+    },
+    {
+      "case": "Fireworks screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKFireworksEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Gentle bubble effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.MobileSMS.expressivesend.gentle",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Invisible Ink bubble effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.MobileSMS.expressivesend.invisibleink",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Jitter text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "10"
+        }
+      ]
+    },
+    {
+      "case": "Lasers screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKLasersEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Loud bubble effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.MobileSMS.expressivesend.loud",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Love screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKHeartEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Nod text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "8"
+        }
+      ]
+    },
+    {
+      "case": "Ripple text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "4"
+        }
+      ]
+    },
+    {
+      "case": "Shake text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "9"
+        }
+      ]
+    },
+    {
+      "case": "Slam bubble effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.MobileSMS.expressivesend.impact",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "Small text animation.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextEffectAttributeName": "11"
+        }
+      ]
+    },
+    {
+      "case": "Spotlight screen effect.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": "com.apple.messages.effect.CKSpotlightEffect",
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0"
+        }
+      ]
+    },
+    {
+      "case": "italic formatting.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextItalicAttributeName": "1"
+        }
+      ]
+    },
+    {
+      "case": "strikethrough formatting.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextStrikethroughAttributeName": "1"
+        }
+      ]
+    },
+    {
+      "case": "underline formatting.",
+      "outgoingNativePayload": true,
+      "incomingSelfCopyPayload": true,
+      "delivered": true,
+      "effectIdentifier": null,
+      "attributes": [
+        {
+          "__kIMMessagePartAttributeName": "0",
+          "__kIMTextUnderlineAttributeName": "1"
+        }
+      ]
+    }
+  ],
+  "additionalChecks": {
+    "edit": {
+      "nativeTextUpdated": true,
+      "nativeEditTimestamp": true
+    },
+    "unsend": {
+      "nativeTextCleared": true,
+      "retractedPartsRecorded": true
+    },
+    "reply": {
+      "correctParent": true,
+      "delivered": true
+    },
+    "tapbacks": {
+      "allSixAdditions": true,
+      "allSixRemovals": true,
+      "evidence": "Per-action native snapshots; latest database state does not retain all successive reaction states",
+      "snapshots": [
+        {
+          "nativeType": 2000,
+          "receiptSHA256": "65361846faba55f4920d3f45d4532bb14826b4f9d469c532f3d38f42d9d0a392"
+        },
+        {
+          "nativeType": 2001,
+          "receiptSHA256": "c80f28a6a195a10ce78b0143e2515174c724b112363720adc724f2e2fdee8894"
+        },
+        {
+          "nativeType": 2002,
+          "receiptSHA256": "543d7a6a6066ad03971c1cf90d4575a3b4a0d9dac00dcd555364fe7a56737300"
+        },
+        {
+          "nativeType": 2003,
+          "receiptSHA256": "90793af68476cb4711294b4c90ae6adcfa69bb5da67d3a10f8ceef702c5e2227"
+        },
+        {
+          "nativeType": 2004,
+          "receiptSHA256": "20041b45bb3a79e15a453ecd7ccf1a3b41bd6a5357cb1e49c45cf14986ca787d"
+        },
+        {
+          "nativeType": 2005,
+          "receiptSHA256": "f317de0ff075468234425de82d45dfba2007d3079df2ef7573976315cfc6fe41"
+        },
+        {
+          "nativeType": 3000,
+          "receiptSHA256": "440bd6f20c17a80ad46ea59c8d5bbedb8d1054dddc7301303c3809556eef9246"
+        },
+        {
+          "nativeType": 3001,
+          "receiptSHA256": "ce154295d92337722d06296cb58fde2db29a02f426e0c72af03fae6de7b346fb"
+        },
+        {
+          "nativeType": 3002,
+          "receiptSHA256": "8c3c039bb3f2574a76a50679f06acc802ab8ece47689569086aeb376140f60c8"
+        },
+        {
+          "nativeType": 3003,
+          "receiptSHA256": "7a6434fda128a1a2acd1d01a1829f43b848f6efccb6916a09f77f3cffbeb0380"
+        },
+        {
+          "nativeType": 3004,
+          "receiptSHA256": "91cc2aed76533b88d7578b37b342c3e521cf1190bf050507e4cd8b649ad47b6d"
+        },
+        {
+          "nativeType": 3005,
+          "receiptSHA256": "22c19f0abb172de6cf34a80f1ccdee06632d8fa0af06a7ec66e8ada41e1281a7"
+        }
+      ]
+    },
+    "media": [
+      {
+        "type": "png",
+        "outgoingSentAndDelivered": true,
+        "incomingSelfCopy": true
+      },
+      {
+        "type": "gif",
+        "outgoingSentAndDelivered": true,
+        "incomingSelfCopy": true
+      },
+      {
+        "type": "mp4",
+        "outgoingSentAndDelivered": true,
+        "incomingSelfCopy": true
+      }
+    ]
+  },
+  "finalRepeat": {
+    "status": "blocked-native-format-menu",
+    "combinedFormattingAccepted": false,
+    "details": "Native menu tracking persisted despite programmatic cancel. Manual recovery requested; original accepted cases above remain separate."
+  }
+}
