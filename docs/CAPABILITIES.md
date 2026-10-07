@@ -45,3 +45,11 @@ Apple's published Mac UI supports text effects and bubble/screen effects. Messag
 A resident Swift process avoids per-message process startup. Persistent WebSockets avoid polling for command dispatch. SQLite WAL with full synchronization preserves command intent before dispatch. Messages are serialized per account because they share a desktop. Development builds use a separate lane. Different accounts and phone workers can execute concurrently.
 
 The database event source still has upstream polling/backstop behavior. A disconnected or suspended iPhone cannot be treated as an always-on worker. UI tests have launch overhead; batch their action sequences. No microsecond iMessage-delivery claims are made.
+
+## Extension webhooks
+
+[Invites, Location and Check In workflows](EXTENSION_WEBHOOKS.md) now have authenticated request/claim/observation endpoints and MCP tools, with signed durable callbacks. Apple actions require an enrolled observer agent; the gateway does not independently drive or monitor these extensions. Callback delivery, agent observations and native success remain distinct verification levels.
+
+## Developer modules added 2026-10-07
+
+See the [developer guide](DEVELOPER_GUIDE.md) for the maintained index. File storage, conversion strategies, reusable library providers, Google Workspace routing and opt-in analytics are implemented with explicit grants and fixture coverage. Actual file converter outcomes are in [FILE_ACCEPTANCE.json](FILE_ACCEPTANCE.json); format recognition does not mean every variant renders. Messages/App Intents additions compile for Simulator; new physical-phone acceptance is not implied. Backend-free peer state has codec tests. Container launch planning and FaceTime/representative-line architecture are not deployed runtimes.

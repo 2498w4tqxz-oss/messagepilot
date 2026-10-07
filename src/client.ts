@@ -28,6 +28,29 @@ export class BridgeClient {
       throw new Error(`${response.status}: ${JSON.stringify(value)}`);
     return value;
   }
+  async upload(
+    accountId: string,
+    chatId: string,
+    name: string,
+    data: Uint8Array,
+  ) {
+    const response = await fetch(
+      `${this.url}/v1/accounts/${encodeURIComponent(accountId)}/files?${new URLSearchParams({ chatId, name })}`,
+      {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${this.token}`,
+          "content-type": "application/octet-stream",
+        },
+        body: Buffer.from(data),
+        signal: AbortSignal.timeout(120000),
+      },
+    );
+    const value = await response.json();
+    if (!response.ok)
+      throw new Error(`${response.status}: ${JSON.stringify(value)}`);
+    return value;
+  }
   async command(
     accountId: string,
     operation: Operation,

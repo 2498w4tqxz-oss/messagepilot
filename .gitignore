@@ -25,3 +25,5 @@ workspace/
 *.p8
 *.key
 *.pem
+__pycache__/
+*.pyc

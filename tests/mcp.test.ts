@@ -18,8 +18,22 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
         { id: "mcp", identity: "mcp@example.test", workerTokenEnv: "W" },
       ],
       agents: [{ id: "mcp", tokenEnv: "A", accounts: ["mcp"] }],
+      extensionHooks: [
+        {
+          id: "invites",
+          accountId: "mcp",
+          chatId: "fixture-only",
+          feature: "invites",
+          url: "http://127.0.0.1:1/callback",
+          signingSecretEnv: "S",
+          requestAgentIds: ["mcp"],
+          observerAgentIds: ["mcp"],
+          includeCoordinates: false,
+          allowLoopbackHttp: true,
+        },
+      ],
     },
-    { A, W },
+    { A, W, S: "s".repeat(40) },
   );
   const port = await gateway.listen();
   const native = new FixtureTransport("mcp@example.test");
@@ -50,6 +64,18 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
     assert.ok(list.tools.find((t) => t.name === "apps_ios_run"));
     for (const name of [
       "bridge_registry_card",
+      "bridge_file_upload",
+      "bridge_file",
+      "bridge_library_save",
+      "bridge_library_read",
+      "bridge_google_workspace",
+      "bridge_analytics",
+      "bridge_analytics_observe",
+      "bridge_container_plan",
+      "bridge_extension_request",
+      "bridge_extension_observe",
+      "bridge_extension_status",
+      "bridge_extension_claim",
       "bridge_computer_control",
       "mcp_connect",
       "mcp_tools_call",
@@ -77,6 +103,59 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
     const text = (result.content as any[])[0].text;
     assert.equal(JSON.parse(text).state, "completed");
     assert.equal(native.calls.length, 1);
+    const hookResult = await client.callTool({
+      name: "bridge_extension_request",
+      arguments: {
+        accountId: "mcp",
+        hookId: "invites",
+        payload: { idempotencyKey: "mcp-hook", action: "inspect" },
+      },
+    });
+    assert.equal(hookResult.isError, undefined);
+    const request = JSON.parse((hookResult.content as any[])[0].text);
+    assert.equal(request.state, "requested");
+    const claim = await client.callTool({
+      name: "bridge_extension_claim",
+      arguments: { accountId: "mcp", hookId: "invites", requestId: request.id },
+    });
+    assert.equal(
+      JSON.parse((claim.content as any[])[0].text).state,
+      "executing",
+    );
+    const report = await client.callTool({
+      name: "bridge_extension_observe",
+      arguments: {
+        accountId: "mcp",
+        hookId: "invites",
+        payload: {
+          sourceId: "mcp-observation",
+          observedAt: Date.now(),
+          state: "unavailable",
+          requestId: request.id,
+          outcome: "blocked",
+          evidence: { kind: "fixture", reference: "no-phone-fixture" },
+        },
+      },
+    });
+    assert.equal(report.isError, undefined);
+    const status = await client.callTool({
+      name: "bridge_extension_status",
+      arguments: {
+        accountId: "mcp",
+        hookId: "invites",
+        resource: "requests",
+        requestId: request.id,
+      },
+    });
+    assert.equal(
+      JSON.parse((status.content as any[])[0].text).state,
+      "blocked",
+    );
+    assert.equal(
+      native.calls.length,
+      1,
+      "Hook queue must not pretend to execute native transport",
+    );
   } finally {
     await client.close();
     worker.close();

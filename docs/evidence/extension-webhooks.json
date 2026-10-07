@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-07",
+  "transport": "local HTTP callback receiver",
+  "mode": "agent-mediated native UI workflow",
+  "callbacks": [
+    {
+      "kind": "extension.action.requested",
+      "feature": "invites",
+      "signatureVerified": true,
+      "callbackDelayMs": 384
+    },
+    {
+      "kind": "extension.invites.created",
+      "feature": "invites",
+      "signatureVerified": true,
+      "callbackDelayMs": 259
+    },
+    {
+      "kind": "extension.action.requested",
+      "feature": "location",
+      "signatureVerified": true,
+      "callbackDelayMs": 204
+    },
+    {
+      "kind": "extension.action.requested",
+      "feature": "checkin",
+      "signatureVerified": true,
+      "callbackDelayMs": 158
+    },
+    {
+      "kind": "extension.invites.shared",
+      "feature": "invites",
+      "signatureVerified": true,
+      "callbackDelayMs": 857
+    },
+    {
+      "kind": "extension.location.pin_sent",
+      "feature": "location",
+      "signatureVerified": true,
+      "callbackDelayMs": 370
+    },
+    {
+      "kind": "extension.checkin.unavailable",
+      "feature": "checkin",
+      "signatureVerified": true,
+      "callbackDelayMs": 155
+    }
+  ],
+  "results": {
+    "invites": "created and shared to approved self-chat; sent and received cards observed",
+    "location": "static pin sent and received in approved self-chat; callback excludes coordinates and address",
+    "checkin": "native recipient-unavailable state observed; request blocked; draft removed"
+  },
+  "unproven": [
+    "RSVP change watcher",
+    "continuous location sharing",
+    "active Check In completion",
+    "public production webhook receiver"
+  ],
+  "privacy": "No phone trees, images, contact identifiers, invite URLs or coordinates included"
+}

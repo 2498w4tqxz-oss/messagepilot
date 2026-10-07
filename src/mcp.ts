@@ -1,16 +1,276 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { containerPlan, containerPlanInput } from "./container-plan.js";
+import { analyticsEvent } from "./analytics.js";
+import { workspaceInput } from "./google-workspace.js";
+import { assetInput } from "./library.js";
 import { BridgeClient } from "./client.js";
 import { operations, readOperations } from "./protocol.js";
 import { toolSchemas } from "./tool-schemas.js";
 import { registryCard } from "./registry.js";
+import {
+  hookRequestSchema,
+  hookObservationSchema,
+} from "./extension-hook-schema.js";
 export async function startMCP(url: string, token: string) {
   const client = new BridgeClient(url, token),
     server = new McpServer({ name: "messagepilot", version: "0.1.0" });
   const output = (value: unknown) => ({
     content: [{ type: "text" as const, text: JSON.stringify(value) }],
   });
+  server.registerTool(
+    "bridge_container_plan",
+    {
+      description:
+        "Produce a pinned-image Apple container launch plan for a Linux agent connected to a Mac Messages worker. Does not install, pull, launch, provision Apple accounts or grant Mac desktop access.",
+      inputSchema: containerPlanInput.shape,
+    },
+    async (input) => output(containerPlan(input)),
+  );
+  server.registerTool(
+    "bridge_analytics_observe",
+    {
+      description:
+        "Record an explicit observation in an opt-in account/chat analytics policy. Require real source evidence; never infer read receipts from send success. Collector source is reported, not Apple-verified.",
+      inputSchema: { accountId: z.string(), event: analyticsEvent },
+    },
+    async ({ accountId, event }) =>
+      output(
+        await client.request(
+          accountId,
+          "analytics/observations",
+          "POST",
+          event,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_analytics",
+    {
+      description:
+        "Read opt-in event counts, reactions, media, action usage and matched read/delivery latency; or retrieve character/message-bounded context when text collection is enabled.",
+      inputSchema: {
+        accountId: z.string(),
+        chatId: z.string(),
+        view: z.enum(["report", "context", "events"]),
+        since: z.number().int().optional(),
+        until: z.number().int().optional(),
+      },
+    },
+    async ({ accountId, chatId, view, since, until }) =>
+      output(
+        await client.request(
+          accountId,
+          `analytics/${view}?${new URLSearchParams({ chatId, ...(since !== undefined ? { since: String(since) } : {}), ...(until !== undefined ? { until: String(until) } : {}) })}`,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_google_workspace",
+    {
+      description:
+        "Call a configured Google Workspace connection through fixed official Google API routes. Connection grants bind account, chat, agent and actions. OAuth is developer-provisioned. Writes are never automatically retried. Gmail send requires an explicit grant and caller authorization.",
+      inputSchema: {
+        accountId: z.string(),
+        connectionId: z.string(),
+        input: workspaceInput,
+      },
+    },
+    async ({ accountId, connectionId, input }) =>
+      output(
+        await client.request(
+          accountId,
+          `workspace/${encodeURIComponent(connectionId)}/actions`,
+          "POST",
+          input,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_library_save",
+    {
+      description:
+        "Create or revise a reusable asset in a chat-bound backend library. Immutable versions, expectedRevision concurrency check and content-sensitive idempotency. Large content belongs in files.",
+      inputSchema: {
+        accountId: z.string(),
+        assetId: z.string().uuid().optional(),
+        asset: assetInput,
+      },
+    },
+    async ({ accountId, assetId, asset }) =>
+      output(
+        await client.request(
+          accountId,
+          `library${assetId ? `/${assetId}` : ""}`,
+          "POST",
+          asset,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_library_read",
+    {
+      description:
+        "List current chat assets or read an immutable revision. Backend can be local SQLite or a configured developer-hosted database adapter.",
+      inputSchema: {
+        accountId: z.string(),
+        chatId: z.string(),
+        assetId: z.string().uuid().optional(),
+        revision: z.number().int().positive().optional(),
+      },
+    },
+    async ({ accountId, chatId, assetId, revision }) =>
+      output(
+        await client.request(
+          accountId,
+          `library${assetId ? `/${assetId}` : ""}?${new URLSearchParams({ chatId, ...(revision ? { revision: String(revision) } : {}) })}`,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_file_upload",
+    {
+      description:
+        "Upload up to 512 KiB decoded bytes, bound to an exact permitted chat. Use binary HTTP upload for larger files. Never supplies a server-local path.",
+      inputSchema: {
+        accountId: z.string(),
+        chatId: z.string(),
+        name: z.string(),
+        base64: z
+          .string()
+          .max(699052)
+          .regex(
+            /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/,
+          ),
+      },
+    },
+    async ({ accountId, chatId, name, base64 }) => {
+      const data = Buffer.from(base64, "base64");
+      if (data.length > 524288)
+        throw new Error("Use HTTP upload for files larger than 512 KiB");
+      return output(await client.upload(accountId, chatId, name, data));
+    },
+  );
+  server.registerTool(
+    "bridge_file",
+    {
+      description:
+        "List chat-bound files, inspect/extract bounded text and metadata, request a cached preview, or obtain authenticated download/preview routes. Prepare is asynchronous. Unknown types retain original bytes. No native delivery is implied.",
+      inputSchema: {
+        accountId: z.string(),
+        action: z.enum([
+          "list",
+          "info",
+          "read",
+          "prepare",
+          "formats",
+          "download",
+        ]),
+        chatId: z.string().optional(),
+        fileId: z.string().uuid().optional(),
+      },
+    },
+    async ({ accountId, action, chatId, fileId }) => {
+      if (action === "formats")
+        return output(await client.request(accountId, "files/formats"));
+      if (action === "list") {
+        if (!chatId) throw new Error("chatId required");
+        return output(
+          await client.request(
+            accountId,
+            `files?${new URLSearchParams({ chatId })}`,
+          ),
+        );
+      }
+      if (!fileId) throw new Error("fileId required");
+      const result = await client.request(
+        accountId,
+        `files/${fileId}${["read", "prepare"].includes(action) ? `/${action}` : ""}`,
+        action === "prepare" ? "POST" : "GET",
+      );
+      return output(
+        action === "download"
+          ? {
+              file: result,
+              downloadPath: `/v1/accounts/${encodeURIComponent(accountId)}/files/${fileId}/download`,
+              previewPath: `/v1/accounts/${encodeURIComponent(accountId)}/files/${fileId}/preview`,
+              authentication:
+                "Bearer token with files.read and file chat access required",
+            }
+          : result,
+      );
+    },
+  );
+  for (const [name, schema, route] of [
+    ["request", hookRequestSchema, "requests"],
+    ["observe", hookObservationSchema, "observations"],
+  ] as const) {
+    server.registerTool(
+      `bridge_extension_${name}`,
+      {
+        description:
+          name === "request"
+            ? "Queue an Invites, Location or Check In workflow for an enrolled agent. Does not execute Apple UI; requested is not completed. Hook fixes the account, chat and callback destination."
+            : "Report a verified native extension observation. The gateway labels this agent-reported, not an Apple-signed event. Never infer Check In arrival or safety state.",
+        inputSchema: {
+          accountId: z.string(),
+          hookId: z.string(),
+          payload: schema,
+        },
+      },
+      async ({ accountId, hookId, payload }) =>
+        output(
+          await client.request(
+            accountId,
+            `extension-hooks/${encodeURIComponent(hookId)}/${route}`,
+            "POST",
+            payload,
+          ),
+        ),
+    );
+  }
+  server.registerTool(
+    "bridge_extension_status",
+    {
+      description:
+        "List extension requests, inspect one request, or inspect durable callback deliveries. A delivered webhook does not prove Apple UI success.",
+      inputSchema: {
+        accountId: z.string(),
+        hookId: z.string(),
+        resource: z.enum(["requests", "deliveries"]),
+        requestId: z.string().uuid().optional(),
+      },
+    },
+    async ({ accountId, hookId, resource, requestId }) =>
+      output(
+        await client.request(
+          accountId,
+          `extension-hooks/${encodeURIComponent(hookId)}/${resource}${resource === "requests" && requestId ? `/${requestId}` : ""}`,
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_extension_claim",
+    {
+      description:
+        "Claim an extension request before operating the enrolled device. A second claim fails. Reconcile uncertain actions after restart; do not blindly repeat them.",
+      inputSchema: {
+        accountId: z.string(),
+        hookId: z.string(),
+        requestId: z.string().uuid(),
+      },
+    },
+    async ({ accountId, hookId, requestId }) =>
+      output(
+        await client.request(
+          accountId,
+          `extension-hooks/${encodeURIComponent(hookId)}/requests/${requestId}/claim`,
+          "POST",
+          {},
+        ),
+      ),
+  );
   server.registerTool(
     "bridge_computer_control",
     {

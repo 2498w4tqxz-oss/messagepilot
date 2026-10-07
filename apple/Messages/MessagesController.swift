@@ -58,7 +58,10 @@ final class MessagesController: MSMessagesAppViewController {
         in: CGRect(x: 32, y: 178, width: 536, height: 90),
         withAttributes: [.font: UIFont.systemFont(ofSize: 24), .foregroundColor: UIColor.white])
     }
-    let message = MSMessage(session: conversation.selectedMessage?.session ?? MSSession())
+    let previous = conversation.selectedMessage
+    let previousURL = previous?.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }
+    let sameCard = previousURL?.host == "card" && previousURL?.queryItems?.contains(where: { $0.name == "card" && $0.value == card.id }) == true
+    let message = MSMessage(session: sameCard ? (previous?.session ?? MSSession()) : MSSession())
     message.layout = MSMessageLiveLayout(alternateLayout: fallback)
     message.summaryText = card.body.title
     var url = URLComponents()
@@ -70,7 +73,7 @@ final class MessagesController: MSMessagesAppViewController {
     ]
     message.url = url.url
     // Called directly from the user's Send button. No fabricated background send capability.
-    conversation.send(message) { [weak self] error in
+    ConversationPort(self).submit(.message(message), mode: .direct) { [weak self] error in
       if let error {
         DispatchQueue.main.async {
           let alert = UIAlertController(
@@ -104,7 +107,7 @@ final class MessagesController: MSMessagesAppViewController {
         "sticker-\(UUID().uuidString).png")
       try image.pngData()?.write(to: file)
       let sticker = try MSSticker(contentsOfFileURL: file, localizedDescription: text)
-      conversation.send(sticker) { error in
+      ConversationPort(self).submit(.sticker(sticker), mode: .direct) { error in
         if let error { NSLog("Sticker send failed: %@", error.localizedDescription) }
       }
     } catch { NSLog("Sticker generation failed: %@", error.localizedDescription) }
@@ -125,11 +128,13 @@ struct CardsView: View {
   @State private var loading = false
   @State private var selectedItem = ""
   @State private var status = ""
+  @State private var filesOpen = false
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       if !transcript {
         HStack {
           Text("MessagePilot").font(.headline)
+          Button("Files") { filesOpen = true }
           Spacer()
           Button("Refresh") {
             focusedField = nil
@@ -200,7 +205,7 @@ struct CardsView: View {
       }
       if !status.isEmpty { Text(status).font(.caption) }
       if !error.isEmpty { Text(error).font(.caption).foregroundStyle(.red) }
-    }.padding().task {
+    }.padding().sheet(isPresented: $filesOpen) { NavigationStack { FileLibraryView() } }.task {
       id = initialID
       if !id.isEmpty { await load() }
     }

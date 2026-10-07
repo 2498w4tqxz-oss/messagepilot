@@ -19,6 +19,17 @@ import {
   visibleEvent,
 } from "./chat-scope.js";
 import { Passkeys } from "./passkeys.js";
+import { Analytics, analyticsEvent } from "./analytics.js";
+import { GoogleWorkspace, workspaceInput } from "./google-workspace.js";
+import {
+  SQLiteLibrary,
+  HTTPLibrary,
+  assetInput,
+  type LibraryProvider,
+} from "./library.js";
+import { Files } from "./files.js";
+import { fileFormats } from "./file-formats.js";
+import { ExtensionHooks } from "./extension-hooks.js";
 type Session = {
   socket: WebSocket;
   generation: string;
@@ -60,6 +71,11 @@ export class Gateway {
   readonly server: http.Server;
   readonly wss: WebSocketServer;
   readonly passkeys?: Passkeys;
+  readonly extensionHooks: ExtensionHooks;
+  readonly files?: Files;
+  readonly library: LibraryProvider;
+  readonly workspace: GoogleWorkspace;
+  readonly analytics: Analytics;
   private sessions = new Map<string, Session>();
   private streams = new Map<
     string,
@@ -71,10 +87,19 @@ export class Gateway {
     readonly config: Config,
     env = process.env,
   ) {
+    this.workspace = new GoogleWorkspace(config.googleWorkspace ?? [], env);
     this.auth = new Auth(config, env, (token) =>
       this.passkeys?.principal(token),
     );
     this.store = new Store(config.database);
+    this.analytics = new Analytics(this.store.db, config.analytics ?? []);
+    this.library = config.library
+      ? new HTTPLibrary(config.library.url, env[config.library.tokenEnv] ?? "")
+      : new SQLiteLibrary(this.store.db);
+    this.files = config.files
+      ? new Files(this.store.db, config.files)
+      : undefined;
+    this.extensionHooks = new ExtensionHooks(this.store.db, config, env);
     this.passkeys = config.passkeys
       ? new Passkeys(this.store.db, config.passkeys)
       : undefined;
@@ -114,6 +139,7 @@ export class Gateway {
       }
     });
     this.heartbeat = setInterval(() => {
+      this.analytics.sweep();
       for (const s of this.sessions.values()) {
         if (Date.now() - s.lastSeen > 45000) s.socket.terminate();
         else s.socket.ping();
@@ -129,6 +155,22 @@ export class Gateway {
     return typeof address === "object" && address ? address.port : 0;
   }
   private emit(account: string, source: string, kind: string, data: unknown) {
+    if (kind === "command.updated" && data && typeof data === "object") {
+      const c = data as {
+        id: string;
+        args?: { chatId?: string };
+        state: string;
+        operation: string;
+      };
+      if (["completed", "failed", "outcome_unknown"].includes(c.state))
+        this.analytics.command(
+          account,
+          c.args?.chatId,
+          c.id,
+          c.state,
+          c.operation,
+        );
+    }
     const event = this.store.event(account, source, kind, data);
     for (const [res, scope] of this.streams.get(account) ?? []) {
       if (!visibleEvent(scope, event)) continue;
@@ -479,13 +521,289 @@ export class Gateway {
       );
     if (
       scope !== undefined &&
-      !["commands", "capabilities", "events"].includes(resource ?? "")
+      ![
+        "commands",
+        "capabilities",
+        "events",
+        "extension-hooks",
+        "files",
+        "library",
+        "workspace",
+        "analytics",
+      ].includes(resource ?? "")
     )
       throw new PilotError(
         "chat_forbidden",
         "This endpoint is not available to a chat-restricted credential",
         403,
       );
+    if (resource === "analytics") {
+      if (
+        id === "observations" &&
+        req.method === "POST" &&
+        segments.length === 5
+      ) {
+        const parsed = analyticsEvent.safeParse(await body(req));
+        if (!parsed.success)
+          throw new PilotError("invalid_arguments", "Invalid analytics event");
+        const policy = this.analytics.policy(
+          account,
+          parsed.data.chatId,
+          agent.id,
+          "observe",
+          scope,
+        );
+        reply(res, 200, this.analytics.observe(policy, parsed.data));
+        return;
+      }
+      if (
+        ["report", "context", "events"].includes(id ?? "") &&
+        req.method === "GET" &&
+        segments.length === 5
+      ) {
+        const chat = url.searchParams.get("chatId") ?? "";
+        const policy = this.analytics.policy(
+          account,
+          chat,
+          agent.id,
+          "read",
+          scope,
+        );
+        const since = Number(
+            url.searchParams.get("since") ?? Date.now() - 86400000,
+          ),
+          until = Number(url.searchParams.get("until") ?? Date.now());
+        if (
+          !Number.isSafeInteger(since) ||
+          !Number.isSafeInteger(until) ||
+          since < 0 ||
+          until <= since
+        )
+          throw new PilotError("invalid_range", "Invalid timestamp interval");
+        reply(
+          res,
+          200,
+          id === "events"
+            ? this.analytics.events(policy, chat, since, until)
+            : id === "context"
+              ? this.analytics.context(policy, chat)
+              : this.analytics.report(policy, chat, since, until),
+        );
+        return;
+      }
+      throw new PilotError("not_found", "Unknown analytics endpoint", 404);
+    }
+    if (
+      resource === "workspace" &&
+      id &&
+      segments.length === 6 &&
+      segments[5] === "actions" &&
+      req.method === "POST"
+    ) {
+      const connection = this.workspace.authorize(account, id, agent.id, scope);
+      const parsed = workspaceInput.safeParse(await body(req));
+      if (!parsed.success)
+        throw new PilotError("invalid_arguments", "Invalid Workspace action");
+      reply(res, 200, await this.workspace.execute(connection, parsed.data));
+      return;
+    }
+    if (resource === "library") {
+      this.auth.agent(
+        req.headers.authorization,
+        account,
+        req.method === "GET" ? "files.read" : "files.write",
+      );
+      const parsed =
+        req.method === "POST"
+          ? assetInput.safeParse(await body(req))
+          : undefined;
+      if (parsed && !parsed.success)
+        throw new PilotError("invalid_arguments", "Invalid library asset");
+      const input = parsed?.success ? parsed.data : undefined;
+      const chatId = input?.chatId ?? url.searchParams.get("chatId") ?? "";
+      if (!chatId || (scope !== undefined && !scope.includes(chatId)))
+        throw new PilotError(
+          "chat_forbidden",
+          "Exact permitted chatId required",
+          403,
+        );
+      const binding = { accountId: account, chatId };
+      if (id && !/^[0-9a-f-]{36}$/.test(id))
+        throw new PilotError("invalid_id", "Invalid asset ID");
+      if (segments.length > 5)
+        throw new PilotError("not_found", "Unknown library endpoint", 404);
+      if (req.method === "GET" && !id) {
+        reply(res, 200, await this.library.list(binding));
+        return;
+      }
+      if (req.method === "GET" && id) {
+        const raw = url.searchParams.get("revision");
+        const revision = raw ? Number(raw) : undefined;
+        if (
+          revision !== undefined &&
+          (!Number.isSafeInteger(revision) || revision < 1)
+        )
+          throw new PilotError(
+            "invalid_revision",
+            "Revision must be positive integer",
+          );
+        const asset = await this.library.get(binding, id, revision);
+        if (!asset) throw new PilotError("not_found", "Asset not found", 404);
+        reply(res, 200, asset);
+        return;
+      }
+      if (input) {
+        for (const fileId of input.fileIds) {
+          if (!this.files)
+            throw new PilotError("disabled", "File storage not configured");
+          const file = this.files.get(account, fileId, scope);
+          if (file.chat !== chatId)
+            throw new PilotError(
+              "chat_forbidden",
+              "Referenced file belongs to another chat",
+              403,
+            );
+        }
+        reply(res, 200, await this.library.save(binding, id, input, agent.id));
+        return;
+      }
+      throw new PilotError("not_found", "Unknown library endpoint", 404);
+    }
+    if (resource === "files") {
+      if (!this.files)
+        throw new PilotError("disabled", "File storage is not configured", 404);
+      this.auth.agent(
+        req.headers.authorization,
+        account,
+        ["GET", "HEAD"].includes(req.method ?? "")
+          ? "files.read"
+          : "files.write",
+      );
+      if (!id && req.method === "POST") {
+        reply(
+          res,
+          201,
+          await this.files.upload(
+            account,
+            url.searchParams.get("chatId") ?? "",
+            url.searchParams.get("name") ?? "",
+            scope,
+            req,
+          ),
+        );
+        return;
+      }
+      if (!id && req.method === "GET") {
+        reply(
+          res,
+          200,
+          this.files.list(account, url.searchParams.get("chatId") ?? "", scope),
+        );
+        return;
+      }
+      if (id === "formats" && req.method === "GET") {
+        reply(res, 200, fileFormats);
+        return;
+      }
+      if (id && segments.length <= 6) {
+        const file = this.files.get(account, id, scope),
+          action = segments[5];
+        if (!action && req.method === "GET") {
+          reply(res, 200, this.files.manifest(file));
+          return;
+        }
+        if (!action && req.method === "DELETE") {
+          await this.files.remove(file);
+          reply(res, 200, { deleted: true });
+          return;
+        }
+        if (action === "prepare" && req.method === "POST") {
+          this.files.prepare(file);
+          reply(
+            res,
+            202,
+            this.files.manifest(this.files.get(account, id, scope)),
+          );
+          return;
+        }
+        if (action === "read" && req.method === "GET") {
+          reply(res, 200, this.files.manifest(file));
+          return;
+        }
+        if (
+          ["download", "preview"].includes(action ?? "") &&
+          ["GET", "HEAD"].includes(req.method ?? "")
+        ) {
+          await this.files.stream(file, action === "preview", req, res);
+          return;
+        }
+      }
+      throw new PilotError("not_found", "Unknown file endpoint", 404);
+    }
+    if (resource === "extension-hooks" && id) {
+      const action = segments[5],
+        requestId = segments[6];
+      const mode =
+        req.method === "GET"
+          ? "read"
+          : action === "requests" && !requestId
+            ? "request"
+            : "observe";
+      const hook = this.extensionHooks.authorize(account, id, agent, mode);
+      if (
+        segments.length === 6 &&
+        req.method === "POST" &&
+        action === "requests"
+      ) {
+        reply(res, 202, this.extensionHooks.request(hook, await body(req)));
+        return;
+      }
+      if (
+        segments.length === 6 &&
+        req.method === "POST" &&
+        action === "observations"
+      ) {
+        reply(
+          res,
+          202,
+          this.extensionHooks.observe(hook, await body(req), agent.id),
+        );
+        return;
+      }
+      if (
+        segments.length === 8 &&
+        segments[7] === "claim" &&
+        req.method === "POST" &&
+        action === "requests" &&
+        requestId
+      ) {
+        reply(res, 200, this.extensionHooks.claim(hook, requestId, agent.id));
+        return;
+      }
+      if (
+        req.method === "GET" &&
+        action === "requests" &&
+        segments.length <= 7
+      ) {
+        reply(
+          res,
+          200,
+          requestId
+            ? this.extensionHooks.get(hook, requestId)
+            : this.extensionHooks.list(hook),
+        );
+        return;
+      }
+      if (
+        segments.length === 6 &&
+        req.method === "GET" &&
+        action === "deliveries"
+      ) {
+        reply(res, 200, this.extensionHooks.deliveries(hook));
+        return;
+      }
+      throw new PilotError("not_found", "Unknown extension hook endpoint", 404);
+    }
     if (resource === "passkeys") {
       if (!this.passkeys)
         throw new PilotError("disabled", "Passkeys are not configured", 404);
@@ -607,6 +925,15 @@ export class Gateway {
       parsed.data.args = args.data;
       assertChatScope(scope, parsed.data);
       const command = this.store.enqueue(account, parsed.data);
+      this.analytics.command(
+        account,
+        typeof command.args.chatId === "string"
+          ? command.args.chatId
+          : undefined,
+        command.id,
+        "accepted",
+        command.operation,
+      );
       reply(res, 202, command);
       this.dispatch(account);
       return;
@@ -749,6 +1076,8 @@ export class Gateway {
     if (this.closing) return;
     this.closing = true;
     clearInterval(this.heartbeat);
+    await this.extensionHooks.close();
+    await this.files?.close();
     for (const s of this.sessions.values()) {
       for (const active of s.inflight.values()) clearTimeout(active.timer);
       this.store.interrupt(s.account, s.generation);

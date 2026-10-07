@@ -4,6 +4,8 @@
 
 MessagePilot connects an external agent to its own Apple Account, Messages session, iMessage apps, development tools, and virtual Mac. It does not choose a model, reason about conversations, or run an agent's business workflows. No BlueBubbles server, helper, credentials, or protocol is required.
 
+**Complete project documentation:** [Developer guide and feature index](docs/DEVELOPER_GUIDE.md).
+
 ## Components
 
 | Component             | Purpose                                                                        |
@@ -102,6 +104,7 @@ Use `GET /v1/accounts/{account}/commands/{id}` for the receipt. Use `GET /v1/acc
 - Find My: inspect/operate the allowed Find My app using `apps.snapshot` / `apps.interact` or the device harness. This is user-visible UI automation, not a universal Find My location-query API. Core Location in the phone companion reports only that phone's own location.
 - Official MCP Registry: search/inspect server metadata, connect pinned remote servers or explicit local executables, and use tools/resources/prompts through the dedicated worker. `bridge_registry_card` displays selectable Registry results in iMessage. [Registry and control guide](docs/MCP_AND_COMPUTER.md).
 - Virtual-computer takeover: claim an exclusive agent lease, inspect apps/screens, send keyboard/pointer input, and release it. The worker operates inside the guest, with account-scoped credentials and foreground-target checks.
+- Invites, Location and Check In webhooks: chat-bound request queues, exclusive claims, evidence-labeled observations, signed durable callbacks and MCP tools. An enrolled agent operates the Apple UI; this is not an Apple push API or unattended observer. [Extension webhook guide](docs/EXTENSION_WEBHOOKS.md).
 - Native Send Later, Polls and GIPHY: named UI recipe compilers plus a generic installed-app harness. Photos, Camera, Audio, Stickers, Digital Touch, Check In, Location, Image Playground and other extensions use observed UI recipes. Availability and selectors require dedicated-device calibration. [iMessage app coverage](docs/IMESSAGE_APPS.md).
 - Apple developer tools: typed adapters for Xcode builds, Swift, Simulator, devicectl, result extraction, Instruments, Metal, asset tools and signing, plus framework references for creating richer apps.
 - Optional primary app port: pass `primaryPort: true` to `apps.create`, or `--primary-port` to the generator. Includes shared state, WidgetKit, ActivityKit/Dynamic Island, App Intents and an APNs Live Activity route. [Primary app port guide](docs/PRIMARY_APP_PORT.md).
@@ -134,3 +137,14 @@ scripts/      Fixture demo, benchmark, enrolled-device test runner
 examples/     Credential-free account configurations and payloads
 tests/        Isolation, recovery, routing, developer-tool and protocol tests
 ```
+
+Representative contact lines and FaceTime Audio are researched in the [line and voice architecture proposal](docs/LINES_AND_FACETIME.md). The proposed provisioning/call endpoints are not implemented or device-accepted.
+
+## Additional developer modules
+
+- [Files](docs/FILES.md): chat-bound original storage/download, authenticated previews and reading, native Quick Look/open-with and tested format results.
+- [Backend library](docs/BACKEND_LIBRARY.md): reusable versioned assets, local SQLite or a developer-hosted database adapter.
+- [Google Workspace](docs/GOOGLE_WORKSPACE.md): explicit connection/action grants and OAuth-backed API adapters.
+- [Optional analytics](docs/ANALYTICS.md): scoped event counts, reaction/media/action breakdowns, read-receipt timing and bounded context.
+- [Messages framework](docs/MESSAGES_FRAMEWORK.md) and [App Intents](docs/APP_INTENTS.md): direct-send conditions, sessions, peer state and system automation.
+- [Linux containers](docs/CONTAINERIZATION.md): architecture and launch planning alongside the macOS worker.

@@ -71,6 +71,7 @@ struct SetupView: View {
             Button("Decline") { device.cancelCapture() }
           }
         }
+        Section("Files") { NavigationLink("Open file library") { FileLibraryView() } }
         Section("Messages") {
           Text(
             "Open MessagePilot in the Messages app to load and send agent-authored carousels, previews, and interactive cards."

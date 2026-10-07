@@ -1,4 +1,8 @@
+import { PilotError } from "./errors.js";
 import { z } from "zod";
+import { analyticsPolicy } from "./analytics.js";
+import { workspaceConfig } from "./google-workspace.js";
+import { extensionHookSchema } from "./extension-hook-schema.js";
 
 export const operations = [
   "device.auth.biometric",
@@ -163,17 +167,40 @@ export const workerFrame = z.discriminatedUnion("type", [
   }),
   z.object({ type: z.literal("heartbeat") }),
 ]);
-export class PilotError extends Error {
-  constructor(
-    public code: string,
-    message: string,
-    public status = 400,
-  ) {
-    super(message);
-  }
-}
+export { PilotError } from "./errors.js";
 
 export const configSchema = z.object({
+  analytics: z.array(analyticsPolicy).optional(),
+  googleWorkspace: z.array(workspaceConfig).optional(),
+  library: z
+    .object({
+      provider: z.literal("http"),
+      url: z.string().url(),
+      tokenEnv: z.string().min(1),
+    })
+    .optional(),
+  files: z
+    .object({
+      directory: z.string().min(1),
+      maxFileBytes: z
+        .number()
+        .int()
+        .positive()
+        .default(512 * 1024 * 1024),
+      maxAccountBytes: z
+        .number()
+        .int()
+        .positive()
+        .default(5 * 1024 * 1024 * 1024),
+      conversion: z
+        .object({
+          python: z.string().startsWith("/"),
+          tools: z.record(z.string().startsWith("/")),
+        })
+        .optional(),
+    })
+    .optional(),
+  extensionHooks: z.array(extensionHookSchema).optional(),
   passkeys: z
     .object({
       rpId: z.string().min(1),
