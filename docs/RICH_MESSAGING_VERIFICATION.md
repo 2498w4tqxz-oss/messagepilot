@@ -48,10 +48,10 @@ The final retained-path follow-up measured approximately 9.9 seconds for Confett
 
 ## Remaining limits
 
-- Separate iPhone visual confirmation of animation playback and remote edit/unsend behavior is pending. Incoming self-chat payloads prove transport/persistence, not every recipient's rendering.
+- The [physical phone follow-up](PHYSICAL_PHONE_ACCEPTANCE.md) adds recipient photo-stack rendering and native non-effect tests. Phone edit history and sender retraction worked, but incoming self-copies retained their original text; independent-recipient edit/unsend propagation remains unproven. Incoming self-chat payloads do not establish every recipient's rendering.
 - Native text formatting supports Apple's four styles, not arbitrary font families.
-- [Expanded acceptance](EXPANDED_ACCEPTANCE.md) adds a delivered four-photo stack, sender-side link preview, partial Send Later verification and attempted Polls/custom emoji tests. Poll submission failed and the scoped worker rejects custom emoji Tapbacks. Native stickers, backgrounds, GIPHY and other third-party app workflows still need acceptance.
-- Expanded acceptance adds simulator carousel page rendering, real primary-port pairing/WSS commands and visible Dynamic Island updates. Inline carousel rendering, physical devices, widgets, Apple authentication and AR retain the explicit limits in that report.
+- [Expanded acceptance](EXPANDED_ACCEPTANCE.md) adds a delivered four-photo stack, sender-side link preview, partial Send Later verification and attempted Polls/custom emoji tests. Poll submission failed and the scoped worker rejects custom emoji Tapbacks. The physical follow-up verifies native stock stickers, backgrounds, GIPHY-backed #images and one GamePigeon workflow through phone control; these are not new MessagePilot adapter implementations.
+- Expanded acceptance adds simulator carousel page rendering, real primary-port pairing/WSS commands and visible Dynamic Island updates. Inline carousel rendering, physical installation of MessagePilot, widgets, Apple authentication and AR retain the explicit limits in that report and the physical follow-up.
 - Multi-account Apple identity provisioning, VM login/activation, reboot recovery, other OS languages and group-chat UI need separate acceptance. The scoped worker labels local enrollment; it does not independently verify the signed-in Apple sender identity.
 - Restricted incoming-message events and history pagination are not implemented. Explicit scoped reads return at most 50 recent messages.
 

@@ -2,6 +2,8 @@
 
 Testing used one explicitly authorized self-chat on macOS with SIP enabled, plus a newly created iPhone 17 / iOS 26.5 simulator without an Apple Account. The simulator used synthetic cards, images, identities, credentials and an isolated HTTPS gateway. No other personal conversation, Contacts or Find My data was queried. Simulator Messages uses seeded conversations and simulated delivery; it cannot establish Apple-network delivery or a physical recipient's experience.
 
+The later [physical phone acceptance](PHYSICAL_PHONE_ACCEPTANCE.md) closes the native photo-stack rendering gap and adds native sticker, reply, background, GIF and app tests. This report records the earlier Mac/simulator session; its unverified items must be read alongside that follow-up. The physical MessagePilot app build remains blocked by provisioning.
+
 ## Results
 
 | Feature                        | Observed result                                                                                                                                                                                                                                                                    | Acceptance boundary                                                                                                                                                                                             |

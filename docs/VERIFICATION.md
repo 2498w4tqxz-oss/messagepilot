@@ -2,6 +2,8 @@
 
 Initial build verification used synthetic identities and temporary bridge databases. Subsequent authorized testing used the separate scoped worker and exactly one self-chat, with SIP enabled. See [rich messaging acceptance](RICH_MESSAGING_VERIFICATION.md) and [expanded acceptance](EXPANDED_ACCEPTANCE.md). No other conversations or Find My data were read. No virtual machine was installed or booted.
 
+The later [physical phone acceptance](PHYSICAL_PHONE_ACCEPTANCE.md) verifies the bridge photo stack on a real iPhone and separately records native phone-control tests. Its physical app build failed provisioning; the successful builds below concern the earlier environments.
+
 ## Executed checks
 
 | Check                           | Result                                | What it establishes                                                                                                                                                                                                                                                                     |
