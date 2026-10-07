@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 
 final class MessagesController: MSMessagesAppViewController {
-  private var host: UIHostingController<CardsView>?
+  private var host: UIHostingController<AnyView>?
   override func willBecomeActive(with conversation: MSConversation) { render(conversation) }
   override func didBecomeActive(with conversation: MSConversation) { render(conversation) }
   override func didSelect(_ message: MSMessage, conversation: MSConversation) {
@@ -27,10 +27,25 @@ final class MessagesController: MSMessagesAppViewController {
     }
     let cardID = selected?.queryItems?.first(where: { $0.name == "card" })?.value ?? ""
     let account = selected?.queryItems?.first(where: { $0.name == "account" })?.value
-    let root = CardsView(
+    let progressID = selected?.queryItems?.first(where: { $0.name == "job" })?.value ?? ""
+    let progressRoot = TaskProgressView(initialID: progressID, selectedAccount: account,
+      transcript: presentationStyle == .transcript,
+      onSend: { [weak self] record in self?.sendProgress(record, conversation: conversation) })
+    let cardsRoot = CardsView(
       initialID: cardID, selectedAccount: account, transcript: presentationStyle == .transcript,
       onSend: { [weak self] card in self?.send(card, conversation: conversation) },
       onSticker: { [weak self] text in self?.sendSticker(text, conversation: conversation) })
+    let root: AnyView
+    if selected?.host == "progress" {
+      root = AnyView(progressRoot)
+    } else if presentationStyle == .transcript {
+      root = AnyView(cardsRoot)
+    } else {
+      root = AnyView(TabView {
+        cardsRoot.tabItem { Label("Cards", systemImage: "rectangle.stack") }
+        progressRoot.tabItem { Label("Progress", systemImage: "hourglass") }
+      })
+    }
     let controller = UIHostingController(rootView: root)
     addChild(controller)
     view.addSubview(controller.view)
@@ -43,6 +58,29 @@ final class MessagesController: MSMessagesAppViewController {
     ])
     controller.didMove(toParent: self)
     host = controller
+  }
+  private func sendProgress(_ job: TaskProgressRecord, conversation: MSConversation) {
+    let prior = conversation.selectedMessage
+    let components = prior?.url.flatMap { URLComponents(url: $0, resolvingAgainstBaseURL: false) }
+    let sameJob = components?.host == "progress" && components?.queryItems?.contains(where: { $0.name == "job" && $0.value == job.id }) == true
+    let message = MSMessage(session: sameJob ? (prior?.session ?? MSSession()) : MSSession())
+    let fallback = MSMessageTemplateLayout()
+    fallback.caption = job.title
+    fallback.subcaption = "\(job.state.capitalized): \(job.detail)"
+    message.layout = MSMessageLiveLayout(alternateLayout: fallback)
+    message.summaryText = job.title
+    var url = URLComponents()
+    url.scheme = "messagepilot"
+    url.host = "progress"
+    url.queryItems = [.init(name: "job", value: job.id), .init(name: "account", value: job.accountId)]
+    message.url = url.url
+    ConversationPort(self).submit(.message(message), mode: .direct) { [weak self] error in
+      if let error { DispatchQueue.main.async {
+        let alert = UIAlertController(title: "Progress card not sent", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self?.present(alert, animated: true)
+      } }
+    }
   }
   private func send(_ card: CardRecord, conversation: MSConversation) {
     let fallback = MSMessageTemplateLayout()

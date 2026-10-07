@@ -6,6 +6,8 @@ MessagePilot connects an external agent to its own Apple Account, Messages sessi
 
 **Complete project documentation:** [Developer guide and feature index](docs/DEVELOPER_GUIDE.md).
 
+For long tasks, use [progress messages](docs/PROGRESS.md): coalesced native edits with a reserved final edit, output attachments, or an interactive progress card. See [developer behavior patterns](docs/DEVELOPER_BEHAVIORS.md) for cancellation, approvals and recovery boundaries.
+
 ## Components
 
 | Component             | Purpose                                                                        |
@@ -25,7 +27,7 @@ The native Messages adapter uses the MIT-licensed `beeper/platform-imessage` lib
 
 **Rich messaging has now been exercised in one explicitly authorized self-chat with SIP enabled.** All four text styles, eight text animations, four bubble effects and eight screen effects produced matching outgoing and incoming self-chat payloads with delivered status. Editing, unsending, six standard Tapbacks and their removal, replies, PNG, GIF and video were also exercised. See the [live verification record](docs/RICH_MESSAGING_VERIFICATION.md) for the exact evidence and limits.
 
-The gateway passes 39 local tests, including a compiled Swift worker against an isolated fixture database. Four additional Swift tests verify native rich-payload matching, including exact UTF-16 range coverage. Apple app/VM targets remain compile-verified; separate iPhone visual confirmation and broader app/device acceptance remain outstanding. For personal-account testing, [chat-restricted enrollment](docs/CHAT_SCOPES.md) uses a separate worker that queries only explicitly permitted conversations and exposes no general computer tools.
+The gateway passes 69 local tests, including a compiled Swift worker against an isolated fixture database. Four additional Swift tests verify native rich-payload matching, including exact UTF-16 range coverage. Apple app/VM targets remain compile-verified; separate iPhone visual confirmation and broader app/device acceptance remain outstanding. For personal-account testing, [chat-restricted enrollment](docs/CHAT_SCOPES.md) uses a separate worker that queries only explicitly permitted conversations and exposes no general computer tools.
 
 `compiled` is not `device-tested`. Effects use exact Accessibility selectors and need calibration for the worker's macOS version and language. Phone UI automation requires an enrolled physical device, Developer Mode, and a properly signed test runner. Compiling the runner does not prove an installed app's UI selectors. Native read state does not assert that a remote recipient received a read receipt. See [capability and verification details](docs/CAPABILITIES.md).
 

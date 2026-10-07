@@ -1,3 +1,4 @@
+import { registerProgressTools } from "./progress/mcp.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -16,6 +17,7 @@ import {
 export async function startMCP(url: string, token: string) {
   const client = new BridgeClient(url, token),
     server = new McpServer({ name: "messagepilot", version: "0.1.0" });
+  registerProgressTools(server, client);
   const output = (value: unknown) => ({
     content: [{ type: "text" as const, text: JSON.stringify(value) }],
   });

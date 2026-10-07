@@ -28,6 +28,12 @@ flowchart TD
 
 The Mac identity handles Apple messaging; the agent runtime can run elsewhere. An active extension supplies rich interactive UI. The optional primary app gives access to capabilities that cannot live entirely inside an extension. The backend library can be local or developer-hosted. None of these surfaces silently inherit each other's identity or permissions.
 
+## Code organization
+
+The codebase is separated by responsibility: `src/` contains the gateway, persistence, worker and feature services; `native/` holds macOS adapters; `apple/` contains the app, Messages extension, widgets and virtual Mac; `tests/`, `scripts/` and `docs/` hold verification, tooling and contracts. Feature state remains bound to accounts and chats.
+
+`src/progress/` groups its schema, persistent dispatcher, HTTP routes and MCP registration. Gateway command validation is shared by direct requests and progress dispatch. This is a coherent structure, but `gateway.ts` and `mcp.ts` still aggregate many older feature routes/tools and are the main refactoring targets as the project grows. Prefer extracting a feature module when changing it instead of expanding those files indefinitely. Do not confuse the directory layout with production or device acceptance.
+
 ## Start and operate
 
 1. Follow the repository [README](../README.md) for build/configuration and agent/worker credentials.
@@ -40,6 +46,7 @@ The Mac identity handles Apple messaging; the agent runtime can run elsewhere. A
 
 | Area                            | Guide                                                                                                                                                                   | Current scope                                                                                                                                                             |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Background tasks                | [Progress messages](PROGRESS.md), [Developer behaviors](DEVELOPER_BEHAVIORS.md)                                                                                         | Persistent scoped progress, bounded native edits, final attachments and a polling extension view; fixture-tested and simulator-compiled.                                  |
 | Native rich messaging           | [Rich messaging verification](RICH_MESSAGING_VERIFICATION.md), [Expanded acceptance](EXPANDED_ACCEPTANCE.md), [Physical phone acceptance](PHYSICAL_PHONE_ACCEPTANCE.md) | Detailed existing test results and remaining native limitations.                                                                                                          |
 | iMessage apps                   | [App catalog/workflows](IMESSAGE_APPS.md), [Messages framework](MESSAGES_FRAMEWORK.md)                                                                                  | Public content families, live/template layouts, stickers, staging/direct sends, sessions and bounded backend-free state codec. Not arbitrary access to all built-in apps. |
 | Apple development               | [Apple development](APPLE_DEVELOPMENT.md), [Primary app port](PRIMARY_APP_PORT.md), [App Intents](APP_INTENTS.md)                                                       | Build tools, optional host, widgets/Live Activities, authentication, capture and typed automation actions.                                                                |

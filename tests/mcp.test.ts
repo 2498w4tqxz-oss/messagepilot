@@ -72,6 +72,9 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
       "bridge_analytics",
       "bridge_analytics_observe",
       "bridge_container_plan",
+      "bridge_progress_start",
+      "bridge_progress_update",
+      "bridge_progress_get",
       "bridge_extension_request",
       "bridge_extension_observe",
       "bridge_extension_status",
@@ -88,6 +91,43 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
         list.tools.find((t) => t.name === name),
         `${name} must be discoverable`,
       );
+    const progressResult = await client.callTool({
+      name: "bridge_progress_start",
+      arguments: {
+        accountId: "mcp",
+        input: {
+          chatId: "fixture-only",
+          title: "Task",
+          detail: "Starting",
+          mode: "live_card",
+          idempotencyKey: "progress-mcp",
+        },
+      },
+    });
+    assert.equal(progressResult.isError, undefined);
+    const progress = JSON.parse((progressResult.content as any[])[0].text);
+    const progressUpdate = await client.callTool({
+      name: "bridge_progress_update",
+      arguments: {
+        accountId: "mcp",
+        jobId: progress.id,
+        input: {
+          expectedRevision: 1,
+          idempotencyKey: "progress-done",
+          state: "completed",
+          detail: "Done",
+        },
+      },
+    });
+    assert.equal(progressUpdate.isError, undefined);
+    const progressRead = await client.callTool({
+      name: "bridge_progress_get",
+      arguments: { accountId: "mcp", jobId: progress.id },
+    });
+    assert.equal(
+      JSON.parse((progressRead.content as any[])[0].text).state,
+      "completed",
+    );
     const send = list.tools.find((t) => t.name === "messages_send")!;
     assert.ok((send.inputSchema.properties as any).args.properties.chatId);
     const result = await client.callTool({

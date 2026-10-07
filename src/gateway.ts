@@ -1,6 +1,10 @@
 import http, { type IncomingMessage, type ServerResponse } from "node:http";
 import { randomUUID } from "node:crypto";
 import { WebSocketServer, WebSocket } from "ws";
+import { ProgressService } from "./progress/service.js";
+import { progressRoute } from "./progress/http.js";
+import type { Principal } from "./auth.js";
+import type { CommandInput } from "./protocol.js";
 import { Auth } from "./auth.js";
 import { Store } from "./store.js";
 import {
@@ -76,6 +80,7 @@ export class Gateway {
   readonly library: LibraryProvider;
   readonly workspace: GoogleWorkspace;
   readonly analytics: Analytics;
+  readonly progress: ProgressService;
   private sessions = new Map<string, Session>();
   private streams = new Map<
     string,
@@ -99,6 +104,43 @@ export class Gateway {
     this.files = config.files
       ? new Files(this.store.db, config.files)
       : undefined;
+    this.progress = new ProgressService(
+      this.store,
+      config,
+      (account, owner, input) => {
+        const actor = config.agents.find((a) => a.id === owner);
+        if (!actor)
+          throw new PilotError("forbidden", "Progress owner removed", 403);
+        const command = this.submitCommand(account, actor, input);
+        queueMicrotask(() => {
+          if (!this.closing) this.dispatch(account);
+        });
+        return command.id;
+      },
+      (account, chat, ids, actor) => {
+        for (const id of ids) {
+          if (!this.files)
+            throw new PilotError("disabled", "File storage is not configured");
+          if (actor.operations && !actor.operations.includes("files.read"))
+            throw new PilotError(
+              "forbidden",
+              "File outputs require files.read",
+              403,
+            );
+          const file = this.files.get(
+            account,
+            id,
+            chatScope(config, actor, account),
+          );
+          if (file.chat !== chat)
+            throw new PilotError(
+              "chat_forbidden",
+              "Output belongs to another chat",
+              403,
+            );
+        }
+      },
+    );
     this.extensionHooks = new ExtensionHooks(this.store.db, config, env);
     this.passkeys = config.passkeys
       ? new Passkeys(this.store.db, config.passkeys)
@@ -332,6 +374,38 @@ export class Gateway {
       }
     });
   }
+  private submitCommand(
+    account: string,
+    actor: Principal,
+    input: CommandInput,
+  ) {
+    if (
+      actor.cardOnly ||
+      !actor.accounts.includes(account) ||
+      (actor.operations && !actor.operations.includes(input.operation))
+    )
+      throw new PilotError("forbidden", "Command operation not granted", 403);
+    validateArgs(input.operation, input.args);
+    const args = toolSchemas[input.operation].safeParse(input.args);
+    if (!args.success)
+      throw new PilotError("invalid_arguments", args.error.message);
+    this.store.assertControl(
+      account,
+      actor.id,
+      input.operation === "computer.input",
+    );
+    const parsed = { ...input, args: args.data };
+    assertChatScope(chatScope(this.config, actor, account), parsed);
+    const command = this.store.enqueue(account, parsed);
+    this.analytics.command(
+      account,
+      typeof command.args.chatId === "string" ? command.args.chatId : undefined,
+      command.id,
+      "accepted",
+      command.operation,
+    );
+    return command;
+  }
   private dispatch(account: string) {
     if (this.closing) return;
     this.dispatchRole(account, "computer", "messages");
@@ -350,6 +424,7 @@ export class Gateway {
     const command = this.store.next(account, role === "device", lane);
     if (!command) return;
     try {
+      this.progress.assertDispatch(command);
       assertChatScope(
         this.config.accounts.find((a) => a.id === account)?.allowedChatIds,
         command,
@@ -530,6 +605,7 @@ export class Gateway {
         "library",
         "workspace",
         "analytics",
+        "progress",
       ].includes(resource ?? "")
     )
       throw new PilotError(
@@ -537,6 +613,20 @@ export class Gateway {
         "This endpoint is not available to a chat-restricted credential",
         403,
       );
+    if (resource === "progress") {
+      await progressRoute({
+        req,
+        res,
+        url,
+        account,
+        agent,
+        segments,
+        service: this.progress,
+        body,
+        reply,
+      });
+      return;
+    }
     if (resource === "analytics") {
       if (
         id === "observations" &&
@@ -906,34 +996,7 @@ export class Gateway {
       const parsed = commandSchema.safeParse(await body(req));
       if (!parsed.success)
         throw new PilotError("invalid_command", parsed.error.message);
-      this.auth.agent(
-        req.headers.authorization,
-        account,
-        parsed.data.operation,
-      );
-      validateArgs(parsed.data.operation, parsed.data.args);
-      const args = toolSchemas[parsed.data.operation].safeParse(
-        parsed.data.args,
-      );
-      if (!args.success)
-        throw new PilotError("invalid_arguments", args.error.message);
-      this.store.assertControl(
-        account,
-        agent.id,
-        parsed.data.operation === "computer.input",
-      );
-      parsed.data.args = args.data;
-      assertChatScope(scope, parsed.data);
-      const command = this.store.enqueue(account, parsed.data);
-      this.analytics.command(
-        account,
-        typeof command.args.chatId === "string"
-          ? command.args.chatId
-          : undefined,
-        command.id,
-        "accepted",
-        command.operation,
-      );
+      const command = this.submitCommand(account, agent, parsed.data);
       reply(res, 202, command);
       this.dispatch(account);
       return;
@@ -1076,6 +1139,7 @@ export class Gateway {
     if (this.closing) return;
     this.closing = true;
     clearInterval(this.heartbeat);
+    this.progress.close();
     await this.extensionHooks.close();
     await this.files?.close();
     for (const s of this.sessions.values()) {
