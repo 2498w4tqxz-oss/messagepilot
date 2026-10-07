@@ -8,7 +8,7 @@ cd /path/in/agent/workspace/MyApp
 xcodegen generate
 ```
 
-The generator copies the host app, companion bridge, Messages extension and shared code, assigns independent bundle IDs/app groups/Keychain service names, and refuses existing destinations. Select your developer team in Xcode before installing on a physical device. The bridge operation `apps.create` runs the same generator in the account worker's configured toolkit.
+The generator defaults to a minimal containing app, Messages extension and shared card client. Opt into the [primary app port](PRIMARY_APP_PORT.md) with `--primary-port` or the `apps.create` argument `primaryPort: true` to add the companion bridge, widgets, Live Activities and App Intents. Both modes assign independent bundle IDs/app groups/Keychain service names and refuse existing destinations. Select your developer team in Xcode before installing on a physical device. The bridge operation `apps.create` runs the same generator in the account worker's configured toolkit.
 
 ## Interact with installed iMessage apps
 

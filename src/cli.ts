@@ -8,6 +8,7 @@ import { FixtureTransport, NativeProcess } from "./native.js";
 import { configSchema } from "./protocol.js";
 import { startMCP } from "./mcp.js";
 import { createApp } from "./scaffold.js";
+import { ToolkitTransport } from "./toolkit.js";
 const [command, file, ...rest] = process.argv.slice(2);
 const secret = (key: string) => {
   const v = process.env[key];
@@ -42,6 +43,7 @@ async function main() {
         nativeBinary: z.string().optional(),
         nativeConfig: z.string().optional(),
         expectedOSUser: z.string().optional(),
+        enableToolkit: z.boolean().default(false),
       })
       .parse(JSON.parse(readFileSync(file, "utf8")));
     const url = new URL(config.url);
@@ -66,11 +68,14 @@ async function main() {
     const native =
       config.mode === "fixture"
         ? new FixtureTransport(config.identity)
-        : new NativeProcess(resolve(config.nativeBinary!), [
-            "--live",
-            "--config",
-            resolve(config.nativeConfig!),
-          ]);
+        : new ToolkitTransport(
+            new NativeProcess(resolve(config.nativeBinary!), [
+              "--live",
+              "--config",
+              resolve(config.nativeConfig!),
+            ]),
+            config.enableToolkit,
+          );
     const w = new Worker(
       {
         ...config,
@@ -97,10 +102,15 @@ async function main() {
   } else if (command === "app-create") {
     if (!file || !rest[0])
       throw new Error("Usage: app-create <output-directory> <bundle-id>");
-    await createApp(resolve(file), rest[0]);
+    await createApp(resolve(file), rest[0], {
+      primaryPort: rest.includes("--primary-port"),
+      passkeyDomain: rest.includes("--passkey-domain")
+        ? rest[rest.indexOf("--passkey-domain") + 1]
+        : undefined,
+    });
   } else {
     process.stderr.write(
-      "MessagePilot bridge\n  gateway <config.json>\n  worker <config.json> [--live]\n  mcp\n  app-create <output-directory> <bundle-id>\n",
+      "MessagePilot bridge\n  gateway <config.json>\n  worker <config.json> [--live]\n  mcp\n  app-create <output-directory> <bundle-id> [--primary-port]\n",
     );
   }
 }

@@ -105,6 +105,99 @@ test("tokens are unique, long, and bound to account + role", () => {
     () => new Auth(config(), { ...tokens, WORKER_B: tokens.WORKER_A }),
   );
   assert.throws(() => auth.worker(`Bearer ${tokens.AGENT_A}`));
+  const duplicate = config();
+  duplicate.agents[1]!.id = duplicate.agents[0]!.id;
+  assert.throws(() => new Auth(duplicate, tokens), /Agent IDs/);
+});
+test("virtual computer control leases fence competing agents and reject stale renewals", async (t) => {
+  const { client, url } = await setup(t);
+  const other = new BridgeClient(url, tokens.AGENT_A);
+  await assert.rejects(
+    client.command("a", "computer.input", {
+      bundleId: "fixture",
+      actions: [{ action: "activate" }],
+    }),
+    /control_required/,
+  );
+  const lease = await client.request("a", "control", "POST", {
+    ttlSeconds: 120,
+  });
+  await assert.rejects(
+    other.command("a", "messages.send", { chatId: "fixture", text: "blocked" }),
+    /control_required/,
+  );
+  await assert.rejects(
+    other.request("a", "control", "POST", { ttlSeconds: 120 }),
+    /control_held/,
+  );
+  await assert.rejects(
+    client.request("a", "control", "POST", {
+      leaseId: "stale",
+      ttlSeconds: 120,
+    }),
+    /control_held/,
+  );
+  const input = await client.command("a", "computer.input", {
+    bundleId: "fixture",
+    actions: [{ action: "activate" }],
+  });
+  assert.equal((await client.wait("a", input.id)).state, "completed");
+  await client.request("a", "control", "POST", {
+    leaseId: lease.leaseId,
+    ttlSeconds: 150,
+  });
+  await client.request("a", "control", "DELETE", { leaseId: lease.leaseId });
+  assert.equal((await client.request("a", "control")).control, null);
+  const newLease = await other.request("a", "control", "POST", {
+    ttlSeconds: 120,
+  });
+  assert.notEqual(newLease.leaseId, lease.leaseId);
+});
+test("control cannot be acquired over queued work and expired leases cannot be released", () => {
+  const s = new Store(":memory:");
+  try {
+    const command = s.enqueue("a", {
+      operation: "messages.send",
+      args: { chatId: "c", text: "pending" },
+      idempotencyKey: "pending",
+    });
+    assert.throws(() => s.claimControl("a", "agent", 120), /outstanding/);
+    s.transition("a", command.id, "queued", "cancelled");
+    const lease = s.claimControl("a", "agent", 120);
+    s.db.prepare("UPDATE control SET expires=0").run();
+    assert.equal(s.control("a"), null);
+    assert.throws(
+      () => s.releaseControl("a", "agent", lease.leaseId),
+      /absent/,
+    );
+  } finally {
+    s.close();
+  }
+});
+test("background ActivityKit token events bind to device credentials and deduplicate without a socket", async (t) => {
+  const { url, client } = await setup(t);
+  const send = (token: string, kind = "device.activity.token") =>
+    fetch(`${url}/v1/device-events`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sourceId: "fixture-token-event",
+        accountId: "b",
+        kind,
+        data: { token: "fixture-not-a-real-token" },
+      }),
+    });
+  assert.equal((await send(tokens.AGENT_ALL)).status, 401);
+  assert.equal((await send(tokens.WORKER_A)).status, 403);
+  assert.equal((await send(tokens.DEVICE_A, "messages.changed")).status, 400);
+  const first = await (await send(tokens.DEVICE_A)).json();
+  const duplicate = await (await send(tokens.DEVICE_A)).json();
+  assert.equal(first.accountId, "a");
+  assert.equal(first.sequence, duplicate.sequence);
+  assert.equal((await client.request("b", "events")).length, 0);
 });
 test("idempotency is content-sensitive, canonical, and account-scoped", () => {
   const s = new Store(":memory:");

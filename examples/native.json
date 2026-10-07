@@ -3,7 +3,13 @@
   "expectedIdentity": "agent-one@example.com",
   "expectedOSUser": "agentone",
   "workspace": "/Users/agentone/MessagePilot/workspace",
-  "allowedBundles": ["com.apple.MobileSMS", "com.apple.findmy"],
+  "allowedBundles": [
+    "com.apple.MobileSMS",
+    "com.apple.findmy",
+    "com.apple.dt.Xcode",
+    "com.apple.Safari",
+    "com.apple.finder"
+  ],
   "enableComputer": true,
   "enableExperimentalEffects": false,
   "toolkitPath": "/Users/agentone/MessagePilot",

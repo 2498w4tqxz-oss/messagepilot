@@ -14,7 +14,10 @@ const token = "b".repeat(40),
   samples: number[] = [];
 class TimedFixture extends FixtureTransport {
   override async execute(op: Operation, args: Record<string, unknown>) {
-    samples.push(performance.now() - starts.get(args.sample as string)!);
+    const start = starts.get(args.text as string);
+    if (start === undefined)
+      throw new Error("Benchmark sample correlation failed");
+    samples.push(performance.now() - start);
     return super.execute(op, args);
   }
 }
@@ -55,7 +58,7 @@ try {
     const command = await client.command(
       "bench",
       "messages.send",
-      { chatId: "fixture-only", text: "benchmark", sample },
+      { chatId: "fixture-only", text: sample },
       sample,
     );
     while (

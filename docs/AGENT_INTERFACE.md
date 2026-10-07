@@ -1,6 +1,6 @@
 # Agent bridge contract
 
-MessagePilot carries actions and events. Keep reasoning, conversation policy, tools for unrelated services, and task planning in your agent.
+MessagePilot carries actions and events. Keep reasoning, conversation policy and task planning in your agent. Connected MCP servers expose external tools through the account worker without moving the agent runtime into the bridge.
 
 1. Query `bridge_capabilities(accountId)` once after connection and after a worker reconnect.
 2. Read chats; retain exact chat/message IDs scoped to the account. Never route by a display name or a global active-account variable.
@@ -59,11 +59,13 @@ Transport results are not delivery claims. A compiler can complete with a nonzer
 
 Those labels are examples, not live observations. Use the worker's `apps_snapshot` and exact selectors before enabling effects.
 
-`apps_interact` accepts `press`, `showMenu`, `setValue`, `focus`, and `waitFor`. Each action needs an ID from the most recent snapshot or an exact Accessibility attribute selector. Ambiguous matches fail. `apps_ios_run` supports `tap`, `doubleTap`, `longPress`, `type`, swipes, `waitFor`, snapshots, and screenshots on an explicitly enrolled device.
+`apps_interact` accepts `press`, `showMenu`, `setValue`, `focus`, and `waitFor`. Each action needs an ID from the most recent snapshot or an exact Accessibility attribute selector. Ambiguous matches fail. `apps_ios_run` supports taps, long presses, text, swipes, waits, picker/slider adjustments, gestures, observed coordinate taps/drags, snapshots, and screenshots on an explicitly enrolled device. Named `imessage_recipe` / `imessage_run` workflows cover Send Later, native Polls and GIPHY; see [app workflows](IMESSAGE_APPS.md).
 
 ## Cards
 
-Card data lives at `PUT /v1/accounts/{account}/cards/{id}` with `{expectedRevision, body}`. Body shape: `{title, summary?, items: [{id,title,subtitle?,imageURL?,linkURL?}], actions?: string[]}`. Image and link URLs should be HTTPS. `GET` retrieves current state. `POST /cards/{id}/actions` requires the exact current revision and a declared action. The event includes the authenticated agent credential identity, not an unverified iMessage participant UUID. Your agent decides how to interpret that action; it is not blanket authorization for unrelated work.
+Card data lives at `PUT /v1/accounts/{account}/cards/{id}` with `{expectedRevision, body}`. Body shape: `{title, summary?, items: [{id,title,subtitle?,imageURL?,linkURL?,action?}], actions?: string[]}`. An item's Select button names an action also declared in the top-level `actions` array. Image and link URLs should be HTTPS. `GET` retrieves current state. `POST /cards/{id}/actions` requires the exact current revision and a declared action. The event includes the authenticated agent credential identity, not an unverified iMessage participant UUID. Your agent decides how to interpret that action; it is not blanket authorization for unrelated work.
+
+`bridge_registry_card` publishes selectable Official MCP Registry results. [MCP connections and virtual computer control](MCP_AND_COMPUTER.md) describes Registry discovery, tool/resource/prompt calls, and exclusive computer leases. [Optional primary app port](PRIMARY_APP_PORT.md) describes generated WidgetKit/ActivityKit/App Intents targets and the device/APNs operations.
 
 For a recipient to fetch private live card state, their installed app must be paired with credentials authorized for that account. The static native alternate layout works without those credentials. Automatic public sharing and cross-recipient authorization are not inferred.
 

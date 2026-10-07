@@ -29,6 +29,20 @@ struct BridgeIssue: Error, LocalizedError {
   var errorDescription: String? { message }
 }
 enum Secrets {
+  static func remove(_ key: String) {
+    SecItemDelete(
+      [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrService as String: "dev.messagepilot", kSecAttrAccount as String: key,
+      ] as CFDictionary)
+  }
+  static func cardToken() -> String? {
+    let expiry = BridgeSettings.defaults.double(forKey: "card-session-expiry")
+    if expiry > Date().timeIntervalSince1970 * 1000, let token = get("card-session") {
+      return token
+    }
+    return get("agent-token")
+  }
   static func put(_ key: String, _ value: String) throws {
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword, kSecAttrService as String: "dev.messagepilot",
@@ -60,6 +74,7 @@ struct CardItem: Codable, Identifiable {
   var subtitle: String?
   var imageURL: String?
   var linkURL: String?
+  var action: String?
 }
 struct CardBody: Codable {
   var title: String
@@ -75,7 +90,7 @@ struct CardRecord: Codable {
 struct CardClient {
   let settings: BridgeSettings
   func load(_ id: String) async throws -> CardRecord {
-    guard let token = Secrets.get("agent-token") else {
+    guard let token = Secrets.cardToken() else {
       throw BridgeIssue("Pair the MessagePilot host app first")
     }
     let component = id.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
@@ -88,7 +103,7 @@ struct CardClient {
     return try JSONDecoder().decode(CardRecord.self, from: data)
   }
   func action(card: String, revision: Int, name: String) async throws {
-    guard let token = Secrets.get("agent-token") else { throw BridgeIssue("Pair first") }
+    guard let token = Secrets.cardToken() else { throw BridgeIssue("Pair or sign in first") }
     var request = URLRequest(
       url: try settings.endpoint(
         "cards/\(card.addingPercentEncoding(withAllowedCharacters:.alphanumerics) ?? "")/actions"))

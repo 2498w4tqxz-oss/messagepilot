@@ -29,6 +29,7 @@ export class Store {
       CREATE INDEX IF NOT EXISTS commands_queue ON commands(account,state,created);
       CREATE TABLE IF NOT EXISTS events(sequence INTEGER PRIMARY KEY AUTOINCREMENT,account TEXT NOT NULL,source TEXT NOT NULL,kind TEXT NOT NULL,data TEXT NOT NULL,created INTEGER NOT NULL,UNIQUE(account,source));
       CREATE INDEX IF NOT EXISTS events_account ON events(account,sequence);
+      CREATE TABLE IF NOT EXISTS control(account TEXT PRIMARY KEY,owner TEXT NOT NULL,lease TEXT NOT NULL,expires INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS cards(account TEXT NOT NULL,id TEXT NOT NULL,revision INTEGER NOT NULL,body TEXT NOT NULL,PRIMARY KEY(account,id));`);
     // A process crash cannot establish whether a submitted Apple action happened.
     this.db
@@ -71,6 +72,78 @@ export class Store {
       );
     return this.get(account, id)!;
   }
+  control(account: string) {
+    const row = this.db
+      .prepare(
+        "SELECT owner,lease,expires FROM control WHERE account=? AND expires>?",
+      )
+      .get(account, Date.now());
+    return row
+      ? {
+          owner: String(row.owner),
+          leaseId: String(row.lease),
+          expiresAt: Number(row.expires),
+        }
+      : null;
+  }
+  private busy(account: string) {
+    return !!this.db
+      .prepare(
+        "SELECT id FROM commands WHERE account=? AND state IN ('queued','executing') LIMIT 1",
+      )
+      .get(account);
+  }
+  claimControl(account: string, owner: string, ttl: number, leaseId?: string) {
+    const old = this.control(account);
+    if (old && (old.owner !== owner || old.leaseId !== leaseId))
+      throw new PilotError(
+        "control_held",
+        "Computer control is held by another lease",
+        409,
+      );
+    if (!old && this.busy(account))
+      throw new PilotError(
+        "computer_busy",
+        "Drain or cancel outstanding commands before claiming control",
+        409,
+      );
+    const value = {
+      owner,
+      leaseId: old?.leaseId ?? randomUUID(),
+      expiresAt: Date.now() + ttl * 1000,
+    };
+    this.db
+      .prepare(
+        "INSERT INTO control VALUES(?,?,?,?) ON CONFLICT(account) DO UPDATE SET owner=excluded.owner,lease=excluded.lease,expires=excluded.expires",
+      )
+      .run(account, owner, value.leaseId, value.expiresAt);
+    return value;
+  }
+  assertControl(account: string, owner: string, required = false) {
+    const lease = this.control(account);
+    if ((lease && lease.owner !== owner) || (required && !lease))
+      throw new PilotError(
+        "control_required",
+        "Claim this account's virtual computer before sending input; another agent cannot use it during the lease",
+        409,
+      );
+  }
+  releaseControl(account: string, owner: string, leaseId: string) {
+    const old = this.control(account);
+    if (!old || old.owner !== owner || old.leaseId !== leaseId)
+      throw new PilotError(
+        "stale_lease",
+        "Control lease is absent or does not match",
+        409,
+      );
+    if (this.busy(account))
+      throw new PilotError(
+        "computer_busy",
+        "Wait for outstanding commands before releasing control",
+        409,
+      );
+    this.db.prepare("DELETE FROM control WHERE account=?").run(account);
+  }
   private decode(row: Record<string, unknown>): Command {
     return {
       ...JSON.parse(row.body as string),
@@ -93,12 +166,18 @@ export class Store {
   next(
     account: string,
     device = false,
-    lane: "messages" | "development" = "messages",
+    lane: "messages" | "development" | "integrations" = "messages",
   ) {
     const op = "json_extract(body,'$.operation')";
+    const dev =
+      "('apps.build','apps.create','apps.ios.run','imessage.run','apple.tools.run','apple.activity.push')";
+    const deviceFilter = `(${op} LIKE 'device.%' OR ${op}='location.get')`;
     const filter = device
-      ? `${op} IN ('device.capture','location.get')`
-      : `${op} NOT IN ('device.capture','location.get') AND ${op} ${lane === "development" ? "IN" : "NOT IN"} ('apps.build','apps.create','apps.ios.run')`;
+      ? deviceFilter
+      : `NOT ${deviceFilter} AND ` +
+        (lane === "integrations"
+          ? `(${op} LIKE 'mcp.%' AND ${op}!='mcp.tools.call')`
+          : `(${op} NOT LIKE 'mcp.%' OR ${op}='mcp.tools.call') AND ${op} ${lane === "development" ? "IN" : "NOT IN"} ${dev}`);
     const row = this.db
       .prepare(
         `SELECT * FROM commands WHERE account=? AND state='queued' AND ${filter} ORDER BY created,rowid LIMIT 1`,

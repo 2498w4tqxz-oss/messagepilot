@@ -67,6 +67,30 @@ struct SetupView: View {
             "Open MessagePilot in the Messages app to load and send agent-authored carousels, previews, and interactive cards."
           )
         }
+        Section("Optional authentication") {
+          Button("Register passkey") { Task { await authenticate(register: true) } }
+          Button("Sign in with passkey") { Task { await authenticate(register: false) } }
+          Button("Sign out") {
+            Task {
+              do {
+                try await AuthenticationPort.shared.signOut()
+                error = "Signed out"
+              } catch { self.error = error.localizedDescription }
+            }
+          }
+          Button("Verify with biometrics") {
+            Task {
+              do {
+                _ = try await AuthenticationPort.shared.biometric(
+                  reason: "Authorize this MessagePilot app action")
+                error = "Local authentication succeeded"
+              } catch { self.error = error.localizedDescription }
+            }
+          }
+          Text(
+            "Passkeys require the configured relying-party domain and associated-domain entitlement. System authentication requires a person."
+          ).font(.caption)
+        }
         if !error.isEmpty { Text(error).foregroundStyle(.red) }
       }.navigationTitle("MessagePilot").sheet(isPresented: $capturing) {
         if device.captureKind == "room" && RoomCaptureSession.isSupported {
@@ -90,6 +114,14 @@ struct SetupView: View {
         }
       }
     }
+  }
+}
+extension SetupView {
+  private func authenticate(register: Bool) async {
+    do {
+      try await AuthenticationPort.shared.signIn(register: register)
+      error = register ? "Passkey registered" : "Signed in for private cards"
+    } catch { self.error = error.localizedDescription }
   }
 }
 struct RoomScanner: UIViewRepresentable {

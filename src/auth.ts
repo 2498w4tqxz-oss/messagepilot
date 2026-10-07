@@ -6,10 +6,17 @@ const equal = (a: string, b: string) =>
     createHash("sha256").update(a).digest(),
     createHash("sha256").update(b).digest(),
   );
+export type Principal = {
+  id: string;
+  accounts: string[];
+  operations?: Operation[];
+  cardOnly?: boolean;
+};
 export class Auth {
   constructor(
     private config: Config,
     private env: NodeJS.ProcessEnv = process.env,
+    private session?: (token: string) => Principal | undefined,
   ) {
     const tokens = [
       ...config.accounts.flatMap((a) => [
@@ -24,6 +31,8 @@ export class Auth {
       );
     if (new Set(tokens).size !== tokens.length)
       throw new Error("Tokens must be unique per worker and agent");
+    if (new Set(config.agents.map((a) => a.id)).size !== config.agents.length)
+      throw new Error("Agent IDs must be unique for control ownership");
     if (
       new Set(config.accounts.map((a) => a.id)).size !== config.accounts.length
     )
@@ -41,9 +50,9 @@ export class Auth {
   }
   agent(header: string | undefined, account: string, operation?: Operation) {
     const token = this.token(header),
-      agent = this.config.agents.find((a) =>
-        equal(this.env[a.tokenEnv]!, token),
-      );
+      agent: Principal | undefined =
+        this.config.agents.find((a) => equal(this.env[a.tokenEnv]!, token)) ??
+        this.session?.(token);
     if (!agent)
       throw new PilotError("unauthorized", "Invalid agent token", 401);
     if (

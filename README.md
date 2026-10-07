@@ -15,6 +15,8 @@ MessagePilot connects an external agent to its own Apple Account, Messages sessi
 | Xcode UI harness      | Operate Messages and installed iMessage apps on an enrolled agent-only device  |
 | Virtual Mac app       | Create, install, open, and run separate Apple-silicon macOS virtual machines   |
 
+The bridge also includes an Official MCP Registry client, resident MCP connections inside each account worker, exclusive virtual-computer control, and Apple developer-tool adapters. Generated iMessage apps can opt into a primary app port for widgets, Live Activities/Dynamic Island, App Intents, and device capabilities; it is disabled by default in the generator.
+
 The native Messages adapter uses the MIT-licensed `beeper/platform-imessage` library pinned to a specific commit. MessagePilot owns the bridge, account routing, protocol, persistence, development tools, app extension, device bridge, and virtual computer. This is a new build, not a fork of the user's prior application. See [third-party notices](THIRD_PARTY.md).
 
 ## Verification boundary
@@ -94,6 +96,13 @@ Use `GET /v1/accounts/{account}/commands/{id}` for the receipt. Use `GET /v1/acc
 - Create an app: `apps.create` produces an independent host app + Messages extension with distinct bundle IDs and app groups. Edit its source using the account's computer tools, then `apps.build`.
 - Other iMessage apps: observe their actual UI, build a bounded action recipe, and run `apps.ios.run` against a dedicated device. The bridge does not guess private payload formats or claim that sending arbitrary JSON launches another extension. [Device harness guide](docs/APPLE_DEVELOPMENT.md).
 - Find My: inspect/operate the allowed Find My app using `apps.snapshot` / `apps.interact` or the device harness. This is user-visible UI automation, not a universal Find My location-query API. Core Location in the phone companion reports only that phone's own location.
+- Official MCP Registry: search/inspect server metadata, connect pinned remote servers or explicit local executables, and use tools/resources/prompts through the dedicated worker. `bridge_registry_card` displays selectable Registry results in iMessage. [Registry and control guide](docs/MCP_AND_COMPUTER.md).
+- Virtual-computer takeover: claim an exclusive agent lease, inspect apps/screens, send keyboard/pointer input, and release it. The worker operates inside the guest, with account-scoped credentials and foreground-target checks.
+- Native Send Later, Polls and GIPHY: named UI recipe compilers plus a generic installed-app harness. Photos, Camera, Audio, Stickers, Digital Touch, Check In, Location, Image Playground and other extensions use observed UI recipes. Availability and selectors require dedicated-device calibration. [iMessage app coverage](docs/IMESSAGE_APPS.md).
+- Apple developer tools: typed adapters for Xcode builds, Swift, Simulator, devicectl, result extraction, Instruments, Metal, asset tools and signing, plus framework references for creating richer apps.
+- Optional primary app port: pass `primaryPort: true` to `apps.create`, or `--primary-port` to the generator. Includes shared state, WidgetKit, ActivityKit/Dynamic Island, App Intents and an APNs Live Activity route. [Primary app port guide](docs/PRIMARY_APP_PORT.md).
+- Optional authentication: native passkey and biometric prompts, an opt-in WebAuthn verifier with single-use challenges and short-lived private-card sessions, and generated Associated Domains configuration. [Authentication guide](docs/AUTHENTICATION.md).
+- Native conversation backgrounds: select dynamic/photo backgrounds, use a photo message as a background, or remove the background through calibrated Messages UI recipes. These can affect other conversation participants; inspect the native result.
 
 ## Speed and execution
 

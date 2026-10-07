@@ -146,6 +146,9 @@ struct CardsView: View {
               }
               Text(item.title).font(.headline)
               if let subtitle = item.subtitle { Text(subtitle).font(.subheadline) }
+              if let action = item.action {
+                Button("Select") { Task { await select(card: card, action: action) } }
+              }
               if let address = item.linkURL, let url = URL(string: address), url.scheme == "https" {
                 Link("Open", destination: url)
               }
@@ -153,7 +156,11 @@ struct CardsView: View {
           }
         }.tabViewStyle(.page).frame(height: 220)
         HStack {
-          ForEach(card.body.actions ?? [], id: \.self) { name in
+          ForEach(
+            (card.body.actions ?? []).filter { name in
+              !card.body.items.contains(where: { $0.action == name })
+            }, id: \.self
+          ) { name in
             Button(name) {
               Task {
                 do {
@@ -183,6 +190,12 @@ struct CardsView: View {
       }
       card = try await CardClient(settings: settings).load(id)
       error = ""
+    } catch { self.error = error.localizedDescription }
+  }
+  private func select(card: CardRecord, action: String) async {
+    do {
+      try await CardClient(settings: BridgeSettings.load()).action(
+        card: card.id, revision: card.revision, name: action)
     } catch { self.error = error.localizedDescription }
   }
 }

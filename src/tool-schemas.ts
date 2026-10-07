@@ -1,5 +1,7 @@
 import { z } from "zod";
 import type { Operation } from "./protocol.js";
+import { connectionSchema } from "./mcp-host.js";
+import { workflowSchema, iosActionSchema } from "./imessage-apps.js";
 const chat = {
   chatId: z
     .string()
@@ -28,6 +30,129 @@ export const toolSchemas: Record<
   Operation,
   z.ZodType<Record<string, unknown>>
 > = {
+  "device.auth.biometric": z.object({
+    reason: z.string().min(1).max(300),
+    allowPasscode: z.boolean().default(false),
+  }),
+  "device.auth.passkey": z
+    .object({
+      registration: z.boolean().default(false),
+      options: z.record(z.unknown()),
+    })
+    .describe(
+      "Present Apple passkey UI in the active primary app. Return the signed WebAuthn response for relying-party verification; client output alone is not a login.",
+    ),
+  "device.surface.publish": z.object({
+    id: z.string().default("default"),
+    title: z.string().max(200),
+    detail: z.string().max(1000).default(""),
+    progress: z.number().min(0).max(1).default(0),
+    cardId: z.string().optional(),
+  }),
+  "device.activity.list": z.object({}),
+  "device.activity.start": z.object({ id: z.string().default("default") }),
+  "device.activity.update": z.object({ id: z.string().default("default") }),
+  "device.activity.end": z.object({ id: z.string().default("default") }),
+  "apple.activity.push": z.object({
+    requestUpdateToken: z
+      .boolean()
+      .default(false)
+      .describe(
+        "For push-to-start on iOS 18+, request a fresh update token with input-push-token: 1.",
+      ),
+    pushToken: z.string().regex(/^[a-fA-F0-9]{32,512}$/),
+    event: z.enum(["start", "update", "end"]),
+    contentState: z.record(z.unknown()),
+    attributesType: z.string().optional(),
+    attributes: z.record(z.unknown()).optional(),
+    alert: z.object({ title: z.string(), body: z.string() }).optional(),
+    staleDate: z.number().int().optional(),
+    dismissalDate: z.number().int().optional(),
+  }),
+  "mcp.registry.search": z.object({
+    search: z.string().default(""),
+    cursor: z.string().optional(),
+    limit: z.number().int().min(1).max(100).default(20),
+  }),
+  "mcp.registry.get": z.object({
+    name: z.string().min(1),
+    version: z.string().default("latest"),
+  }),
+  "mcp.connections": z.object({}),
+  "mcp.connect": connectionSchema,
+  "mcp.disconnect": z.object({ id: z.string() }),
+  "mcp.tools.list": z.object({ id: z.string(), cursor: z.string().optional() }),
+  "mcp.tools.call": z.object({
+    id: z.string(),
+    name: z.string(),
+    arguments: z.record(z.unknown()).default({}),
+  }),
+  "mcp.resources.list": z.object({
+    id: z.string(),
+    cursor: z.string().optional(),
+  }),
+  "mcp.resources.read": z.object({ id: z.string(), uri: z.string() }),
+  "mcp.prompts.list": z.object({
+    id: z.string(),
+    cursor: z.string().optional(),
+  }),
+  "mcp.prompts.get": z.object({
+    id: z.string(),
+    name: z.string(),
+    arguments: z.record(z.string()).default({}),
+  }),
+  "imessage.catalog": z.object({}),
+  "imessage.recipe": workflowSchema,
+  "imessage.run": z.object({
+    workflow: workflowSchema,
+    xctestrun: z.string(),
+    enrollment: z.string(),
+    deviceId: z.string(),
+    resultPath: z.string(),
+    prepareOnly: z.boolean().optional(),
+  }),
+  "apple.tools.catalog": z.object({}),
+  "apple.tools.run": z.object({
+    tool: z.string(),
+    arguments: z.array(z.string()).default([]),
+    cwd: z.string().optional(),
+    timeoutSeconds: z.number().min(1).max(540).default(120),
+  }),
+  "computer.apps": z.object({}),
+  "computer.input": z.object({
+    bundleId: z.string().min(1),
+    actions: z
+      .array(
+        z
+          .object({
+            action: z.enum([
+              "activate",
+              "click",
+              "move",
+              "drag",
+              "scroll",
+              "key",
+              "text",
+            ]),
+            x: z.number().optional(),
+            y: z.number().optional(),
+            toX: z.number().optional(),
+            toY: z.number().optional(),
+            button: z.enum(["left", "right"]).optional(),
+            clicks: z.number().int().min(1).max(2).optional(),
+            deltaX: z.number().int().min(-10000).max(10000).optional(),
+            deltaY: z.number().int().min(-10000).max(10000).optional(),
+            keyCode: z.number().int().min(0).max(127).optional(),
+            modifiers: z
+              .array(z.enum(["command", "shift", "option", "control"]))
+              .optional(),
+            text: z.string().max(10000).optional(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(100),
+  }),
   "files.read": z.object({
     path: z.string(),
     offset: z.number().int().min(0).optional(),
@@ -130,6 +255,18 @@ export const toolSchemas: Record<
     team: z.string().optional(),
   }),
   "apps.create": z.object({
+    passkeyDomain: z
+      .string()
+      .optional()
+      .describe(
+        "Optional webcredentials domain; requires primaryPort and matching RP configuration/AASA.",
+      ),
+    primaryPort: z
+      .boolean()
+      .default(false)
+      .describe(
+        "Opt in to the primary app port, widgets, Live Activities, App Intents and device capabilities. Default creates a minimal containing app and Messages extension.",
+      ),
     directory: z.string(),
     bundleId: z
       .string()
@@ -143,7 +280,7 @@ export const toolSchemas: Record<
     recipe: z.object({
       bundleId: z.string(),
       launch: z.boolean().optional(),
-      actions: z.array(z.record(z.unknown())).min(1).max(100),
+      actions: z.array(iosActionSchema).min(1).max(100),
     }),
     prepareOnly: z.boolean().optional(),
   }),

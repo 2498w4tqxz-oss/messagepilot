@@ -3,8 +3,132 @@ import ApplicationServices
 import Foundation
 
 /// Explicit, account-local Accessibility operations. Selectors match exact observed attributes.
-/// No coordinate guesses, global keyboard scripting, injected dylibs, or SIP changes.
+/// Coordinates must come from the dedicated computer's current screenshot.
 @MainActor final class Desktop {
+  func applications() -> [[String: Any]] {
+    NSWorkspace.shared.runningApplications.compactMap { app in
+      guard let bundle = app.bundleIdentifier else { return nil }
+      return [
+        "bundleId": bundle, "name": app.localizedName ?? bundle, "pid": app.processIdentifier,
+        "active": app.isActive,
+      ]
+    }
+  }
+  func input(bundle: String, actions: [[String: Any]]) async throws -> [String: Any] {
+    _ = try root(bundle)
+    guard let app = NSRunningApplication.runningApplications(withBundleIdentifier: bundle).first,
+      !actions.isEmpty, actions.count <= 100
+    else { throw BridgeFailure("Running app and 1–100 actions required") }
+    func point(_ a: [String: Any], _ x: String = "x", _ y: String = "y") throws -> CGPoint {
+      guard let px = a[x] as? Double, let py = a[y] as? Double, px.isFinite, py.isFinite else {
+        throw BridgeFailure("Observed screen coordinates required")
+      }
+      let p = CGPoint(x: px, y: py)
+      var displays = [CGDirectDisplayID](repeating: 0, count: 16)
+      var count: UInt32 = 0
+      CGGetActiveDisplayList(16, &displays, &count)
+      guard displays.prefix(Int(count)).contains(where: { CGDisplayBounds($0).contains(p) }) else {
+        throw BridgeFailure("Point is outside the worker displays")
+      }
+      return p
+    }
+    func mouse(_ type: CGEventType, _ p: CGPoint, _ button: CGMouseButton, _ clicks: Int64 = 1)
+      throws
+    {
+      guard
+        let e = CGEvent(
+          mouseEventSource: nil, mouseType: type, mouseCursorPosition: p, mouseButton: button)
+      else { throw BridgeFailure("Cannot create pointer event") }
+      e.setIntegerValueField(.mouseEventClickState, value: clicks)
+      e.post(tap: .cghidEventTap)
+    }
+    for a in actions {
+      let kind = try required(a, "action")
+      if kind == "activate" {
+        guard app.activate(options: [.activateIgnoringOtherApps]) else {
+          throw BridgeFailure("Cannot activate target app")
+        }
+        try await Task.sleep(nanoseconds: 100_000_000)
+        continue
+      }
+      guard NSWorkspace.shared.frontmostApplication?.processIdentifier == app.processIdentifier
+      else { throw BridgeFailure("Target app lost focus; refusing global input") }
+      switch kind {
+      case "move": try mouse(.mouseMoved, point(a), .left)
+      case "click":
+        let p = try point(a)
+        let right = a["button"] as? String == "right"
+        for click in 1...min(max(a["clicks"] as? Int ?? 1, 1), 2) {
+          try mouse(
+            right ? .rightMouseDown : .leftMouseDown, p, right ? .right : .left, Int64(click))
+          try mouse(right ? .rightMouseUp : .leftMouseUp, p, right ? .right : .left, Int64(click))
+        }
+      case "drag":
+        let start = try point(a)
+        let end = try point(a, "toX", "toY")
+        try mouse(.leftMouseDown, start, .left)
+        defer { try? mouse(.leftMouseUp, end, .left) }
+        for step in 1...12 {
+          guard NSWorkspace.shared.frontmostApplication?.processIdentifier == app.processIdentifier
+          else { throw BridgeFailure("Target app lost focus") }
+          let t = Double(step) / 12
+          try mouse(
+            .leftMouseDragged,
+            CGPoint(x: start.x + (end.x - start.x) * t, y: start.y + (end.y - start.y) * t), .left)
+          try await Task.sleep(nanoseconds: 15_000_000)
+        }
+      case "scroll":
+        guard
+          let event = CGEvent(
+            scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2,
+            wheel1: Int32(a["deltaY"] as? Int ?? 0), wheel2: Int32(a["deltaX"] as? Int ?? 0),
+            wheel3: 0)
+        else { throw BridgeFailure("Cannot create scroll event") }
+        event.post(tap: .cghidEventTap)
+      case "key", "text":
+        guard kind != "key" || a["keyCode"] as? Int != nil else {
+          throw BridgeFailure("keyCode required")
+        }
+        let code = a["keyCode"] as? Int ?? 0
+        guard (0...127).contains(code),
+          let down = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(code), keyDown: true),
+          let up = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(code), keyDown: false)
+        else { throw BridgeFailure("Invalid key code") }
+        if kind == "text" {
+          let text = try required(a, "text")
+          guard text.utf16.count <= 10000 else { throw BridgeFailure("Text input is too long") }
+          for slice in stride(from: 0, to: Array(text.utf16).count, by: 20) {
+            let chunk = Array(Array(text.utf16).dropFirst(slice).prefix(20))
+            down.keyboardSetUnicodeString(stringLength: chunk.count, unicodeString: chunk)
+            up.keyboardSetUnicodeString(stringLength: chunk.count, unicodeString: chunk)
+            down.post(tap: .cghidEventTap)
+            up.post(tap: .cghidEventTap)
+          }
+        } else {
+          var flags: CGEventFlags = []
+          for modifier in a["modifiers"] as? [String] ?? [] {
+            switch modifier {
+            case "command": flags.insert(.maskCommand)
+            case "shift": flags.insert(.maskShift)
+            case "option": flags.insert(.maskAlternate)
+            case "control": flags.insert(.maskControl)
+            default: throw BridgeFailure("Unknown modifier")
+            }
+          }
+          down.flags = flags
+          up.flags = flags
+          down.post(tap: .cghidEventTap)
+          up.post(tap: .cghidEventTap)
+        }
+      default: throw BridgeFailure("Unsupported computer input")
+      }
+      try await Task.sleep(nanoseconds: 10_000_000)
+    }
+    return [
+      "receipt": "input-posted", "actions": actions.count, "bundleId": bundle,
+      "verification": "inspect-next-screenshot",
+    ]
+  }
   private var nodes: [String: AXUIElement] = [:]
   private var snapshotBundle: String?
   private func attribute(_ e: AXUIElement, _ key: String) -> Any? {

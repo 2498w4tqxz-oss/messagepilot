@@ -12,6 +12,7 @@ import {
   type Capability,
 } from "./protocol.js";
 import { toolSchemas } from "./tool-schemas.js";
+import { Passkeys } from "./passkeys.js";
 type Session = {
   socket: WebSocket;
   generation: string;
@@ -52,6 +53,7 @@ export class Gateway {
   readonly auth: Auth;
   readonly server: http.Server;
   readonly wss: WebSocketServer;
+  readonly passkeys?: Passkeys;
   private sessions = new Map<string, Session>();
   private streams = new Map<string, Set<ServerResponse>>();
   private heartbeat: NodeJS.Timeout;
@@ -60,8 +62,13 @@ export class Gateway {
     readonly config: Config,
     env = process.env,
   ) {
-    this.auth = new Auth(config, env);
+    this.auth = new Auth(config, env, (token) =>
+      this.passkeys?.principal(token),
+    );
     this.store = new Store(config.database);
+    this.passkeys = config.passkeys
+      ? new Passkeys(this.store.db, config.passkeys)
+      : undefined;
     this.server = http.createServer((req, res) => {
       void this.route(req, res).catch((error) => {
         if (!res.headersSent)
@@ -152,7 +159,8 @@ export class Gateway {
             );
           const capabilities = frame.capabilities.filter(
             (c) =>
-              ["device.capture", "location.get"].includes(c.operation) ===
+              (c.operation.startsWith("device.") ||
+                c.operation === "location.get") ===
               (role === "device"),
           );
           clearTimeout(helloTimer);
@@ -178,7 +186,11 @@ export class Gateway {
         if (frame.type === "event") {
           const allowed =
             role === "device"
-              ? ["device.capture.completed", "device.capture.cancelled"]
+              ? [
+                  "device.capture.completed",
+                  "device.capture.cancelled",
+                  "device.activity.token",
+                ]
               : ["messages.changed", "bridge.resync_required"];
           if (!allowed.includes(frame.kind))
             throw new Error("Event kind not allowed for this worker role");
@@ -251,12 +263,13 @@ export class Gateway {
     if (this.closing) return;
     this.dispatchRole(account, "computer", "messages");
     this.dispatchRole(account, "computer", "development");
+    this.dispatchRole(account, "computer", "integrations");
     this.dispatchRole(account, "device", "messages");
   }
   private dispatchRole(
     account: string,
     role: "computer" | "device",
-    lane: "messages" | "development",
+    lane: "messages" | "development" | "integrations",
   ) {
     const s = this.sessions.get(`${account}:${role}`);
     if (!s || s.inflight.has(lane) || s.socket.readyState !== WebSocket.OPEN)
@@ -287,9 +300,13 @@ export class Gateway {
     )
       return;
     // Timeout fences the entire worker. Never run another desktop action over an uncertain one.
-    const deadline = ["apps.build", "apps.ios.run", "computer.exec"].includes(
-      command.operation,
-    )
+    const deadline = [
+      "apps.build",
+      "apps.ios.run",
+      "computer.exec",
+      "apple.tools.run",
+      "imessage.run",
+    ].includes(command.operation)
       ? 600000
       : 90000;
     s.inflight.set(lane, {
@@ -302,8 +319,95 @@ export class Gateway {
   }
   private async route(req: IncomingMessage, res: ServerResponse) {
     const url = new URL(req.url ?? "/", "http://localhost");
+    if (
+      url.pathname === "/.well-known/apple-app-site-association" &&
+      req.method === "GET" &&
+      this.passkeys
+    ) {
+      reply(res, 200, {
+        webcredentials: { apps: this.passkeys.config.appIds },
+      });
+      return;
+    }
+    if (url.pathname.startsWith("/v1/passkeys/") && req.method === "POST") {
+      if (!this.passkeys)
+        throw new PilotError(
+          "disabled",
+          "Optional passkey authentication is not configured",
+          404,
+        );
+      const input = await body(req);
+      if (
+        typeof input.accountId !== "string" ||
+        !this.config.accounts.some((a) => a.id === input.accountId)
+      )
+        throw new PilotError("not_found", "Account not found", 404);
+      if (url.pathname === "/v1/passkeys/signin-options") {
+        reply(
+          res,
+          200,
+          await this.passkeys.authenticationOptions(input.accountId),
+        );
+        return;
+      }
+      if (url.pathname === "/v1/passkeys/signin-verify") {
+        try {
+          reply(
+            res,
+            200,
+            await this.passkeys.authenticate(
+              input.accountId,
+              input.challengeId,
+              input.response,
+            ),
+          );
+        } catch (error) {
+          if (error instanceof PilotError) throw error;
+          throw new PilotError(
+            "invalid_passkey",
+            "Passkey verification failed",
+            401,
+          );
+        }
+        return;
+      }
+      throw new PilotError("not_found", "Unknown passkey endpoint", 404);
+    }
     if (url.pathname === "/health") {
       reply(res, 200, { service: "messagepilot", status: "up" });
+      return;
+    }
+    if (url.pathname === "/v1/device-events" && req.method === "POST") {
+      const binding = this.auth.worker(req.headers.authorization);
+      if (binding.role !== "device")
+        throw new PilotError(
+          "forbidden",
+          "A device credential is required",
+          403,
+        );
+      const event = await body(req);
+      if (
+        event.kind !== "device.activity.token" ||
+        typeof event.sourceId !== "string" ||
+        !event.sourceId ||
+        event.sourceId.length > 200 ||
+        !event.data ||
+        typeof event.data !== "object"
+      )
+        throw new PilotError(
+          "invalid_event",
+          "Only ActivityKit token events are accepted here",
+        );
+      reply(
+        res,
+        200,
+        this.emit(
+          binding.account.id,
+          `worker:device:${event.sourceId}`,
+          event.kind,
+          event.data,
+        ),
+      );
       return;
     }
     const segments = url.pathname.split("/").filter(Boolean);
@@ -313,6 +417,94 @@ export class Gateway {
     const agent = this.auth.agent(req.headers.authorization, account);
     const resource = segments[3],
       id = segments[4];
+    if (
+      agent.cardOnly &&
+      resource !== "cards" &&
+      !(resource === "passkeys" && id === "logout")
+    )
+      throw new PilotError(
+        "forbidden",
+        "Passkey sessions grant private card access only",
+        403,
+      );
+    if (resource === "passkeys") {
+      if (!this.passkeys)
+        throw new PilotError("disabled", "Passkeys are not configured", 404);
+      if (id === "logout" && req.method === "POST") {
+        this.passkeys.logout(req.headers.authorization!.slice(7));
+        reply(res, 200, { signedOut: true });
+        return;
+      }
+      this.auth.agent(req.headers.authorization, account, "computer.input");
+      if (id === "register-options" && req.method === "POST") {
+        reply(res, 200, await this.passkeys.registrationOptions(account));
+        return;
+      }
+      if (id === "register-verify" && req.method === "POST") {
+        const input = await body(req);
+        try {
+          reply(
+            res,
+            200,
+            await this.passkeys.register(
+              account,
+              input.challengeId,
+              input.response,
+            ),
+          );
+        } catch (error) {
+          if (error instanceof PilotError) throw error;
+          throw new PilotError(
+            "invalid_passkey",
+            "Passkey registration failed",
+            401,
+          );
+        }
+        return;
+      }
+      if (!id && req.method === "GET") {
+        reply(res, 200, this.passkeys.credentials(account));
+        return;
+      }
+      if (id && req.method === "DELETE") {
+        reply(res, 200, this.passkeys.revoke(account, decodeURIComponent(id)));
+        return;
+      }
+    }
+    if (resource === "control") {
+      if (req.method === "GET") {
+        reply(res, 200, { control: this.store.control(account) });
+        return;
+      }
+      this.auth.agent(req.headers.authorization, account, "computer.input");
+      const input = await body(req);
+      if (req.method === "POST") {
+        const ttl = input.ttlSeconds ?? 120;
+        if (!Number.isInteger(ttl) || ttl < 15 || ttl > 900)
+          throw new PilotError("invalid_ttl", "ttlSeconds must be 15–900");
+        const lease = this.store.claimControl(
+          account,
+          agent.id,
+          ttl,
+          input.leaseId,
+        );
+        this.emit(account, randomUUID(), "computer.control", {
+          state: "claimed",
+          ...lease,
+        });
+        reply(res, 200, lease);
+        return;
+      }
+      if (req.method === "DELETE") {
+        this.store.releaseControl(account, agent.id, input.leaseId);
+        this.emit(account, randomUUID(), "computer.control", {
+          state: "released",
+          owner: agent.id,
+        });
+        reply(res, 200, { released: true });
+        return;
+      }
+    }
     if (req.method === "GET" && resource === "capabilities") {
       const sessions = [
         this.sessions.get(`${account}:computer`),
@@ -345,6 +537,12 @@ export class Gateway {
       );
       if (!args.success)
         throw new PilotError("invalid_arguments", args.error.message);
+      this.store.assertControl(
+        account,
+        agent.id,
+        parsed.data.operation === "computer.input",
+      );
+      parsed.data.args = args.data;
       const command = this.store.enqueue(account, parsed.data);
       reply(res, 202, command);
       this.dispatch(account);

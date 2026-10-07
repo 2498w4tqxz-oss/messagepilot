@@ -48,6 +48,20 @@ test("MCP discovers typed bridge tools and dispatches through an isolated fixtur
     await client.connect(transport);
     const list = await client.listTools();
     assert.ok(list.tools.find((t) => t.name === "apps_ios_run"));
+    for (const name of [
+      "bridge_registry_card",
+      "bridge_computer_control",
+      "mcp_connect",
+      "mcp_tools_call",
+      "imessage_run",
+      "apple_tools_run",
+      "device_activity_start",
+      "apple_activity_push",
+    ])
+      assert.ok(
+        list.tools.find((t) => t.name === name),
+        `${name} must be discoverable`,
+      );
     const send = list.tools.find((t) => t.name === "messages_send")!;
     assert.ok((send.inputSchema.properties as any).args.properties.chatId);
     const result = await client.callTool({

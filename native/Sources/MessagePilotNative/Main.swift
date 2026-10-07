@@ -135,12 +135,14 @@ final class Output: @unchecked Sendable {
       ]
       return
         (basic + [
-          "messages.effect", "computer.exec", "computer.screenshot", "files.read", "files.write",
+          "messages.effect", "computer.exec", "computer.input", "computer.apps",
+          "computer.screenshot", "files.read", "files.write",
           "apps.build", "apps.create",
           "apps.ios.run",
         ]).map { name -> [String: Any] in
           let computer = [
-            "computer.exec", "computer.screenshot", "files.read", "files.write", "apps.build",
+            "computer.exec", "computer.input", "computer.apps", "computer.screenshot", "files.read",
+            "files.write", "apps.build",
             "apps.create", "apps.ios.run",
           ].contains(name)
           let toolkit = ["apps.create", "apps.ios.run"].contains(name)
@@ -216,6 +218,13 @@ final class Output: @unchecked Sendable {
         text: try required(p, "text"), effect: try required(p, "effect"),
         kind: p["kind"] as? String ?? "bubble",
         selectors: p["selectors"] as? [String: String] ?? [:])
+    case "computer.apps":
+      try requireComputer()
+      return ax.applications()
+    case "computer.input":
+      try requireComputer()
+      return try await ax.input(
+        bundle: allowedBundle(p), actions: p["actions"] as? [[String: Any]] ?? [])
     case "computer.exec":
       try requireComputer()
       return try await runProcess(
@@ -247,7 +256,9 @@ final class Output: @unchecked Sendable {
         arguments: [
           toolkit + "/dist/src/cli.js", "app-create",
           try workspacePath(try required(p, "directory")), try required(p, "bundleId"),
-        ], directory: config.workspace, timeout: 60)
+        ] + (p["primaryPort"] as? Bool == true ? ["--primary-port"] : [])
+          + ((p["passkeyDomain"] as? String).map { ["--passkey-domain", $0] } ?? []),
+        directory: config.workspace, timeout: 60)
     case "apps.ios.run":
       try requireComputer()
       guard let toolkit = config.toolkitPath, let recipe = p["recipe"] as? [String: Any] else {

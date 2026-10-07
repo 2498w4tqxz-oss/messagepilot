@@ -28,6 +28,23 @@ final class MessagePilotHarness: XCTestCase {
         add(attachment)
         continue
       }
+      if kind == "tapCoordinate" || kind == "drag" {
+        func coordinate(_ x: String, _ y: String) throws -> XCUICoordinate {
+          guard let px = action[x] as? Double, let py = action[y] as? Double,
+            (0...1).contains(px), (0...1).contains(py)
+          else { throw HarnessError.invalidRecipe }
+          return app.coordinate(withNormalizedOffset: CGVector(dx: px, dy: py))
+        }
+        let start = try coordinate("x", "y")
+        if kind == "tapCoordinate" {
+          start.tap()
+        } else {
+          start.press(
+            forDuration: min(action["seconds"] as? Double ?? 0.1, 3),
+            thenDragTo: try coordinate("toX", "toY"))
+        }
+        continue
+      }
       let query: XCUIElementQuery
       switch action["type"] as? String {
       case "button": query = app.buttons
@@ -35,6 +52,8 @@ final class MessagePilotHarness: XCTestCase {
       case "textView": query = app.textViews
       case "cell": query = app.cells
       case "staticText": query = app.staticTexts
+      case "pickerWheel": query = app.pickerWheels
+      case "slider": query = app.sliders
       default: query = app.descendants(matching: .any)
       }
       guard let identifier = action["identifier"] as? String, !identifier.isEmpty else {
@@ -47,8 +66,26 @@ final class MessagePilotHarness: XCTestCase {
       guard matches.count == 1 else { throw HarnessError.ambiguous(identifier) }
       switch kind {
       case "waitFor": break
+      case "adjustPicker":
+        guard let text = action["text"] as? String else { throw HarnessError.invalidRecipe }
+        element.adjust(toPickerWheelValue: text)
+      case "setSlider":
+        guard let value = action["value"] as? Double, (0...1).contains(value) else {
+          throw HarnessError.invalidRecipe
+        }
+        element.adjust(toNormalizedSliderPosition: CGFloat(value))
+      case "pinch":
+        guard let scale = action["scale"] as? Double, let velocity = action["velocity"] as? Double
+        else { throw HarnessError.invalidRecipe }
+        element.pinch(withScale: CGFloat(scale), velocity: CGFloat(velocity))
+      case "rotate":
+        guard let radians = action["radians"] as? Double,
+          let velocity = action["velocity"] as? Double
+        else { throw HarnessError.invalidRecipe }
+        element.rotate(CGFloat(radians), withVelocity: CGFloat(velocity))
       case "tap": element.tap()
       case "doubleTap": element.doubleTap()
+      case "twoFingerTap": element.twoFingerTap()
       case "longPress": element.press(forDuration: min(action["seconds"] as? Double ?? 1, 3))
       case "type":
         guard let text = action["text"] as? String else { throw HarnessError.invalidRecipe }

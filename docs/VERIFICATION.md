@@ -6,7 +6,7 @@ Local verification used synthetic identities and temporary bridge databases. No 
 
 | Check                           | Result                                | What it establishes                                                                                                                                                                                                                                                                     |
 | ------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run check`                 | Passed: TypeScript build and 20 tests | Auth/account isolation, idempotency, restart/disconnect uncertainty, cancellation, event replay/deduplication, card revision control, device routing, concurrent development lane, app generation, enrolled-device recipe preparation, subprocess transport, and MCP discovery/dispatch |
+| `npm run check`                 | Passed: TypeScript build and 32 tests | Auth/account isolation, idempotency, restart/disconnect uncertainty, cancellation, event replay/deduplication, card revision control, device routing, concurrent development lane, app generation, enrolled-device recipe preparation, subprocess transport, and MCP discovery/dispatch |
 | `npm run demo`                  | Passed                                | Real HTTP gateway to persistent WebSocket fixture worker and completed synthetic receipt                                                                                                                                                                                                |
 | `npm run native:build`          | Release build passed                  | Swift adapter links the pinned native library                                                                                                                                                                                                                                           |
 | iOS host and Messages extension | Simulator build passed                | Apple API/type/link compatibility; no simulator was launched                                                                                                                                                                                                                            |
@@ -15,16 +15,24 @@ Local verification used synthetic identities and temporary bridge databases. No 
 
 Build environment: Apple silicon macOS, Node 26.5.0, Xcode 26.6, Swift 6.3.3. CI runs the TypeScript checks and synthetic demo on Node 24. The lockfiles pin the resolved dependencies.
 
+## Expanded bridge checks
+
+The 32 tests also exercise exclusive virtual-computer leases, device-authenticated background token ingestion/deduplication, Official Registry URL construction and card conversion, actual MCP stdio and Streamable HTTP connections, explicit environment-secret forwarding, native UI recipe validation, optional primary-port generation, and APNs payload/signature construction with ephemeral keys. The public Official Registry was read successfully; no listed server was installed or contacted during development. Legacy SSE uses the SDK transport but was not exercised against a live server.
+
+The iOS host, Messages extension, WidgetKit/ActivityKit extension, App Intents and UI harness pass a simulator build-for-testing. Separately generated minimal and primary-port applications also compiled with distinct bundle IDs. No simulator was launched. No APNs notification was sent, and no developer identity or private key was read.
+
+Passkey tests construct ephemeral ES256 authenticators and verify registration and assertion signatures through the real gateway/verifier. They reject wrong origins, relying-party hashes, missing user verification, expired/replayed challenges and cross-account access, and verify credential revocation and card-only sessions. No Apple passkey or biometric prompt was invoked.
+
 ## Synthetic speed measurement
 
 `npm run benchmark` sends 250 sequential commands, discards 10 warmup samples, and measures HTTP request to dispatch at a persistent WebSocket fixture worker. The gateway persists commands to disk-backed SQLite WAL with full synchronization.
 
 | Metric                |              Measured |
 | --------------------- | --------------------: |
-| Median dispatch       |              2.325 ms |
-| p95 dispatch          |              3.566 ms |
-| p99 dispatch          |              4.292 ms |
-| Sequential throughput | 268.8 commands/second |
+| Median dispatch       |              2.547 ms |
+| p95 dispatch          |              3.945 ms |
+| p99 dispatch          |              7.608 ms |
+| Sequential throughput | 249.3 commands/second |
 
 These 240 local samples measure bridge overhead. They exclude Apple UI execution, Apple network delivery, recipient rendering, model latency, device test-runner startup, TLS, and remote network transit. They are not end-to-end iMessage latency or capacity guarantees. Run the included benchmark on the intended gateway hardware.
 

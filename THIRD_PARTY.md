@@ -4,7 +4,7 @@ MessagePilot has no BlueBubbles dependency.
 
 The Swift worker links **Beeper platform-imessage** (MIT) at commit `fdc5640bfcf936c3d8208bc15411944b7ed9819c`: https://github.com/beeper/platform-imessage/tree/fdc5640bfcf936c3d8208bc15411944b7ed9819c . Its source and license are fetched by Swift Package Manager; preserve its MIT notices when distributing binaries. Transitive Swift dependencies and versions are recorded in `native/Package.resolved`.
 
-The Node bridge uses `@modelcontextprotocol/sdk`, `ws`, and `zod`; exact versions and dependencies are recorded in `package-lock.json`. Their licenses remain in their installed packages. No third-party Apple Account credentials or proprietary app code are included.
+The Node bridge uses `@modelcontextprotocol/sdk`, `@simplewebauthn/server`, `ws`, and `zod`; exact versions and dependencies are recorded in `package-lock.json`. Their licenses remain in their installed packages. No third-party Apple Account credentials or proprietary app code are included.
 
 Research references:
 

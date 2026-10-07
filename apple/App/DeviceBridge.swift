@@ -16,16 +16,20 @@ final class DeviceBridge: NSObject, ObservableObject, @preconcurrency CLLocation
   private var reconnect: Task<Void, Never>?
   private var shouldConnect = false
   private var outbox: [[String: Any]] = []
+  private let appPort = AppPort()
   override init() {
     super.init()
     location.delegate = self
+    appPort.event = { [weak self] kind, data in self?.emit(kind: kind, data: data) }
     if let saved = UserDefaults.standard.data(forKey: "device.outbox"),
       let rows = try? JSONSerialization.jsonObject(with: saved) as? [[String: Any]]
     {
       outbox = rows
     }
+    if !BridgeSettings.load().accountId.isEmpty { appPort.watchPushStart() }
   }
   func connect() {
+    appPort.watchPushStart()
     shouldConnect = true
     socket?.cancel(with: .goingAway, reason: nil)
     do {
@@ -48,7 +52,11 @@ final class DeviceBridge: NSObject, ObservableObject, @preconcurrency CLLocation
           try await send([
             "type": "hello", "role": "device", "accountId": settings.accountId,
             "workerId": "iphone-\(settings.accountId)", "identity": settings.identity,
-            "capabilities": ["device.capture", "location.get"].map {
+            "capabilities": [
+              "device.capture", "location.get", "device.auth.biometric", "device.auth.passkey",
+              "device.surface.publish", "device.activity.list",
+              "device.activity.start", "device.activity.update", "device.activity.end",
+            ].map {
               [
                 "operation": $0, "available": true, "path": "foreground-ios-companion",
                 "verification": "compiled",
@@ -116,6 +124,28 @@ final class DeviceBridge: NSObject, ObservableObject, @preconcurrency CLLocation
       let gen = object["generation"] as? String
     else { return }
     let args = command["args"] as? [String: Any] ?? [:]
+    if operation == "device.auth.biometric" || operation == "device.auth.passkey" {
+      do {
+        let result: [String: Any]
+        if operation == "device.auth.biometric" {
+          result = try await AuthenticationPort.shared.biometric(
+            reason: args["reason"] as? String ?? "Authorize this agent-requested app action",
+            allowPasscode: args["allowPasscode"] as? Bool ?? false)
+        } else {
+          result = try await AuthenticationPort.shared.authorize(
+            options: args["options"] as? [String: Any] ?? [:],
+            registration: args["registration"] as? Bool ?? false)
+        }
+        await finish(id, gen, result: result)
+      } catch { await finish(id, gen, error: error.localizedDescription) }
+      return
+    }
+    if operation.hasPrefix("device.surface.") || operation.hasPrefix("device.activity.") {
+      do { await finish(id, gen, result: try await appPort.execute(operation, args)) } catch {
+        await finish(id, gen, error: error.localizedDescription)
+      }
+      return
+    }
     switch operation {
     case "device.capture":
       guard captureID == nil else {
@@ -166,7 +196,34 @@ final class DeviceBridge: NSObject, ObservableObject, @preconcurrency CLLocation
     ]
     outbox.append(event)
     persist()
-    Task { try? await send(event) }
+    Task {
+      if kind == "device.activity.token" {
+        await sendActivityEvent(event)
+      } else {
+        try? await send(event)
+      }
+    }
+  }
+  private func sendActivityEvent(_ event: [String: Any]) async {
+    // ActivityKit grants limited background runtime for token rotation. Use HTTP;
+    // no foreground-only WebSocket connection or permanent background loop is needed.
+    do {
+      guard let token = Secrets.get("device-token"), let source = event["sourceId"] as? String
+      else { return }
+      var parts = URLComponents(
+        url: try BridgeSettings.load().endpoint("events"), resolvingAgainstBaseURL: false)!
+      parts.path = "/v1/device-events"
+      var request = URLRequest(url: parts.url!, timeoutInterval: 15)
+      request.httpMethod = "POST"
+      request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+      request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+      request.httpBody = try JSONSerialization.data(withJSONObject: event)
+      let (_, response) = try await URLSession.shared.data(for: request)
+      if (response as? HTTPURLResponse)?.statusCode == 200 {
+        outbox.removeAll { $0["sourceId"] as? String == source }
+        persist()
+      }
+    } catch { /* Retain for the next foreground reconnect if background delivery fails. */  }
   }
   private func persist() {
     UserDefaults.standard.set(

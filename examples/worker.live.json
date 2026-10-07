@@ -6,6 +6,7 @@
   "tokenEnv": "MP_WORKER_ONE_TOKEN",
   "spool": "/Users/agentone/MessagePilot/state/worker.sqlite",
   "mode": "live",
+  "enableToolkit": true,
   "expectedOSUser": "agentone",
   "nativeBinary": "/Users/agentone/MessagePilot/native/.build/release/messagepilot-native",
   "nativeConfig": "/Users/agentone/MessagePilot/native.local.json"

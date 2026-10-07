@@ -4,12 +4,71 @@ import { z } from "zod";
 import { BridgeClient } from "./client.js";
 import { operations, readOperations } from "./protocol.js";
 import { toolSchemas } from "./tool-schemas.js";
+import { registryCard } from "./registry.js";
 export async function startMCP(url: string, token: string) {
   const client = new BridgeClient(url, token),
     server = new McpServer({ name: "messagepilot", version: "0.1.0" });
   const output = (value: unknown) => ({
     content: [{ type: "text" as const, text: JSON.stringify(value) }],
   });
+  server.registerTool(
+    "bridge_computer_control",
+    {
+      description:
+        "Claim, renew, inspect or release exclusive agent control of the account's dedicated virtual computer. Renew before expiry. Raw keyboard/pointer input requires a lease. Does not transfer control of the host's personal desktop.",
+      inputSchema: {
+        accountId: z.string(),
+        action: z.enum(["claim", "renew", "status", "release"]),
+        leaseId: z.string().optional(),
+        ttlSeconds: z.number().int().min(15).max(900).default(120),
+      },
+    },
+    async ({ accountId, action, leaseId, ttlSeconds }) =>
+      output(
+        await client.request(
+          accountId,
+          "control",
+          action === "status"
+            ? "GET"
+            : action === "release"
+              ? "DELETE"
+              : "POST",
+          action === "status" ? undefined : { leaseId, ttlSeconds },
+        ),
+      ),
+  );
+  server.registerTool(
+    "bridge_registry_card",
+    {
+      description:
+        "Search the Official MCP Registry through the enrolled worker and publish a browsable iMessage card. Card selection produces a scoped event for the external agent; no automatic installation or tool execution. Send the card using the installed MessagePilot extension.",
+      inputSchema: {
+        accountId: z.string(),
+        search: z.string().default(""),
+        cardId: z.string(),
+        expectedRevision: z.number().int().min(0),
+        idempotencyKey: z.string(),
+      },
+    },
+    async ({ accountId, search, cardId, expectedRevision, idempotencyKey }) => {
+      const queued = await client.command(
+        accountId,
+        "mcp.registry.search",
+        { search, limit: 20 },
+        idempotencyKey,
+      );
+      const receipt = await client.wait(accountId, queued.id, 25000);
+      if (receipt.state !== "completed") return output(receipt);
+      return output(
+        await client.request(
+          accountId,
+          `cards/${encodeURIComponent(cardId)}`,
+          "PUT",
+          { expectedRevision, body: registryCard(receipt.result) },
+        ),
+      );
+    },
+  );
   server.registerTool(
     "bridge_capabilities",
     {

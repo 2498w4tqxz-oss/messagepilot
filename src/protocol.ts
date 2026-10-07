@@ -1,6 +1,32 @@
 import { z } from "zod";
 
 export const operations = [
+  "device.auth.biometric",
+  "device.auth.passkey",
+  "device.surface.publish",
+  "device.activity.list",
+  "device.activity.start",
+  "device.activity.update",
+  "device.activity.end",
+  "apple.activity.push",
+  "mcp.registry.search",
+  "mcp.registry.get",
+  "mcp.connections",
+  "mcp.connect",
+  "mcp.disconnect",
+  "mcp.tools.list",
+  "mcp.tools.call",
+  "mcp.resources.list",
+  "mcp.resources.read",
+  "mcp.prompts.list",
+  "mcp.prompts.get",
+  "imessage.catalog",
+  "imessage.recipe",
+  "imessage.run",
+  "apple.tools.catalog",
+  "apple.tools.run",
+  "computer.input",
+  "computer.apps",
   "identity",
   "chats.list",
   "messages.list",
@@ -29,6 +55,20 @@ export const operations = [
 ] as const;
 export type Operation = (typeof operations)[number];
 export const readOperations = new Set<Operation>([
+  "device.activity.list",
+  "mcp.registry.search",
+  "mcp.registry.get",
+  "mcp.connections",
+  "mcp.tools.list",
+  "mcp.resources.list",
+  "mcp.resources.read",
+  "mcp.prompts.list",
+  "mcp.prompts.get",
+  "imessage.catalog",
+  "imessage.recipe",
+  "apple.tools.catalog",
+  "computer.apps",
+  "computer.screenshot",
   "files.read",
   "identity",
   "chats.list",
@@ -127,6 +167,13 @@ export class PilotError extends Error {
 }
 
 export const configSchema = z.object({
+  passkeys: z
+    .object({
+      rpId: z.string().min(1),
+      origin: z.string().url(),
+      appIds: z.array(z.string().regex(/^[A-Z0-9]+\.[A-Za-z0-9.-]+$/)).min(1),
+    })
+    .optional(),
   host: z.string().default("127.0.0.1"),
   port: z.number().int().min(0).max(65535).default(4380),
   database: z.string(),

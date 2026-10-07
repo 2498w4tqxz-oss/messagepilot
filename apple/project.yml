@@ -20,6 +20,7 @@ targets:
     sources: [App, Shared]
     dependencies:
       - target: MessagePilotMessages
+      - target: MessagePilotWidgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.messagepilot.app
@@ -27,11 +28,14 @@ targets:
         INFOPLIST_KEY_NSCameraUsageDescription: Capture AR room scans for your paired MessagePilot agent.
         INFOPLIST_KEY_NSLocalNetworkUsageDescription: Connect to your personal MessagePilot bridge.
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSSupportsLiveActivities: YES
+        INFOPLIST_KEY_NSFaceIDUsageDescription: Authorize optional MessagePilot app actions and sign-in with Face ID.
     entitlements:
       path: App/App.entitlements
       properties:
         com.apple.security.application-groups: [group.dev.messagepilot]
         keychain-access-groups: ['$(AppIdentifierPrefix)dev.messagepilot.shared']
+        aps-environment: development
   MessagePilotMessages:
     type: app-extension.messages
     platform: iOS
@@ -49,6 +53,25 @@ targets:
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).MessagesController
     entitlements:
       path: Messages/Messages.entitlements
+      properties:
+        com.apple.security.application-groups: [group.dev.messagepilot]
+        keychain-access-groups: ['$(AppIdentifierPrefix)dev.messagepilot.shared']
+  MessagePilotWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [Widgets, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.messagepilot.app.widgets
+        APPLICATION_EXTENSION_API_ONLY: YES
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: MessagePilot
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/Widgets.entitlements
       properties:
         com.apple.security.application-groups: [group.dev.messagepilot]
         keychain-access-groups: ['$(AppIdentifierPrefix)dev.messagepilot.shared']

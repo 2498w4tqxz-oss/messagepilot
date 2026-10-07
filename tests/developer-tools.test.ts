@@ -21,8 +21,36 @@ test("app generator creates independent app groups and refuses overwrites", asyn
     );
     assert.doesNotMatch(
       await readFile(join(destination, "project.yml"), "utf8"),
-      /MessagePilotVM/,
+      /MessagePilotVM|MessagePilotWidgets|NSSupportsLiveActivities|aps-environment/,
     );
+    assert.equal(
+      (await readdir(join(destination, "App"))).includes("AppPort.swift"),
+      false,
+    );
+    const full = join(root, "FullApp");
+    await createApp(full, "dev.example.fullapp", {
+      primaryPort: true,
+      passkeyDomain: "fixture.example",
+    });
+    assert.match(
+      await readFile(join(full, "project.yml"), "utf8"),
+      /webcredentials:fixture.example/,
+    );
+    await assert.rejects(
+      createApp(join(root, "bad-domain"), "dev.example.bad", {
+        passkeyDomain: "fixture.example",
+      }),
+      /requires primaryPort/,
+    );
+    assert.match(
+      await readFile(join(full, "project.yml"), "utf8"),
+      /MessagePilotWidgets/,
+    );
+    assert.match(
+      await readFile(join(full, "Widgets/Widgets.entitlements"), "utf8"),
+      /group.dev.example.fullapp/,
+    );
+    assert.ok((await readdir(join(full, "App"))).includes("AppPort.swift"));
     await assert.rejects(createApp(destination, "dev.example.again"), /exists/);
     await assert.rejects(createApp(join(root, "bad"), "invalid"), /Bundle/);
   } finally {
