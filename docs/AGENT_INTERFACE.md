@@ -93,3 +93,9 @@ For a recipient to fetch private live card state, their installed app must be pa
 ```
 
 Ranges use UTF-16 offsets. Omit `range` to style the whole message. To discard a failed authored draft, use `messages.draft.discard` with its exact `expectedText`; a different draft is rejected. Scoped reads return the latest 50 messages and reject cursor pagination. Incoming scoped updates currently require explicit reads; broad native event batches are suppressed.
+
+The scoped worker returns `native-rich-payload-verified` only after the persisted message matches the requested text and native style/effect metadata. Text attributes must cover the entire requested UTF-16 range without leaking outside it. This receipt does not assert delivery or recipient animation playback; inspect native delivery fields and incoming copies separately.
+
+Scoped edit, unsend and standard Tapback mutations return `native-mutation-verified` after observing the expected native edit timestamp/text, retraction metadata or reaction record. Unsupported custom Tapback identifiers fail before UI interaction.
+
+Every scoped send also verifies `thread_originator_guid`: ordinary sends must be unthreaded, and explicit replies must match the intended thread root. Native navigation resets the conversation for each command so a preceding reply cannot silently redirect later text.

@@ -27,6 +27,8 @@ Passkey tests construct ephemeral ES256 authenticators and verify registration a
 
 Seven additional tests cover account/agent chat intersections, empty grants, exact recipient enrollment, cross-chat reads and mutations, filtered SSE history/live delivery, restricted endpoints, worker scope matching, rich schemas, and a compiled scoped worker against a synthetic Messages database. All 39 pass locally. Linux CI skips the one compiled macOS-native fixture test. Both native executable products build successfully. The native live test is explicitly opt-in and never part of CI.
 
+`npm run native:test` additionally passes four pure Swift payload tests covering incomplete style ranges, combined UTF-16 formatting, missing/wrong effect identifiers and unintended reply-thread inheritance. These tests do not open Messages.
+
 ## Synthetic speed measurement
 
 `npm run benchmark` sends 250 sequential commands, discards 10 warmup samples, and measures HTTP request to dispatch at a persistent WebSocket fixture worker. The gateway persists commands to disk-backed SQLite WAL with full synchronization.

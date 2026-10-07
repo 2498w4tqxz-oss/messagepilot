@@ -13,6 +13,7 @@ let package = Package(
       revision: "fdc5640bfcf936c3d8208bc15411944b7ed9819c")
   ],
   targets: [
+    .testTarget(name: "MessagePilotScopedTests", dependencies: ["MessagePilotScoped"]),
     .executableTarget(name: "MessagePilotScoped", linkerSettings: [.linkedLibrary("sqlite3")]),
     .executableTarget(
       name: "MessagePilotNative",

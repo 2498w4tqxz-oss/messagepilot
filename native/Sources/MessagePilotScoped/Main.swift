@@ -112,7 +112,10 @@ final class ScopedDatabase {
           attributes, range, _ in
           runs.append([
             "start": range.location, "length": range.length,
-            "attributes": attributes.mapValues { String(describing: $0) },
+            "attributes": Dictionary(
+              uniqueKeysWithValues: attributes.map {
+                ($0.key.rawValue, String(describing: $0.value))
+              }),
           ])
         }
         r["attributeRuns"] = runs
@@ -156,6 +159,11 @@ final class ScopedDatabase {
   }
 }
 @MainActor final class ScopedUI {
+  // Minted only after observing one exact enrolled address in the native To field.
+  // Never reused across commands; a name alone cannot create this proof.
+  private var navigationProof:
+    (chat: String, window: AXUIElement, heading: AXUIElement, label: String)?
+  func beginCommand() { navigationProof = nil }
   let db: ScopedDatabase
   init(_ db: ScopedDatabase) { self.db = db }
   func attr(_ e: AXUIElement, _ key: String) -> Any? {
@@ -234,7 +242,10 @@ final class ScopedDatabase {
     return try exact(try window(), key, value)
   }
   func action(_ node: AXUIElement, _ name: String) throws {
-    guard AXUIElementPerformAction(node, name as CFString) == .success else {
+    // AppKit menu items can acknowledge AXPress without selecting the command.
+    let selectedAction =
+      name == "AXPress" && attr(node, "AXRole") as? String == "AXMenuItem" ? "AXPick" : name
+    guard AXUIElementPerformAction(node, selectedAction as CFString) == .success else {
       throw Failure("Native action failed: \(name)")
     }
   }
@@ -243,7 +254,7 @@ final class ScopedDatabase {
       throw Failure("Native attribute failed: \(key)")
     }
   }
-  func open(_ chat: String, message: String? = nil) throws {
+  func open(_ chat: String, message: String? = nil, preserveCurrent: Bool = false) throws {
     let root = try app()  // Enforce enableUI before opening any conversation.
     if let format = try? exact(root, "AXTitle", "Format"),
       attr(format, "AXSelected") as? Bool == true
@@ -254,6 +265,14 @@ final class ScopedDatabase {
         throw Failure(
           "Native Format menu is still tracking input; close that menu before continuing")
       }
+    }
+    if let running = NSRunningApplication.runningApplications(
+      withBundleIdentifier: "com.apple.MobileSMS"
+    ).first,
+      NSWorkspace.shared.frontmostApplication?.processIdentifier != running.processIdentifier
+    {
+      running.activate(options: [])
+      pause(0.15)
     }
     let row = try db.chat(chat)
     var u = URLComponents()
@@ -269,10 +288,76 @@ final class ScopedDatabase {
           value: row["chat_identifier"] as? String)
       ]
     }
-    guard let url = u.url, NSWorkspace.shared.open(url) else {
-      throw Failure("Unable to open permitted conversation")
+    // Sends navigate explicitly to avoid inheriting a previous reply view.
+    // Draft recovery may retain an already verified current recipient.
+    var verified = preserveCurrent ? try? boundWindow(chat) : nil
+    if verified == nil {
+      guard let url = u.url, NSWorkspace.shared.open(url) else {
+        throw Failure("Unable to open permitted conversation")
+      }
+      pause(0.45)
+      verified = try? boundWindow(chat)
     }
-    pause(0.45)
+    if verified == nil {
+      // A contact display name cannot prove an address. Enter the enrolled address
+      // in a fresh native recipient field, without reading the unverified transcript.
+      guard chat.contains(";-;"), let recipient = row["chat_identifier"] as? String else {
+        throw Failure("Direct recipient required for scoped navigation")
+      }
+      let w = try window()
+      let compose =
+        try (try? exact(w, "AXIdentifier", "composeButton"))
+        ?? exact(w, "AXDescription", "compose")
+      try action(compose, "AXPress")
+      let field: AXUIElement
+      if let ready = try? waitInWindow("AXIdentifier", "To:") {
+        field = ready
+      } else {
+        // Some Messages layouts acknowledge AXPress before finishing the previous
+        // send animation. Retry only navigation, using native New Message.
+        try key(45, flags: .maskCommand)
+        field = try waitInWindow("AXIdentifier", "To:")
+      }
+      guard (attr(field, "AXValue") as? String ?? "").isEmpty else {
+        throw Failure("Fresh recipient entry is not empty")
+      }
+      try set(field, "AXValue", recipient as CFString)
+      try set(field, "AXFocused", kCFBooleanTrue)
+      pause(0.15)
+      try key(36)
+      for _ in 0..<30 {
+        if let candidate = try? boundWindow(chat) {
+          verified = candidate
+          break
+        }
+        pause(0.05)
+      }
+      if verified == nil {
+        do { verified = try boundWindow(chat) } catch {
+          throw Failure("Fresh recipient confirmation failed: \(error)")
+        }
+      }
+    }
+    guard let verifiedWindow = verified else { throw Failure("Recipient unverified") }
+    if let composer = try? exact(verifiedWindow, "AXIdentifier", "messageBodyField") {
+      try action(composer, "AXPress")
+    }
+    // Establish continuity on every verified navigation, including a recipient
+    // chip left over from the preceding command. Do not cache across commands.
+    for _ in 0..<20 {
+      guard let current = try? window(), CFEqual(current, verifiedWindow) else {
+        throw Failure("Conversation window changed during recipient transition")
+      }
+      if let heading = try? exact(current, "AXIdentifier", "ConversationTitle"),
+        let label = attr(heading, "AXValue") as? String ?? attr(heading, "AXDescription")
+          as? String,
+        !label.isEmpty
+      {
+        navigationProof = (chat, current, heading, label)
+        break
+      }
+      pause(0.025)
+    }
     if let w = try? boundWindow(chat),
       (try? exact(w, "AXIdentifier", "TapbackPickerCollectionView")) != nil
     {
@@ -289,7 +374,15 @@ final class ScopedDatabase {
     }
     let w = try window()
     // Compose recipient chips are authoritative addresses. Never accept a contact display name.
-    let popups = nodes(w).filter { attr($0, "AXRole") as? String == "AXPopUpButton" }
+    let recipientFields = nodes(w).filter { attr($0, "AXIdentifier") as? String == "To:" }
+    guard recipientFields.count <= 1 else { throw Failure("Ambiguous recipient entry") }
+    let recipientParent = recipientFields.first.flatMap { attr($0, "AXParent") }.map {
+      $0 as! AXUIElement
+    }
+    let popups =
+      recipientParent.map {
+        children($0).filter { attr($0, "AXRole") as? String == "AXPopUpButton" }
+      } ?? []
     for p in popups where popups.count == 1 {
       let d = attr(p, "AXDescription") as? String ?? ""
       let fields = d.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
@@ -308,8 +401,27 @@ final class ScopedDatabase {
     {
       return w
     }
+    if let proof = navigationProof, proof.chat == chat, CFEqual(proof.window, w),
+      let heading = try? exact(w, "AXIdentifier", "ConversationTitle"),
+      CFEqual(proof.heading, heading),
+      (attr(heading, "AXValue") as? String ?? attr(heading, "AXDescription") as? String)
+        == proof.label
+    {
+      return w
+    }
+    let heading = try? exact(w, "AXIdentifier", "ConversationTitle")
+    let sameWindow = navigationProof.map { CFEqual($0.window, w) } ?? false
+    let sameHeading =
+      navigationProof.flatMap { proof in heading.map { CFEqual(proof.heading, $0) } } ?? false
+    let sameLabel =
+      navigationProof.flatMap { proof in
+        heading.map {
+          (attr($0, "AXValue") as? String ?? attr($0, "AXDescription") as? String) == proof.label
+        }
+      } ?? false
     throw Failure(
-      "Cannot verify exact recipient in Messages UI; refusing transcript read or mutation")
+      "Cannot verify exact recipient in Messages UI; refusing transcript read or mutation (proof=\(navigationProof != nil), window=\(sameWindow), heading=\(sameHeading), label=\(sameLabel), fields=\(recipientFields.count))"
+    )
   }
   func snapshot(_ chat: String, view: String = "transcript", messageID: String? = nil) throws
     -> [String: Any]
@@ -444,9 +556,18 @@ final class ScopedDatabase {
     -> [String: Any]
   {
     let reply = p["replyTo"] as? String
-    if let reply { _ = try db.message(chat, reply) }
+    let expectedThread: String?
+    if let reply {
+      let parent = try db.message(chat, reply)
+      expectedThread = parent["thread_originator_guid"] as? String ?? reply
+    } else {
+      expectedThread = nil
+    }
     try open(chat, message: reply)
-    let w = try boundWindow(chat)
+    let w: AXUIElement
+    do { w = try boundWindow(chat) } catch {
+      throw Failure("Post-navigation recipient check failed: \(error)")
+    }
     if let reply {
       let initial = try waitInWindow("AXIdentifier", "messageBodyField")
       guard (attr(initial, "AXValue") as? String ?? "").isEmpty else {
@@ -466,8 +587,11 @@ final class ScopedDatabase {
     guard existing.isEmpty else { throw Failure("Composer contains a draft; refusing overwrite") }
     let text = try required(p, "text")
     let previous = (try db.messages(chat)).compactMap { $0["rowId"] as? Int64 }.max() ?? 0
+    try action(composer, "AXPress")
+    pause(0.1)
     try set(composer, "AXValue", text as CFString)
     try set(composer, "AXFocused", kCFBooleanTrue)
+    pause(0.1)
     if format || (effect && p["kind"] as? String == "text") {
       let range = p["range"] as? [String: Int] ?? [:]
       var r = CFRange(
@@ -486,26 +610,70 @@ final class ScopedDatabase {
         } : [try required(p, "effect")]
       for item in items {
         _ = try boundWindow(chat)
-        try action(try exact(try app(), "AXTitle", item), "AXPress")
-        pause(0.18)
-        try action(try exact(try app(), "AXTitle", "Format"), "AXCancel")
-        pause(0.05)
+        try action(composer, "AXPress")
+        pause(0.1)
+        try set(composer, "AXSelectedTextRange", v)
+        pause(0.1)
+        var observed = CFRange()
+        guard let value = attr(composer, "AXSelectedTextRange"),
+          AXValueGetValue(value as! AXValue, .cfRange, &observed),
+          observed.location == r.location, observed.length == r.length
+        else {
+          throw Failure("Native selection differs from requested formatting range")
+        }
+        if let code = ["Bold": CGKeyCode(11), "Italic": CGKeyCode(34), "Underline": CGKeyCode(32)][
+          item]
+        {
+          try key(code, flags: .maskCommand)
+        } else {
+          try action(try exact(try app(), "AXTitle", "Format"), "AXPress")
+          pause(0.12)
+          try action(try exact(try app(), "AXTitle", item), "AXPress")
+          pause(0.1)
+          // AXPick closes the menu. An unconditional Escape here would cancel
+          // the native compose session and invalidate its verified recipient.
+          if let menu = try? exact(try app(), "AXTitle", "Format"),
+            attr(menu, "AXSelected") as? Bool == true
+          {
+            try action(menu, "AXCancel")
+          }
+        }
+        pause(0.15)
       }
     } else if effect {
-      let buttons = nodes(w).filter {
-        attr($0, "AXRole") as? String == "AXButton"
-          && ["Apps", "add"].contains(attr($0, "AXDescription") as? String ?? "")
+      let name = try required(p, "effect")
+      var selected = false
+      for _ in 0..<2 {
+        _ = try boundWindow(chat)
+        // Only retry opening a picker, never Send. A changed draft aborts recovery.
+        guard attr(composer, "AXValue") as? String == text else {
+          throw Failure("Effect draft changed during preparation")
+        }
+        let entry = try exact(try window(), "AXIdentifier", "MessageEntryView")
+        try action(try exact(entry, "AXDescription", "add"), "AXPress")
+        pause(0.25)
+        let menuItem = try waitInWindow("AXIdentifier", "message_effects")
+        var names: CFArray?
+        AXUIElementCopyActionNames(menuItem, &names)
+        guard (names as? [String] ?? []).contains("AXPick"),
+          attr(menuItem, "AXEnabled") as? Bool != false
+        else { throw Failure("Message Effects menu is not actionable") }
+        try action(menuItem, "AXPick")
+        pause(0.6)
+        if let button = try? waitInWindow("AXDescription", "Effect: " + name) {
+          _ = try boundWindow(chat)
+          try action(button, "AXPress")
+          pause(0.15)
+          selected = true
+          break
+        }
       }
-      guard buttons.count == 1 else { throw Failure("Apps button needs calibration") }
-      try action(buttons[0], "AXPress")
-      pause(0.15)
-      try action(try waitInApp("AXTitle", "Message Effects"), "AXPress")
-      pause(0.2)
-      try action(
-        try waitInWindow("AXDescription", "Effect: " + (try required(p, "effect"))), "AXPress")
-      pause(0.15)
+      guard selected else {
+        throw Failure("Native effects picker did not open; draft remains unsent")
+      }
     }
     if effect && p["kind"] as? String != "text" {
+      _ = try boundWindow(chat)
       let preview = try exact(try window(), "AXIdentifier", "CKBalloonTextView")
       guard attr(preview, "AXValue") as? String == text else {
         throw Failure("Effect preview differs from authored text")
@@ -518,6 +686,7 @@ final class ScopedDatabase {
       try action(send, "AXPress")
     } else {
       _ = try boundWindow(chat)
+      try action(composer, "AXPress")
       try set(composer, "AXFocused", kCFBooleanTrue)
       var insertion = CFRange(location: (text as NSString).length, length: 0)
       if let position = AXValueCreate(.cfRange, &insertion) {
@@ -533,14 +702,18 @@ final class ScopedDatabase {
       if let sent = try db.messages(chat).first(where: {
         ($0["rowId"] as? Int64 ?? 0) > previous && $0["is_from_me"] as? Int64 == 1
           && $0["text"] as? String == text
+          && RichPayload.matches($0, request: p, formatting: format, effect: effect)
+          && RichPayload.matchesThread($0, expected: expectedThread)
       }) {
         return [
-          "receipt": "native-message-observed", "message": sent, "delivery": "inspect-timestamps",
+          "receipt": format || effect ? "native-rich-payload-verified" : "native-message-observed",
+          "message": sent, "delivery": "inspect-timestamps",
         ]
       }
       pause(0.1)
     }
-    throw Failure("Send submitted but native message not observed; outcome unknown")
+    throw Failure(
+      "Send submitted but matching native text/rich payload not observed; outcome unknown")
   }
   func target(_ w: AXUIElement, _ row: [String: Any]) throws -> AXUIElement {
     let transcript = try waitInWindow("AXIdentifier", "TranscriptCollectionView")
@@ -568,6 +741,9 @@ final class ScopedDatabase {
       "question": 2005,
     ]
     let desired = codes[p["reaction"] as? String ?? ""]
+    if ["messages.react", "messages.unreact"].contains(method), desired == nil {
+      throw Failure("Scoped Tapbacks currently support the six standard reactions only")
+    }
     if let desired, ["messages.react", "messages.unreact"].contains(method) {
       let current =
         try db.reactions(chat, id).first(where: { $0["is_from_me"] as? Int64 == 1 })?["type"]
@@ -607,19 +783,37 @@ final class ScopedDatabase {
     }
     pause(0.2)
     if method == "messages.edit" {
+      let transcript = try exact(w, "AXIdentifier", "TranscriptCollectionView")
       let fields = nodes(w).filter { e in
         var editable: DarwinBoolean = false
         AXUIElementIsAttributeSettable(e, "AXValue" as CFString, &editable)
         return editable.boolValue
           && ["AXTextField", "AXTextArea"].contains(attr(e, "AXRole") as? String ?? "")
-          && attr(e, "AXIdentifier") as? String != "messageBodyField"
+          && !["messageBodyField", "CKBalloonTextView", "To:"].contains(
+            attr(e, "AXIdentifier") as? String ?? "")
           && attr(e, "AXValue") as? String == text
       }
       guard fields.count == 1 else { throw Failure("Edit field requires calibration") }
       try set(fields[0], "AXValue", try required(p, "text") as CFString)
       try set(fields[0], "AXFocused", kCFBooleanTrue)
       pause(0.25)
-      try action(try exact(w, "AXDescription", "Send edit"), "AXPress")
+      let submit =
+        try (try? exact(w, "AXDescription", "Send edit"))
+        ?? exact(transcript, "AXDescription", "Send edit")
+      _ = try boundWindow(chat)
+      try action(submit, "AXPress")
+      var confirmed = false
+      for _ in 0..<30 {
+        let updated = try db.message(chat, id)
+        if updated["text"] as? String == p["text"] as? String,
+          (updated["date_edited"] as? Int64 ?? 0) > 0
+        {
+          confirmed = true
+          break
+        }
+        pause(0.1)
+      }
+      guard confirmed else { throw Failure("Edit submitted but native update not observed") }
     } else if method == "messages.react" || method == "messages.unreact" {
       let r = try required(p, "reaction")
       let identifier =
@@ -648,9 +842,23 @@ final class ScopedDatabase {
         }
       }
     }
+    if method == "messages.unsend" {
+      var confirmed = false
+      for _ in 0..<30 {
+        let updated = try db.message(chat, id)
+        if !(updated["retractedParts"] as? [Int] ?? []).isEmpty
+          || (updated["date_retracted"] as? Int64 ?? 0) > 0
+        {
+          confirmed = true
+          break
+        }
+        pause(0.1)
+      }
+      guard confirmed else { throw Failure("Unsend submitted but native retraction not observed") }
+    }
     pause(0.3)
     return [
-      "receipt": "ui-action-submitted", "message": try db.message(chat, id),
+      "receipt": "native-mutation-verified", "message": try db.message(chat, id),
       "reactions": try db.reactions(chat, id), "delivery": "inspect-native-state",
     ]
   }
@@ -678,6 +886,7 @@ final class ScopedDatabase {
           else { throw Failure("Invalid request") }
           id = try required(r, "id")
           let method = try required(r, "method")
+          ui.beginCommand()
           let p = r["params"] as? [String: Any] ?? [:]
           if p["cursor"] != nil {
             throw Failure("Scoped native pagination is not implemented; use explicit scoped search")
@@ -726,7 +935,7 @@ final class ScopedDatabase {
                 chat, view: p["view"] as? String ?? "transcript",
                 messageID: p["messageId"] as? String)
             case "messages.draft.discard":
-              try ui.open(chat)
+              try ui.open(chat, preserveCurrent: true)
               let candidate = try ui.window()
               if let preview = try? ui.exact(candidate, "AXIdentifier", "CKBalloonTextView"),
                 ui.attr(preview, "AXValue") as? String == (try required(p, "expectedText")),

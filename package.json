@@ -16,6 +16,7 @@
     "mcp": "tsx src/cli.ts mcp",
     "benchmark": "tsx scripts/benchmark.ts",
     "native:build": "swift build --package-path native -c release",
+    "native:test": "swift test --package-path native --filter RichPayloadTests",
     "apple:generate": "cd apple && xcodegen generate",
     "format": "prettier --write src tests scripts/*.ts examples docs README.md THIRD_PARTY.md package.json tsconfig.json",
     "demo": "tsx scripts/fixture-demo.ts"
