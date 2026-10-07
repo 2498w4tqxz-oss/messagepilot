@@ -1,0 +1,17 @@
+[
+  {
+    "operation": "messages.send",
+    "status": 403,
+    "error": "chat_forbidden"
+  },
+  {
+    "operation": "messages.search",
+    "status": 403,
+    "error": "chat_forbidden"
+  },
+  {
+    "operation": "computer.exec",
+    "status": 403,
+    "error": "chat_forbidden"
+  }
+]

@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 struct BridgeSettings: Codable {
-  var url = "https://bridge.example.com"
+  var url = ""
   var accountId = ""
   var identity = ""
   static let defaults = UserDefaults(suiteName: "group.dev.messagepilot")!

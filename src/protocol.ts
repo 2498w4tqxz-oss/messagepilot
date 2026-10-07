@@ -241,8 +241,27 @@ export function validateArgs(
     ].includes(operation)
   )
     str("messageId");
-  if (operation === "messages.send" && !args.text && !args.filePath)
-    throw new PilotError("invalid_arguments", "text or filePath required");
+  if (
+    operation === "messages.send" &&
+    !args.text &&
+    !args.filePath &&
+    !args.filePaths
+  )
+    throw new PilotError(
+      "invalid_arguments",
+      "text, filePath or filePaths required",
+    );
+  if (
+    operation === "messages.send" &&
+    args.filePaths &&
+    (args.text !== undefined ||
+      args.filePath !== undefined ||
+      args.replyTo !== undefined)
+  )
+    throw new PilotError(
+      "invalid_arguments",
+      "Photo collections cannot be combined with text, filePath or replyTo",
+    );
   if (["messages.react", "messages.unreact"].includes(operation))
     str("reaction");
   if (operation === "messages.edit") str("text");

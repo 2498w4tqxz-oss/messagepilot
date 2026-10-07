@@ -1,0 +1,11 @@
+[
+  {
+    "kind": "card.action",
+    "data": {
+      "cardId": "photos",
+      "revision": 2,
+      "action": "select1",
+      "actor": "acceptance"
+    }
+  }
+]

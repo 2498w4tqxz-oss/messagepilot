@@ -17,7 +17,9 @@ struct Config: Decodable {
   let workspace: String?
 }
 func pause(_ seconds: TimeInterval) {
-  Thread.sleep(forTimeInterval: seconds)
+  // Workspace activation and Accessibility notifications must keep flowing in
+  // the resident command process; sleeping its main thread leaves stale state.
+  RunLoop.current.run(until: Date().addingTimeInterval(seconds))
 }
 func required(_ p: [String: Any], _ key: String) throws -> String {
   guard let v = p[key] as? String, !v.isEmpty else { throw Failure("Missing \(key)") }
@@ -483,7 +485,11 @@ final class ScopedDatabase {
         withBundleIdentifier: "com.apple.MobileSMS"
       ).first,
       NSWorkspace.shared.frontmostApplication?.processIdentifier == running.processIdentifier
-    else { throw Failure("Messages lost focus") }
+    else {
+      throw Failure(
+        "Messages lost focus (foreground: \(NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "none"))"
+      )
+    }
     for down in [true, false] {
       guard let e = CGEvent(keyboardEventSource: nil, virtualKey: code, keyDown: down) else {
         throw Failure("Key unavailable")
@@ -493,6 +499,86 @@ final class ScopedDatabase {
       if down { pause(0.04) }
     }
     pause(0.08)
+  }
+  func photos(_ chat: String, _ paths: [String]) throws -> [String: Any] {
+    guard db.config.enableUI == true, let workspace = db.config.workspace,
+      (2...20).contains(paths.count)
+    else { throw Failure("2–20 workspace photos required") }
+    let root = URL(fileURLWithPath: workspace).resolvingSymlinksInPath().standardizedFileURL
+    let sources = try paths.map { path -> URL in
+      let file =
+        (path.hasPrefix("/") ? URL(fileURLWithPath: path) : root.appendingPathComponent(path))
+        .resolvingSymlinksInPath().standardizedFileURL
+      guard file.path.hasPrefix(root.path + "/"),
+        ["png", "jpg", "jpeg"].contains(file.pathExtension.lowercased()),
+        (try? file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true,
+        NSImage(contentsOf: file) != nil
+      else { throw Failure("Photo must be a PNG/JPEG file inside the enrolled workspace") }
+      return file
+    }
+    let staging = FileManager.default.temporaryDirectory.appendingPathComponent(
+      "messagepilot-photos-" + UUID().uuidString)
+    try FileManager.default.createDirectory(
+      at: staging, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+    defer { try? FileManager.default.removeItem(at: staging) }
+    let files = try sources.enumerated().map { index, source -> URL in
+      let target = staging.appendingPathComponent("\(index)-" + source.lastPathComponent)
+      try FileManager.default.copyItem(at: source, to: target)
+      return target
+    }
+    try open(chat)
+    let w = try boundWindow(chat)
+    let composer = try exact(w, "AXIdentifier", "messageBodyField")
+    guard (attr(composer, "AXValue") as? String ?? "").isEmpty else {
+      throw Failure("Composer contains a draft; refusing overwrite")
+    }
+    let previous = (try db.messages(chat)).compactMap { $0["rowId"] as? Int64 }.max() ?? 0
+    let clipboard = NSPasteboard.general
+    clipboard.clearContents()
+    guard clipboard.writeObjects(files as [NSURL]) else {
+      throw Failure("Cannot stage photo clipboard")
+    }
+    let clipboardVersion = clipboard.changeCount
+    defer { if clipboard.changeCount == clipboardVersion { clipboard.clearContents() } }
+    try action(composer, "AXPress")
+    try set(composer, "AXFocused", kCFBooleanTrue)
+    guard clipboard.changeCount == clipboardVersion else {
+      throw Failure("Clipboard changed before paste")
+    }
+    try key(9, flags: .maskCommand)
+    pause(1)
+    _ = try boundWindow(chat)
+    let staged = attr(composer, "AXValue") as? String ?? ""
+    guard staged.filter({ $0 == "\u{fffc}" }).count == paths.count,
+      staged.allSatisfy({ $0 == "\u{fffc}" || $0 == "\n" }),
+      attr(composer, "AXFocused") as? Bool == true
+    else { throw Failure("Native photo draft differs from requested collection; not sent") }
+    // Submit once. Never navigate or re-focus after attachment preparation: doing
+    // so can replace the native draft. Unknown outcomes require reconciliation.
+    try key(36)
+    for _ in 0..<300 {
+      if let sent = try db.messages(chat).first(where: {
+        ($0["rowId"] as? Int64 ?? 0) > previous && $0["is_from_me"] as? Int64 == 1
+          && $0["cache_has_attachments"] as? Int64 == 1
+      }), let id = sent["id"] as? String {
+        if let error = sent["nativeError"] as? Int64, error != 0 {
+          throw Failure("Native photo collection failed with Apple error \(error)")
+        }
+        let attachments = try db.query(
+          "SELECT a.transfer_name,a.mime_type,a.total_bytes,a.transfer_state FROM attachment a JOIN message_attachment_join ma ON a.ROWID=ma.attachment_id JOIN message m ON m.ROWID=ma.message_id JOIN chat_message_join j ON j.message_id=m.ROWID JOIN chat c ON c.ROWID=j.chat_id WHERE c.guid=? AND m.guid=?",
+          [chat, id])
+        if sent["is_sent"] as? Int64 == 1, attachments.count == paths.count,
+          (sent["thread_originator_guid"] as? String ?? "").isEmpty
+        {
+          return [
+            "receipt": "native-photo-collection-sent", "message": sent,
+            "attachments": attachments, "delivery": "inspect-timestamps",
+          ]
+        }
+      }
+      pause(0.1)
+    }
+    throw Failure("Photo collection submitted but not reconciled; outcome unknown; do not retry")
   }
   func media(_ chat: String, _ path: String) throws -> [String: Any] {
     guard db.config.enableUI == true, let workspace = db.config.workspace else {
@@ -952,7 +1038,15 @@ final class ScopedDatabase {
               try ui.set(composer, "AXValue", "" as CFString)
               result = ["discarded": true]
             case "messages.send", "messages.effect", "messages.format":
-              if let path = p["filePath"] as? String {
+              if let paths = p["filePaths"] as? [String] {
+                guard method == "messages.send", p["text"] == nil, p["filePath"] == nil,
+                  p["replyTo"] == nil
+                else {
+                  throw Failure(
+                    "Photo collections cannot be combined with text, filePath or replyTo")
+                }
+                result = try ui.photos(chat, paths)
+              } else if let path = p["filePath"] as? String {
                 guard method == "messages.send", p["text"] == nil else {
                   throw Failure("Send scoped media and text as separate commands")
                 }

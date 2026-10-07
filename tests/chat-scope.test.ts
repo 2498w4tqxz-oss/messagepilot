@@ -1,7 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { Gateway } from "../src/gateway.js";
-import { configSchema, type CommandInput } from "../src/protocol.js";
+import {
+  configSchema,
+  validateArgs,
+  type CommandInput,
+} from "../src/protocol.js";
 import { chatScope, assertChatScope, visibleEvent } from "../src/chat-scope.js";
 import { toolSchemas } from "../src/tool-schemas.js";
 import {
@@ -219,5 +223,51 @@ test("restricted account refuses unscoped worker enrollment, including empty all
     } finally {
       await g.close();
     }
+  }
+});
+
+test("photo collections validate before dispatch and retain exact chat scope", () => {
+  const args = toolSchemas["messages.send"].parse({
+    chatId: "allowed",
+    filePaths: ["one.png", "two.png", "three.png", "four.png"],
+  });
+  assert.doesNotThrow(() => validateArgs("messages.send", args));
+  assert.doesNotThrow(() =>
+    assertChatScope(["allowed"], {
+      operation: "messages.send",
+      args,
+      idempotencyKey: "photos",
+    }),
+  );
+  assert.throws(
+    () =>
+      assertChatScope(["other"], {
+        operation: "messages.send",
+        args,
+        idempotencyKey: "photos",
+      }),
+    /permitted chat/,
+  );
+  for (const extra of [
+    { text: "caption" },
+    { filePath: "another.png" },
+    { replyTo: "message" },
+  ]) {
+    assert.throws(
+      () => validateArgs("messages.send", { ...args, ...extra }),
+      /cannot be combined/,
+    );
+  }
+  for (const filePaths of [
+    [],
+    ["one.png"],
+    Array(21).fill("photo.png"),
+    ["", "two.png"],
+  ]) {
+    assert.equal(
+      toolSchemas["messages.send"].safeParse({ chatId: "allowed", filePaths })
+        .success,
+      false,
+    );
   }
 });

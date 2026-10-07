@@ -32,13 +32,22 @@ struct SetupView: View {
             .never
           ).autocorrectionDisabled()
           SecureField("Agent token for cards", text: $agentToken)
+            .textInputAutocapitalization(.never).autocorrectionDisabled()
+            .textContentType(.oneTimeCode)
           SecureField("Device worker token", text: $deviceToken)
+            .textInputAutocapitalization(.never).autocorrectionDisabled()
+            .textContentType(.oneTimeCode)
           Button("Save pairing") {
             do {
               guard
                 settings.accountId.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil
               else { throw BridgeIssue("Invalid account ID") }
               _ = try settings.endpoint("capabilities")
+              guard agentToken.isEmpty || agentToken.count >= 32,
+                deviceToken.isEmpty || deviceToken.count >= 32
+              else {
+                throw BridgeIssue("Tokens must contain at least 32 characters")
+              }
               if !agentToken.isEmpty { try Secrets.put("agent-token", agentToken) }
               if !deviceToken.isEmpty { try Secrets.put("device-token", deviceToken) }
               settings.save()

@@ -50,7 +50,7 @@ Use `production` for a production entitlement/token. The generated development a
 
 The provided ActivityKit content state is `{ "title": "...", "detail": "...", "progress": 0.5, "updatedAt": 1790000000 }`. Its attributes type is `BridgeActivityAttributes`, with `{ "accountId": "agent-one", "surfaceId": "task-1" }`. Obtain exact tokens from the enrolled app's events. ActivityKit pushes update the Live Activity; they do not automatically refresh the separate Home Screen widget's cached App Group data. Use the widget refresh intent/card fetch for that surface.
 
-All Apple targets are compile-verified only. APNs payload construction and signing are tested locally with ephemeral test keys; no push has been sent and no developer account/device has been enrolled during this build.
+The host and extension were installed in an isolated simulator. Pairing, WSS device routing, App Group publishing, ActivityKit start/update and visible Dynamic Island rendering passed there; see [expanded acceptance](EXPANDED_ACCEPTANCE.md). Home Screen widget rendering and physical-device behavior remain unverified. APNs payload construction/signing use ephemeral test keys; no push has been sent and no developer account has been used.
 
 ## Optional authentication
 

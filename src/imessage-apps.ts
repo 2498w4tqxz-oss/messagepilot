@@ -14,6 +14,7 @@ export const iosActionSchema = z
       "swipeUp",
       "swipeDown",
       "waitFor",
+      "wait",
       "adjustPicker",
       "setSlider",
       "pinch",

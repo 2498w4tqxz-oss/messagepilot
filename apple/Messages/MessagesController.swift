@@ -5,20 +5,24 @@ import UIKit
 final class MessagesController: MSMessagesAppViewController {
   private var host: UIHostingController<CardsView>?
   override func willBecomeActive(with conversation: MSConversation) { render(conversation) }
+  override func didBecomeActive(with conversation: MSConversation) { render(conversation) }
   override func didSelect(_ message: MSMessage, conversation: MSConversation) {
-    render(conversation)
+    render(conversation, message: message)
   }
   override func didReceive(_ message: MSMessage, conversation: MSConversation) {
-    render(conversation)
+    render(conversation, message: message)
   }
   override func contentSizeThatFits(_ size: CGSize) -> CGSize {
-    CGSize(width: size.width, height: 320)
+    // A transcript snapshot can be requested before activation callbacks.
+    if host == nil, let conversation = activeConversation { render(conversation) }
+    view.layoutIfNeeded()
+    return CGSize(width: size.width, height: 320)
   }
-  private func render(_ conversation: MSConversation) {
+  private func render(_ conversation: MSConversation, message: MSMessage? = nil) {
     host?.willMove(toParent: nil)
     host?.view.removeFromSuperview()
     host?.removeFromParent()
-    let selected = conversation.selectedMessage?.url.flatMap {
+    let selected = (message ?? conversation.selectedMessage)?.url.flatMap {
       URLComponents(url: $0, resolvingAgainstBaseURL: false)
     }
     let cardID = selected?.queryItems?.first(where: { $0.name == "card" })?.value ?? ""
@@ -107,6 +111,8 @@ final class MessagesController: MSMessagesAppViewController {
   }
 }
 struct CardsView: View {
+  private enum Field: Hashable { case card, sticker }
+  @FocusState private var focusedField: Field?
   let initialID: String
   let selectedAccount: String?
   let transcript: Bool
@@ -117,23 +123,34 @@ struct CardsView: View {
   @State private var card: CardRecord?
   @State private var error = ""
   @State private var loading = false
+  @State private var selectedItem = ""
+  @State private var status = ""
   var body: some View {
     VStack(alignment: .leading, spacing: 10) {
       if !transcript {
         HStack {
           Text("MessagePilot").font(.headline)
           Spacer()
-          Button("Refresh") { Task { await load() } }
+          Button("Refresh") {
+            focusedField = nil
+            Task { await load() }
+          }
         }
         TextField("Card ID", text: $id).textFieldStyle(.roundedBorder)
+          .textInputAutocapitalization(.never).autocorrectionDisabled()
+          .focused($focusedField, equals: .card)
         HStack {
           TextField("Sticker text", text: $stickerText).textFieldStyle(.roundedBorder)
-          Button("Send sticker") { onSticker(stickerText) }.disabled(stickerText.isEmpty)
+            .focused($focusedField, equals: .sticker)
+          Button("Send sticker") {
+            focusedField = nil
+            onSticker(stickerText)
+          }.disabled(stickerText.isEmpty)
         }
       }
       if let card {
         Text(card.body.title).font(.headline)
-        TabView {
+        TabView(selection: $selectedItem) {
           ForEach(card.body.items) { item in
             VStack(alignment: .leading) {
               if let address = item.imageURL, let url = URL(string: address), url.scheme == "https"
@@ -147,14 +164,18 @@ struct CardsView: View {
               Text(item.title).font(.headline)
               if let subtitle = item.subtitle { Text(subtitle).font(.subheadline) }
               if let action = item.action {
-                Button("Select") { Task { await select(card: card, action: action) } }
+                Button("Select") {
+                  Task { await select(card: card, action: action, title: item.title) }
+                }
+                .accessibilityIdentifier("card-select-\(item.id)")
+                .accessibilityLabel("Select \(item.title)")
               }
               if let address = item.linkURL, let url = URL(string: address), url.scheme == "https" {
                 Link("Open", destination: url)
               }
             }.padding().tag(item.id)
           }
-        }.tabViewStyle(.page).frame(height: 220)
+        }.tabViewStyle(.page(indexDisplayMode: .never)).frame(height: 220)
         HStack {
           ForEach(
             (card.body.actions ?? []).filter { name in
@@ -174,6 +195,10 @@ struct CardsView: View {
         if !transcript { Button("Send carousel") { onSend(card) }.buttonStyle(.borderedProminent) }
       }
       if loading { ProgressView() }
+      if transcript && initialID.isEmpty {
+        Text("Open this card in MessagePilot to load its contents.").font(.caption)
+      }
+      if !status.isEmpty { Text(status).font(.caption) }
       if !error.isEmpty { Text(error).font(.caption).foregroundStyle(.red) }
     }.padding().task {
       id = initialID
@@ -188,14 +213,21 @@ struct CardsView: View {
       guard selectedAccount == nil || selectedAccount == settings.accountId else {
         throw BridgeIssue("This card belongs to another account")
       }
-      card = try await CardClient(settings: settings).load(id)
+      let loaded = try await CardClient(settings: settings).load(id)
+      card = loaded
+      if !loaded.body.items.contains(where: { $0.id == selectedItem }) {
+        selectedItem = loaded.body.items.first?.id ?? ""
+      }
+      status = ""
       error = ""
     } catch { self.error = error.localizedDescription }
   }
-  private func select(card: CardRecord, action: String) async {
+  private func select(card: CardRecord, action: String, title: String) async {
     do {
       try await CardClient(settings: BridgeSettings.load()).action(
         card: card.id, revision: card.revision, name: action)
+      status = "Selected \(title)"
+      error = ""
     } catch { self.error = error.localizedDescription }
   }
 }

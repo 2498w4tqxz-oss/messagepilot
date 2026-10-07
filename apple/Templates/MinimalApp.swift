@@ -14,12 +14,20 @@ struct MinimalSetup: View {
       TextField("HTTPS gateway", text: $settings.url).textInputAutocapitalization(.never)
       TextField("Account ID", text: $settings.accountId).textInputAutocapitalization(.never)
       SecureField("Card access token", text: $token)
+        .textInputAutocapitalization(.never).autocorrectionDisabled()
+        .textContentType(.oneTimeCode)
       Button("Save pairing") {
         do {
-          guard settings.accountId.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil else { throw BridgeIssue("Invalid account ID") }
+          guard settings.accountId.range(of: "^[A-Za-z0-9_-]+$", options: .regularExpression) != nil
+          else { throw BridgeIssue("Invalid account ID") }
           _ = try settings.endpoint("capabilities")
+          guard token.isEmpty || token.count >= 32 else {
+            throw BridgeIssue("Tokens must contain at least 32 characters")
+          }
           if !token.isEmpty { try Secrets.put("agent-token", token) }
-          settings.save(); token = ""; status = "Open this extension in Messages."
+          settings.save()
+          token = ""
+          status = "Open this extension in Messages."
         } catch { status = error.localizedDescription }
       }
       Text(status)

@@ -1,0 +1,65 @@
+{
+  "test": "gateway-native-four-photo-collection",
+  "commandState": "completed",
+  "commandDurationMs": 25276,
+  "messages": [
+    {
+      "direction": "received",
+      "sent": 0,
+      "delivered": 1,
+      "nativeError": 0,
+      "attachments": [
+        {
+          "sha256": "e881961384b829a4fbcb03a06e53bdbfa50ac9e946b688e4ea4a9ce4e516e490",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "7b86b3cb3f1edafc0487791b2d666e321a6a4df78bcbb6b85dc580888b900eeb",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "087950c44bd68127f26121ce9264fa47460762cea0a81aadc4920b63ba8ad95f",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "ac97302e23525dfdf0da25c53ab17e11f9edcca9dd7a279c1e40512129284f44",
+          "mime": "image/png",
+          "transferState": 5
+        }
+      ],
+      "matchesFixtureBytes": true
+    },
+    {
+      "direction": "sent",
+      "sent": 1,
+      "delivered": 1,
+      "nativeError": 0,
+      "attachments": [
+        {
+          "sha256": "e881961384b829a4fbcb03a06e53bdbfa50ac9e946b688e4ea4a9ce4e516e490",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "7b86b3cb3f1edafc0487791b2d666e321a6a4df78bcbb6b85dc580888b900eeb",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "087950c44bd68127f26121ce9264fa47460762cea0a81aadc4920b63ba8ad95f",
+          "mime": "image/png",
+          "transferState": 5
+        },
+        {
+          "sha256": "ac97302e23525dfdf0da25c53ab17e11f9edcca9dd7a279c1e40512129284f44",
+          "mime": "image/png",
+          "transferState": 5
+        }
+      ],
+      "matchesFixtureBytes": true
+    }
+  ]
+}

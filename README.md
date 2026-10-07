@@ -91,6 +91,7 @@ Use `GET /v1/accounts/{account}/commands/{id}` for the receipt. Use `GET /v1/acc
 ## Rich messages and developer tools
 
 - Images, GIFs, videos, and files: `messages.send` with a `filePath` inside the worker workspace. Transfer assets and retrieve screenshots with `files.write` / `files.read` in base64 chunks up to 256 KiB. The agent can also prepare assets using its virtual computer. Text containing links uses normal Messages preview behavior; Apple controls final rendering.
+- Native photo collections: the chat-restricted worker accepts `messages.send` with `filePaths` containing 2–20 workspace PNG/JPEG paths, exclusive of `text`, `filePath` and `replyTo`. Four photos were verified as one delivered stack. This route uses and clears the clipboard. [Expanded acceptance](docs/EXPANDED_ACCEPTANCE.md).
 - Replies: `messages.send` with `replyTo` set to an observed message ID.
 - Native bold, italic, underline and strikethrough: `messages.format`, optionally over a UTF-16 range. Custom font families are not native Messages text styles.
 - Text, bubble, and screen effects: `messages.effect`, explicitly enabled after UI selector calibration on the dedicated worker. No injection is performed.

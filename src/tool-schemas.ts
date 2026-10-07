@@ -190,6 +190,14 @@ export const toolSchemas: Record<
       .describe(
         "Image, GIF, video, audio, or file inside the account worker workspace.",
       ),
+    filePaths: z
+      .array(z.string().min(1))
+      .min(2)
+      .max(20)
+      .optional()
+      .describe(
+        "Send one native photo collection through the scoped macOS UI worker. Workspace PNG/JPEG files only; replaces the clipboard while staging. Do not combine with text, filePath, or replyTo.",
+      ),
     replyTo: z.string().optional(),
   }),
   "messages.react": z.object({

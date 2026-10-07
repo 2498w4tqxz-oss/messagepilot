@@ -193,6 +193,9 @@ final class Output: @unchecked Sendable {
         userIDs: recipients, title: p["title"] as? String, messageText: p["text"] as? String
       ).jsonValue
     case "messages.send":
+      guard p["filePaths"] == nil else {
+        throw BridgeFailure("Photo collections require the chat-restricted UI worker")
+      }
       let file = try (p["filePath"] as? String).map { try workspacePath($0) }
       return try await api.sendMessage(
         threadID: try required(p, "chatId"), text: p["text"] as? String, filePath: file,

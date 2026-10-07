@@ -1,0 +1,25 @@
+{
+  "environment": "isolated iOS simulator; no Apple Account",
+  "pairingAndWSS": true,
+  "surfacePublish": "completed; widget reload requested",
+  "activity": {
+    "start": "completed",
+    "update": "completed",
+    "visibleDynamicIsland": "75%",
+    "end": "completed",
+    "remainingActivities": 0
+  },
+  "location": "injected simulator coordinates returned; not physical GPS",
+  "biometrics": "not enrolled; expected failure",
+  "arCapture": {
+    "request": "awaiting_user",
+    "ui": "unsupported device",
+    "terminalEvent": "device.capture.cancelled"
+  },
+  "passkeys": {
+    "attempt": "host registration-options request",
+    "httpStatus": 404,
+    "configured": false,
+    "systemCeremony": false
+  }
+}

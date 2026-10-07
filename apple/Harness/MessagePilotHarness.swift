@@ -14,6 +14,15 @@ final class MessagePilotHarness: XCTestCase {
     if recipe["launch"] as? Bool == true { app.launch() } else { app.activate() }
     for action in actions {
       guard let kind = action["action"] as? String else { throw HarnessError.invalidRecipe }
+      if kind == "wait" {
+        guard let seconds = action["seconds"] as? Double, (0...10).contains(seconds) else {
+          throw HarnessError.invalidRecipe
+        }
+        // A bounded pause lets external bridge commands finish while this app
+        // remains foregrounded. It does not assert that an operation succeeded.
+        RunLoop.current.run(until: Date().addingTimeInterval(seconds))
+        continue
+      }
       if kind == "snapshot" {
         let attachment = XCTAttachment(string: app.debugDescription)
         attachment.name = "MessagePilot accessibility tree"
@@ -90,7 +99,14 @@ final class MessagePilotHarness: XCTestCase {
       case "type":
         guard let text = action["text"] as? String else { throw HarnessError.invalidRecipe }
         element.tap()
-        element.typeText(text)
+        if let interval = action["seconds"] as? Double, (0.01...0.5).contains(interval) {
+          for character in text {
+            element.typeText(String(character))
+            RunLoop.current.run(until: Date().addingTimeInterval(interval))
+          }
+        } else {
+          element.typeText(text)
+        }
       case "swipeLeft": element.swipeLeft()
       case "swipeRight": element.swipeRight()
       case "swipeUp": element.swipeUp()
