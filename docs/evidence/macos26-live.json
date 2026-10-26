@@ -1,0 +1,70 @@
+{
+  "recorded": "2026-10-25",
+  "environment": {
+    "guest": "macOS 26.6.2 virtual Mac (Lines line DOOR), English, SIP enabled",
+    "worker": "messagepilot-native built from main 41762d5 (the deployed binary); new code from this branch was not deployed to the line",
+    "channel": "Lines API POST /lines/{id}/command; recipient was the owner's approved test number",
+    "redaction": "No phone numbers, message GUIDs or message text other than the labeled test strings"
+  },
+  "liveTests": [
+    {
+      "id": "link-preview",
+      "operation": "messages.send",
+      "text": "MessagePilot test: link preview https://www.apple.com/macos/macos-tahoe/",
+      "result": "delivered",
+      "observed": [
+        "Messages split the send into two messages: the text and the URL",
+        "The URL rendered as an AXLink rich-link bubble with LinkPresentation caption LP.CaptionBar.BottomCaption = apple.com",
+        "Beeper's messages.list returned a link entity (textAttributes.entities[].link) but no links[] metadata: the guest generated a domain-only preview"
+      ]
+    },
+    {
+      "id": "emoji-tapback",
+      "operation": "messages.react",
+      "reaction": "🎉",
+      "result": "persisted",
+      "observed": ["messages.list reactions contained reactionKey 🎉 from the line's own identity"]
+    },
+    {
+      "id": "confetti-regression",
+      "operation": "messages.effect",
+      "args": { "effect": "Confetti", "kind": "screen", "text": "MessagePilot test: confetti" },
+      "result": "failed before typing; nothing sent",
+      "error": "Selector matched 0 elements; refusing ambiguous UI action",
+      "cause": "Old flow searched for an AXTextArea described 'iMessage' and an 'Apps' button. macOS 26.6.2 exposes the composer as AXTextField identifier messageBodyField, description 'Message', and the add button as description 'add'."
+    }
+  ],
+  "readOnlyProbes": {
+    "apps.interact waitFor (exactly one match)": [
+      { "selector": { "AXIdentifier": "messageBodyField" }, "found": true },
+      { "selector": { "AXIdentifier": "MessageEntryView" }, "found": true },
+      { "selector": { "AXIdentifier": "ConversationTitle" }, "found": true },
+      { "selector": { "AXDescription": "add" }, "found": true },
+      { "selector": { "AXRole": "AXTextArea", "AXDescription": "iMessage" }, "found": false },
+      { "selector": { "AXRole": "AXTextField", "AXIdentifier": "messageBodyField" }, "found": false, "note": "true in the full layout; the probe ran during the reduced layout" },
+      { "selector": { "AXDescription": "Apps" }, "found": false },
+      { "selector": { "AXIdentifier": "sendButton" }, "found": false, "note": "appears only with a staged effect or extension message" }
+    ],
+    "apps.snapshot": {
+      "fixtures": [
+        "native/Tests/MessagePilotKitTests/Fixtures/messages-26.6.2-full.json",
+        "native/Tests/MessagePilotKitTests/Fixtures/messages-26.6.2-reduced.json"
+      ],
+      "bubbleActions": [
+        "Heart", "Thumbs up", "Thumbs down", "Ha ha!", "Exclamation mark", "Question mark",
+        "recent emoji (😂 ❤️ 😍 😒 👌)", "Add Emoji as Tapback", "Tapback Details…", "Reply…",
+        "Attach Sticker…", "Edit (recent own)", "Undo Send (recent own)", "Forward…", "Copy",
+        "Pin (links)", "Delete…", "Show Times"
+      ],
+      "conversationRowActions": ["Pin <name>", "Mark as Unread", "Hide Alerts", "Open in New Window", "Delete…"],
+      "menuCommands": {
+        "Edit": ["send_message", "reply_to_last_message…", "continue_last_reply…", "tapback_last_message…", "edit_last_message…", "send_later…", "orderFrontCharacterPalette: (Emoji & Symbols)"],
+        "Format": ["bold", "italic", "underline", "strikethrough", "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter"],
+        "Conversation": ["show_details", "add_to_contacts…", "mark_as_unread", "mark_all_as_read", "hide_alerts", "block_person…", "delete_conversation…", "send_mail…", "send_file…", "share_my_screen", "ask_to_share_screen", "facetime_video", "facetime_audio"],
+        "View": ["send_later (filter)", "unread", "drafts", "recently_deleted", "spam"]
+      },
+      "entryView": ["add", "messageBodyField (AXTextField, 'Message')", "Record audio", "Emoji picker"]
+    }
+  },
+  "afterState": "Line status live; composer empty; no open popovers or menus"
+}

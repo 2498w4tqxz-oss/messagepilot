@@ -21,7 +21,8 @@ import { chatOperations } from "../src/chat-scope.js";
 
 const binary = resolve("native/.build/release/messagepilot-native");
 const onMac = process.platform === "darwin" && existsSync(binary);
-const inMinutes = (m: number) => new Date(Date.now() + m * 60_000).toISOString();
+const inMinutes = (m: number) =>
+  new Date(Date.now() + m * 60_000).toISOString();
 
 test("new iMessage operations are registered with schemas and argument rules", () => {
   for (const op of [
@@ -67,7 +68,11 @@ test("new iMessage operations are registered with schemas and argument rules", (
 test("Send Later, forwarding and irreversible chat changes validate before dispatch", () => {
   const chat = { chatId: "any;-;+15550100100" };
   assert.doesNotThrow(() =>
-    validateArgs("messages.schedule", { ...chat, text: "hi", sendAt: inMinutes(30) }),
+    validateArgs("messages.schedule", {
+      ...chat,
+      text: "hi",
+      sendAt: inMinutes(30),
+    }),
   );
   for (const sendAt of [
     inMinutes(0.5),
@@ -85,7 +90,9 @@ test("Send Later, forwarding and irreversible chat changes validate before dispa
     /to is required/,
   );
   assert.throws(() => validateArgs("chats.delete", chat), /confirm/);
-  assert.doesNotThrow(() => validateArgs("chats.leave", { ...chat, confirm: true }));
+  assert.doesNotThrow(() =>
+    validateArgs("chats.leave", { ...chat, confirm: true }),
+  );
   assert.throws(
     () => validateArgs("attachments.download", chat),
     /messageId is required/,
@@ -111,7 +118,9 @@ test("gateway carries the new operations end to end through a worker", async (t)
     host: "127.0.0.1",
     port: 0,
     database: ":memory:",
-    accounts: [{ id: "line", identity: "line@example.test", workerTokenEnv: "WORKER" }],
+    accounts: [
+      { id: "line", identity: "line@example.test", workerTokenEnv: "WORKER" },
+    ],
     agents: [{ id: "agent", tokenEnv: "AGENT", accounts: ["line"] }],
   };
   const g = new Gateway(config, tokens);
@@ -215,7 +224,9 @@ function accountsStore(path: string, username: string) {
     CREATE TABLE ZACCOUNTPROPERTY(Z_PK INTEGER PRIMARY KEY, ZOWNER INTEGER, ZKEY VARCHAR, ZVALUE BLOB);
     INSERT INTO ZACCOUNTTYPE VALUES(1,'com.apple.account.IdentityServices');`);
   db.prepare("INSERT INTO ZACCOUNT VALUES(1,1,1,?)").run(username);
-  db.prepare("INSERT INTO ZACCOUNTPROPERTY(ZOWNER,ZKEY,ZVALUE) VALUES(1,'handles',?)").run(
+  db.prepare(
+    "INSERT INTO ZACCOUNTPROPERTY(ZOWNER,ZKEY,ZVALUE) VALUES(1,'handles',?)",
+  ).run(
     plist(
       `<array><dict><key>uri</key><string>mailto:${username}</string></dict><dict><key>uri</key><string>tel:+15550100100</string></dict></array>`,
     ),
@@ -262,9 +273,13 @@ test(
           accountsDatabase: accounts,
         }),
       );
-      const out = spawnSync(binary, ["--resolve-identity", "--config", config], {
-        encoding: "utf8",
-      });
+      const out = spawnSync(
+        binary,
+        ["--resolve-identity", "--config", config],
+        {
+          encoding: "utf8",
+        },
+      );
       return { status: out.status, decision: JSON.parse(out.stdout) };
     };
     const fresh = run([]);

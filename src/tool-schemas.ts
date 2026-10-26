@@ -376,7 +376,10 @@ export const toolSchemas: Record<
     ...chat,
     addresses: z.array(z.string().min(3)).min(1).max(20),
   }),
-  "chats.participants.remove": z.object({ ...chat, address: z.string().min(3) }),
+  "chats.participants.remove": z.object({
+    ...chat,
+    address: z.string().min(3),
+  }),
   "chats.leave": z.object({ ...chat, confirm: z.literal(true) }),
   "apps.snapshot": z.object({
     bundleId: z.string().optional(),

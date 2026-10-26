@@ -380,25 +380,28 @@ import PlatformSDK
       MessagesApp.dismissTransientUI()
       throw error
     }
-    MessagesApp.pump(0.4)
+    MessagesApp.pump(0.6)
     MessagesApp.dismissTransientUI()
-    // A chosen sticker lands in the composer as one attachment; send only that.
+    // Depending on the picker, a chosen sticker is either staged in the composer as one
+    // attachment or sent at once. Send only a staged sticker; never press Return otherwise.
     let staged = composer.text
-    guard staged.filter({ $0 == "\u{fffc}" }).count == 1,
-      staged.allSatisfy({ $0 == "\u{fffc}" || $0.isWhitespace })
-    else {
-      discard(composer, authored: staged)
-      throw BridgeFailure("Sticker did not stage in the composer; nothing sent")
+    if !staged.isEmpty {
+      guard staged.filter({ $0 == "\u{fffc}" }).count == 1,
+        staged.allSatisfy({ $0 == "\u{fffc}" || $0.isWhitespace })
+      else {
+        discard(composer, authored: staged)
+        throw BridgeFailure("Composer holds more than the chosen sticker; nothing sent")
+      }
+      try MessagesApp.activate()
+      try MessagesApp.key(MessagesApp.returnKey)
     }
-    try MessagesApp.activate()
-    try MessagesApp.key(MessagesApp.returnKey)
     let db = try database()
     guard
       let row = try reconcile(session, timeout: 20, { row in
         let atts = (try? db.attachments(message: row["guid"] as? String ?? "")) ?? []
         return atts.count == 1 && (atts[0]["isSticker"] as? Bool == true)
       })
-    else { throw BridgeFailure("Sticker submitted but no sticker attachment observed; outcome unknown") }
+    else { throw BridgeFailure("Sticker chosen but no sticker message observed; outcome unknown, do not retry") }
     return ["receipt": "native-sticker-sent", "sticker": chosen, "message": row]
   }
 
@@ -409,10 +412,19 @@ import PlatformSDK
     guard NSWorkspace.shared.open(try MessageID.deepLink(guid: guid, overlay: true)) else {
       throw BridgeFailure("Messages refused the message deep link")
     }
-    let target = try MessagesApp.wait("message bubble", timeout: 3) {
+    if let target = try? MessagesApp.wait("message bubble", timeout: 3, {
       try MessagesAX.overlayBubble(in: try MessagesApp.window())
+    }) {
+      return (session, try live(target))
     }
-    return (session, try live(target))
+    // Replies don't open an overlay; fall back to the one visible bubble with the same text
+    // and direction. Repeated text is refused rather than guessed.
+    guard let row = try database().message(guid: guid), let text = row["text"] as? String,
+      !text.isEmpty, let transcript = MessagesAX.mainTranscript(in: try MessagesApp.window())
+    else { throw BridgeFailure("Message bubble not found in the overlay or transcript") }
+    let bubble = try MessagesAX.bubble(
+      text: text, own: (row["is_from_me"] as? Int64) == 1, in: transcript)
+    return (session, try live(bubble))
   }
 
   func closeOverlay() {
@@ -470,8 +482,9 @@ import PlatformSDK
       throw BridgeFailure("Forward… is not offered for this message")
     }
     try bubble.perform(action)
+    // Forward… may open the compose view in the main window or in a new window.
     let to = try MessagesApp.wait("forward recipient field", timeout: 3) {
-      try MessagesApp.window().first(where: { $0.identifier == "To:" }) as? LiveAXNode
+      MessagesApp.windows().lazy.compactMap { $0.first(where: { $0.identifier == "To:" }) as? LiveAXNode }.first
     }
     guard to.text.isEmpty else { throw BridgeFailure("Recipient field is not empty") }
     try to.set(kAXValueAttribute, recipient as CFString)
@@ -479,7 +492,10 @@ import PlatformSDK
     try MessagesApp.activate()
     try MessagesApp.key(MessagesApp.returnKey)
     MessagesApp.pump(1.5)  // IDS resolves the address before the composer accepts Return
-    let composer = try live(try MessagesAX.composer(in: try MessagesApp.window()))
+    let composeWindow = MessagesApp.windows().first { w in
+      w.first(where: { $0.identifier == "To:" }) != nil
+    }
+    let composer = try live(try MessagesAX.composer(in: try composeWindow ?? MessagesApp.window()))
     guard !composer.text.isEmpty else {
       MessagesApp.dismissTransientUI()
       throw BridgeFailure("Forwarded content did not stage in the composer; nothing sent")

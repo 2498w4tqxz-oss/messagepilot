@@ -10,6 +10,7 @@ import { startMCP } from "./mcp.js";
 import { createApp } from "./scaffold.js";
 import { resolveDirectChat } from "./enroll-chat.js";
 import { ToolkitTransport } from "./toolkit.js";
+import { VaultService, startVaultServer } from "./vault.js";
 const [command, file, ...rest] = process.argv.slice(2);
 const secret = (key: string) => {
   const v = process.env[key];
@@ -106,6 +107,23 @@ async function main() {
       process.env.MESSAGEPILOT_URL ?? "http://127.0.0.1:4380",
       secret("MESSAGEPILOT_AGENT_TOKEN"),
     );
+  } else if (command === "vault-server") {
+    // Reference secure-input backend for the LineVault Messages extension.
+    const key = Buffer.from(secret("VAULT_KEY"), "base64");
+    const vault = new VaultService(
+      resolve(process.env.VAULT_DB ?? "vault.sqlite"),
+      key,
+      process.env.VAULT_PUBLIC_URL ?? "http://127.0.0.1:4390",
+    );
+    const server = await startVaultServer(
+      vault,
+      secret("VAULT_ADMIN_TOKEN"),
+      process.env.VAULT_HOST ?? "127.0.0.1",
+      Number(process.env.VAULT_PORT ?? 4390),
+    );
+    process.stderr.write(
+      `MessagePilot vault listening on ${JSON.stringify(server.address())}\n`,
+    );
   } else if (command === "app-create") {
     if (!file || !rest[0])
       throw new Error("Usage: app-create <output-directory> <bundle-id>");
@@ -117,7 +135,7 @@ async function main() {
     });
   } else {
     process.stderr.write(
-      "MessagePilot bridge\n  gateway <config.json>\n  worker <config.json> [--live]\n  mcp\n  app-create <output-directory> <bundle-id> [--primary-port]\n",
+      "MessagePilot bridge\n  gateway <config.json>\n  worker <config.json> [--live]\n  mcp\n  app-create <output-directory> <bundle-id> [--primary-port]\n  vault-server (env VAULT_KEY, VAULT_ADMIN_TOKEN, VAULT_PUBLIC_URL)\n",
     );
   }
 }

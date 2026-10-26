@@ -39,7 +39,7 @@ The codebase is separated by responsibility: `src/` contains the gateway, persis
 1. Follow the repository [README](../README.md) for build/configuration and agent/worker credentials.
 2. Enroll the correct Apple identity in its dedicated Mac environment. Pair account-bound workers and exact chat grants before messaging.
 3. Use [Chat scopes](CHAT_SCOPES.md), [Agent interface](AGENT_INTERFACE.md) and [Authentication](AUTHENTICATION.md) for permissions, idempotency, uncertain outcomes and credential boundaries.
-4. Inspect [Capabilities](CAPABILITIES.md) and the acceptance reports for the specific operation/OS/device you intend to use.
+4. Inspect [Capabilities](capabilities.md) and the acceptance reports for the specific operation/OS/device you intend to use.
 5. Enable optional storage, Workspace, webhook and analytics policies explicitly. Keep secrets out of configuration committed to Git.
 
 ## Feature documentation

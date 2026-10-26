@@ -83,6 +83,9 @@ final class LiveAXNode: AXNode {
   static func root() throws -> LiveAXNode {
     LiveAXNode(AXUIElementCreateApplication(try running().processIdentifier))
   }
+  static func windows() -> [LiveAXNode] {
+    ((try? root())?.attribute(kAXWindowsAttribute) as? [AXUIElement] ?? []).map(LiveAXNode.init)
+  }
   static func window() throws -> LiveAXNode {
     let windows = (try root().attribute(kAXWindowsAttribute) as? [AXUIElement] ?? []).map(
       LiveAXNode.init)
