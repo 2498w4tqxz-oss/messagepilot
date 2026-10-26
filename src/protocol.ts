@@ -49,6 +49,29 @@ export const operations = [
   "messages.draft.discard",
   "messages.inspect",
   "messages.features",
+  "messages.get",
+  "messages.reactions",
+  "messages.sticker",
+  "messages.sticker.attach",
+  "messages.forward",
+  "messages.schedule",
+  "messages.scheduled.list",
+  "messages.scheduled.cancel",
+  "attachments.download",
+  "media.create",
+  "apps.messages.installed",
+  "apps.messages.list",
+  "apps.messages.open",
+  "apps.messages.prompt",
+  "chats.mute",
+  "chats.pin",
+  "chats.delete",
+  "chats.notifyAnyway",
+  "chats.details",
+  "chats.rename",
+  "chats.participants.add",
+  "chats.participants.remove",
+  "chats.leave",
   "apps.interact",
   "apps.snapshot",
   "computer.exec",
@@ -65,6 +88,10 @@ export type Operation = (typeof operations)[number];
 export const readOperations = new Set<Operation>([
   "messages.inspect",
   "messages.features",
+  "messages.get",
+  "messages.reactions",
+  "messages.scheduled.list",
+  "apps.messages.installed",
   "device.activity.list",
   "mcp.registry.search",
   "mcp.registry.get",
@@ -256,6 +283,26 @@ export function validateArgs(
       "chats.unread",
       "chats.typing",
       "messages.effect",
+      "messages.get",
+      "messages.reactions",
+      "messages.sticker",
+      "messages.sticker.attach",
+      "messages.forward",
+      "messages.schedule",
+      "messages.scheduled.cancel",
+      "attachments.download",
+      "apps.messages.list",
+      "apps.messages.open",
+      "apps.messages.prompt",
+      "chats.mute",
+      "chats.pin",
+      "chats.delete",
+      "chats.notifyAnyway",
+      "chats.details",
+      "chats.rename",
+      "chats.participants.add",
+      "chats.participants.remove",
+      "chats.leave",
     ].includes(operation)
   )
     str("chatId");
@@ -265,9 +312,45 @@ export function validateArgs(
       "messages.unreact",
       "messages.edit",
       "messages.unsend",
+      "messages.get",
+      "messages.reactions",
+      "messages.sticker.attach",
+      "messages.forward",
+      "messages.scheduled.cancel",
+      "attachments.download",
     ].includes(operation)
   )
     str("messageId");
+  if (operation === "messages.schedule") {
+    str("text");
+    str("sendAt");
+    const when = Date.parse(String(args.sendAt));
+    if (!/(Z|[+-]\d\d:?\d\d)$/.test(String(args.sendAt)) || Number.isNaN(when))
+      throw new PilotError(
+        "invalid_arguments",
+        "sendAt must be an ISO 8601 date-time with a time zone",
+      );
+    const lead = when - Date.now();
+    if (lead < 60_000 || lead > 14 * 24 * 3600_000)
+      throw new PilotError(
+        "invalid_arguments",
+        "Send Later accepts times from one minute to 14 days ahead",
+      );
+  }
+  if (operation === "messages.forward") str("to");
+  if (["apps.messages.open", "apps.messages.prompt"].includes(operation))
+    str("app");
+  if (operation === "apps.messages.prompt") str("text");
+  if (operation === "chats.rename") str("name");
+  if (operation === "chats.participants.remove") str("address");
+  if (
+    ["chats.delete", "chats.leave"].includes(operation) &&
+    args.confirm !== true
+  )
+    throw new PilotError(
+      "invalid_arguments",
+      "This is irreversible for the account; pass confirm: true",
+    );
   if (
     operation === "messages.send" &&
     !args.text &&

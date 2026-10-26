@@ -196,7 +196,7 @@ export const toolSchemas: Record<
       .max(20)
       .optional()
       .describe(
-        "Send one native photo collection through the scoped macOS UI worker. Workspace PNG/JPEG files only; replaces the clipboard while staging. Do not combine with text, filePath, or replyTo.",
+        "Send 2–20 photos as one native photo collection (a carousel-style stack). Workspace PNG/JPEG/HEIC/GIF files; replaces the clipboard while staging. Do not combine with text, filePath, or replyTo.",
       ),
     replyTo: z.string().optional(),
   }),
@@ -205,7 +205,7 @@ export const toolSchemas: Record<
     reaction: z
       .string()
       .describe(
-        "Supported reaction name or emoji. Transport availability varies by OS.",
+        "love, like, dislike, laugh, emphasize, question, or exactly one emoji (emoji Tapback, macOS 15+). Use messages_sticker_attach for sticker Tapbacks.",
       ),
   }),
   "messages.unreact": z.object({ ...message, reaction: z.string() }),
@@ -276,6 +276,111 @@ export const toolSchemas: Record<
           message: "Effect does not belong to the requested effect kind",
         });
     }),
+  "messages.get": z.object(message),
+  "messages.reactions": z.object(message),
+  "messages.sticker": z.object({
+    ...chat,
+    query: z
+      .string()
+      .max(100)
+      .optional()
+      .describe("Case-insensitive text in the sticker's accessibility label."),
+    index: z.number().int().min(0).max(200).default(0),
+  }),
+  "messages.sticker.attach": z.object({
+    ...message,
+    query: z.string().max(100).optional(),
+    index: z.number().int().min(0).max(200).default(0),
+  }),
+  "messages.forward": z.object({
+    ...message,
+    to: z
+      .string()
+      .min(3)
+      .describe("Recipient phone number with country code, or email."),
+  }),
+  "messages.schedule": z.object({
+    ...chat,
+    text: z.string().min(1).max(10000),
+    sendAt: z
+      .string()
+      .describe(
+        "ISO 8601 time with zone, 1 minute to 14 days ahead (Messages Send Later).",
+      ),
+  }),
+  "messages.scheduled.list": z.object({ chatId: z.string().optional() }),
+  "messages.scheduled.cancel": z.object(message),
+  "attachments.download": z.object({
+    ...message,
+    attachmentId: z.string().optional(),
+    index: z.number().int().min(0).max(50).optional(),
+    path: z
+      .string()
+      .optional()
+      .describe("Destination inside the worker workspace."),
+    convert: z.enum(["png", "jpeg"]).optional(),
+    includeData: z
+      .boolean()
+      .optional()
+      .describe("Return base64 for files up to 256 KiB."),
+  }),
+  "media.create": z
+    .object({
+      kind: z.enum(["card", "sticker", "convert", "slideshow"]),
+      title: z.string().max(300).optional(),
+      body: z.string().max(2000).optional(),
+      text: z.string().max(40).optional(),
+      source: z.string().optional(),
+      sources: z.array(z.string()).min(1).max(120).optional(),
+      secondsPerImage: z.number().min(0.1).max(30).optional(),
+      width: z.number().int().min(16).max(4096).optional(),
+      height: z.number().int().min(16).max(4096).optional(),
+      size: z.number().int().min(100).max(1024).optional(),
+      background: z.string().optional(),
+      foreground: z.string().optional(),
+      format: z.enum(["png", "jpeg", "heic"]).optional(),
+      path: z.string().optional(),
+    })
+    .superRefine((v, ctx) => {
+      const need = (ok: boolean, message: string) =>
+        ok || ctx.addIssue({ code: z.ZodIssueCode.custom, message });
+      if (v.kind === "card") need(!!v.title, "card requires title");
+      if (v.kind === "sticker")
+        need(!!v.text || !!v.source, "sticker requires text or source");
+      if (v.kind === "convert") need(!!v.source, "convert requires source");
+      if (v.kind === "slideshow")
+        need(!!v.sources?.length, "slideshow requires sources");
+    }),
+  "apps.messages.installed": z.object({}),
+  "apps.messages.list": z.object(chat),
+  "apps.messages.open": z.object({
+    ...chat,
+    app: z
+      .string()
+      .min(1)
+      .describe("Add-menu item title or identifier from apps_messages_list."),
+  }),
+  "apps.messages.prompt": z.object({
+    ...chat,
+    app: z.string().min(1),
+    text: z.string().min(1).max(2000),
+    submit: z.boolean().default(false),
+  }),
+  "chats.mute": z.object({ ...chat, muted: z.boolean().default(true) }),
+  "chats.pin": z.object({ ...chat, pinned: z.boolean().default(true) }),
+  "chats.delete": z.object({ ...chat, confirm: z.literal(true) }),
+  "chats.notifyAnyway": z.object(chat),
+  "chats.details": z.object(chat),
+  "chats.rename": z.object({ ...chat, name: z.string().min(1).max(100) }),
+  "chats.participants.add": z.object({
+    ...chat,
+    addresses: z.array(z.string().min(3)).min(1).max(20),
+  }),
+  "chats.participants.remove": z.object({
+    ...chat,
+    address: z.string().min(3),
+  }),
+  "chats.leave": z.object({ ...chat, confirm: z.literal(true) }),
   "apps.snapshot": z.object({
     bundleId: z.string().optional(),
     depth: z.number().int().min(1).max(15).optional(),
@@ -285,7 +390,15 @@ export const toolSchemas: Record<
     actions: z
       .array(
         z.object({
-          action: z.enum(["press", "showMenu", "setValue", "focus", "waitFor"]),
+          action: z.enum([
+            "press",
+            "pick",
+            "cancel",
+            "showMenu",
+            "setValue",
+            "focus",
+            "waitFor",
+          ]),
           id: z.string().optional(),
           selector: axSelector.optional(),
           value: z.string().optional(),

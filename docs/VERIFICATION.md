@@ -62,7 +62,7 @@ xcodebuild -project apple/MessagePilot.xcodeproj -scheme MessagePilotVM \
 
 ## Remaining acceptance work on dedicated accounts
 
-Enrollment, Apple Account activation, permission grants, real-device signing, and exact UI-selector calibration require the agent's own environment. Features outside the tested subset in [the capability table](CAPABILITIES.md) still need device acceptance: verify the intended chat/message, native result and events, recipient rendering, and reconnect/reboot recovery with two isolated accounts. Capability reports distinguish `compiled`, `fixture`, and `device-tested`; compilation never promotes an operation to device-tested.
+Enrollment, Apple Account activation, permission grants, real-device signing, and exact UI-selector calibration require the agent's own environment. Features outside the tested subset in [the capability table](capabilities.md) still need device acceptance: verify the intended chat/message, native result and events, recipient rendering, and reconnect/reboot recovery with two isolated accounts. Capability reports distinguish `compiled`, `fixture`, and `device-tested`; compilation never promotes an operation to device-tested.
 
 Effects, stickers, other iMessage apps, Find My UI, and device captures depend on the actual installed OS/apps/hardware. The code provides those execution paths and fails when a capability is disabled or unavailable. It does not certify unobserved Apple behavior. A stopped native process also requires history reconciliation for events missed while offline.
 

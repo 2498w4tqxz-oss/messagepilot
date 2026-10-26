@@ -1,0 +1,23 @@
+{
+  "recorded": "2026-10-25",
+  "tool": "messagepilot-native --resolve-identity (reads databases only; never starts IMessage or opens Messages)",
+  "host": "macOS 27.0.1 Mac with a signed-in Apple Account; values redacted to counts",
+  "runs": [
+    {
+      "case": "empty chat.db (a brand-new line) and the real Accounts store, expected = the Apple ID in another case",
+      "exit": 0,
+      "decision": { "matched": true, "source": "ids-account", "reason": "No conversations yet; the active iMessage registration lists the identity", "observed": { "chat.account_login": 0, "ids-account": 4, "messages-scripting-account": -1 } }
+    },
+    {
+      "case": "same, expected = an unrelated address",
+      "exit": 3,
+      "decision": { "matched": false, "source": null, "reason": "No source lists the expected identity", "observed": { "chat.account_login": 0, "ids-account": 4, "messages-scripting-account": -1 } }
+    },
+    {
+      "case": "real chat.db with history and the real Accounts store",
+      "exit": 0,
+      "decision": { "matched": true, "source": "chat.account_login", "reason": "Messages history uses the identity", "observed": { "chat.account_login": 2, "ids-account": 4, "messages-scripting-account": -1 } }
+    }
+  ],
+  "note": "The Identity Services account in ~/Library/Accounts/Accounts4.sqlite carries apple-id, email-address, account-info.VettedAliases and handles[].uri (mailto:/tel:). Whether a Messages-only sign-in in a macOS 26 guest creates the same record is the one assumption still to confirm on a fresh line."
+}

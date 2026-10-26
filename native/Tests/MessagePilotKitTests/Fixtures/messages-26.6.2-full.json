@@ -1,0 +1,4454 @@
+{
+ "fixture": "full-layout",
+ "source": "apps.snapshot on macOS 26.6.2 Messages, sanitized",
+ "tree": {
+  "AXRole": "AXApplication",
+  "AXTitle": "Messages",
+  "actions": [],
+  "children": [
+   {
+    "AXRole": "AXWindow",
+    "AXIdentifier": "SceneWindow",
+    "AXTitle": "+1 (555) 010-0100",
+    "actions": [
+     "AXRaise"
+    ],
+    "children": [
+     {
+      "AXRole": "AXGroup",
+      "actions": [],
+      "children": [
+       {
+        "AXRole": "AXGroup",
+        "AXEnabled": true,
+        "actions": [
+         "AXScrollToVisible",
+         "AXCancel",
+         "AXShowMenu"
+        ],
+        "children": [
+         {
+          "AXRole": "AXButton",
+          "AXIdentifier": "ConversationTitle",
+          "AXDescription": "+1 (555) 010-0100",
+          "AXEnabled": true,
+          "actions": [
+           "AXPress",
+           "AXScrollToVisible",
+           "AXCancel",
+           "AXShowMenu"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXGroup",
+          "AXEnabled": true,
+          "actions": [
+           "AXScrollToVisible",
+           "AXCancel",
+           "AXShowMenu"
+          ],
+          "children": [
+           {
+            "AXRole": "AXGroup",
+            "AXIdentifier": "CKConversationListCollectionView",
+            "AXEnabled": true,
+            "actions": [
+             "AXScrollToVisible",
+             "AXCancel",
+             "AXShowMenu"
+            ],
+            "children": [
+             {
+              "AXRole": "AXTextField",
+              "AXDescription": "Search",
+              "AXValue": "",
+              "AXEnabled": true,
+              "actions": [
+               "AXPress",
+               "AXScrollToVisible",
+               "AXCancel",
+               "AXShowMenu"
+              ],
+              "children": []
+             }
+            ]
+           },
+           {
+            "AXRole": "AXGroup",
+            "AXEnabled": true,
+            "actions": [
+             "AXScrollToVisible",
+             "AXCancel",
+             "AXShowMenu"
+            ],
+            "children": [
+             {
+              "AXRole": "AXGroup",
+              "AXEnabled": true,
+              "actions": [
+               "AXScrollToVisible",
+               "AXCancel",
+               "AXShowMenu"
+              ],
+              "children": [
+               {
+                "AXRole": "AXGroup",
+                "AXIdentifier": "ConversationList",
+                "AXDescription": "Conversations",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXStaticText",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message preview",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Pin +1 (555) 010-0100\nTarget:0x0\nSelector:(null)",
+                   "Name:Mark as Unread\nTarget:0x0\nSelector:(null)",
+                   "Name:Hide Alerts\nTarget:0x0\nSelector:(null)",
+                   "Name:Open in New Window\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXGroup",
+          "AXEnabled": true,
+          "actions": [
+           "AXScrollToVisible",
+           "AXCancel",
+           "AXShowMenu"
+          ],
+          "children": [
+           {
+            "AXRole": "AXGroup",
+            "AXEnabled": true,
+            "actions": [
+             "AXScrollToVisible",
+             "AXCancel",
+             "AXShowMenu"
+            ],
+            "children": [
+             {
+              "AXRole": "AXGroup",
+              "AXIdentifier": "TranscriptCollectionView",
+              "AXDescription": "Messages",
+              "AXEnabled": true,
+              "actions": [
+               "AXScrollToVisible",
+               "AXCancel",
+               "AXShowMenu"
+              ],
+              "children": [
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXStaticText",
+                  "AXDescription": "iMessage ￼ Encrypted",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXStaticText",
+                  "AXDescription": "Today 8:14 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 1, 8:14 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 1, 8:14 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 1",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 2, 8:17 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 2, 8:17 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 2",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXStaticText",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "+1 (555) 010-0100, Fixture message 3, You loved this, 8:18 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message 3, You loved this, 8:18 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 3",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Reply, Fixture message 4, 8:18 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Reply, Fixture message 4, 8:18 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 4",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 5, 8:18 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 5, 8:18 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 5",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXButton",
+                  "AXDescription": "Edited",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXButton",
+                  "AXDescription": "You unsent a message",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXStaticText",
+                  "AXDescription": "Today 9:47 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "+1 (555) 010-0100, Fixture message 6, 9:47 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message 6, 9:47 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 6",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXStaticText",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 7, +1 (555) 010-0100 questioned this, 9:47 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 7, +1 (555) 010-0100 questioned this, 9:47 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 7",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 8, 9:47 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 8, 9:47 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 8",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "+1 (555) 010-0100, Fixture message 9, 9:48 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message 9, 9:48 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 9",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 10, 9:48 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 10, 9:48 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 10",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "+1 (555) 010-0100, Fixture message 11, 9:49 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message 11, 9:49 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 11",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 12, 9:49 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 12, 9:49 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 12",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "+1 (555) 010-0100, Fixture message 13, 9:49 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "+1 (555) 010-0100, Fixture message 13, 9:49 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 13",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXStaticText",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 14, +1 (555) 010-0100 disliked this, 9:49 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 14, +1 (555) 010-0100 disliked this, 9:49 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 14",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 15, 9:50 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 15, 9:50 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 15",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXDescription": "Your iMessage, Fixture message 16, 9:50 PM",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXGroup",
+                  "AXIdentifier": "Sticker",
+                  "AXDescription": "Your iMessage, Fixture message 16, 9:50 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu",
+                   "Name:Heart\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                   "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                   "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                   "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                   "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                   "Name:😂\nTarget:0x0\nSelector:(null)",
+                   "Name:❤️\nTarget:0x0\nSelector:(null)",
+                   "Name:😍\nTarget:0x0\nSelector:(null)",
+                   "Name:😒\nTarget:0x0\nSelector:(null)",
+                   "Name:👌\nTarget:0x0\nSelector:(null)",
+                   "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                   "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                   "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                   "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                   "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                   "Name:Copy\nTarget:0x0\nSelector:(null)",
+                   "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                   "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                  ],
+                  "children": [
+                   {
+                    "AXRole": "AXTextArea",
+                    "AXIdentifier": "CKBalloonTextView",
+                    "AXValue": "Fixture message 16",
+                    "AXEnabled": true,
+                    "actions": [
+                     "AXPress",
+                     "AXScrollToVisible",
+                     "AXCancel",
+                     "AXShowMenu",
+                     "Name:Heart\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs up\nTarget:0x0\nSelector:(null)",
+                     "Name:Thumbs down\nTarget:0x0\nSelector:(null)",
+                     "Name:Ha ha!\nTarget:0x0\nSelector:(null)",
+                     "Name:Exclamation mark\nTarget:0x0\nSelector:(null)",
+                     "Name:Question mark\nTarget:0x0\nSelector:(null)",
+                     "Name:😂\nTarget:0x0\nSelector:(null)",
+                     "Name:❤️\nTarget:0x0\nSelector:(null)",
+                     "Name:😍\nTarget:0x0\nSelector:(null)",
+                     "Name:😒\nTarget:0x0\nSelector:(null)",
+                     "Name:👌\nTarget:0x0\nSelector:(null)",
+                     "Name:Add Emoji as Tapback\nTarget:0x0\nSelector:(null)",
+                     "Name:Tapback Details…\nTarget:0x0\nSelector:(null)",
+                     "Name:Reply…\nTarget:0x0\nSelector:(null)",
+                     "Name:Attach Sticker…\nTarget:0x0\nSelector:(null)",
+                     "Name:Forward…\nTarget:0x0\nSelector:(null)",
+                     "Name:Copy\nTarget:0x0\nSelector:(null)",
+                     "Name:Delete…\nTarget:0x0\nSelector:(null)",
+                     "Name:Show Times\nTarget:0x0\nSelector:(null)"
+                    ],
+                    "children": []
+                   }
+                  ]
+                 }
+                ]
+               },
+               {
+                "AXRole": "AXGroup",
+                "AXEnabled": true,
+                "actions": [
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": [
+                 {
+                  "AXRole": "AXStaticText",
+                  "AXDescription": "‎Read 9:50 PM",
+                  "AXEnabled": true,
+                  "actions": [
+                   "AXPress",
+                   "AXScrollToVisible",
+                   "AXCancel",
+                   "AXShowMenu"
+                  ],
+                  "children": []
+                 }
+                ]
+               }
+              ]
+             },
+             {
+              "AXRole": "AXGroup",
+              "AXIdentifier": "MessageEntryView",
+              "AXEnabled": true,
+              "actions": [
+               "AXScrollToVisible",
+               "AXCancel",
+               "AXShowMenu"
+              ],
+              "children": [
+               {
+                "AXRole": "AXButton",
+                "AXDescription": "add",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXTextField",
+                "AXIdentifier": "messageBodyField",
+                "AXDescription": "Message",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXButton",
+                "AXDescription": "Record audio",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               },
+               {
+                "AXRole": "AXButton",
+                "AXDescription": "Emoji picker",
+                "AXEnabled": true,
+                "actions": [
+                 "AXPress",
+                 "AXScrollToVisible",
+                 "AXCancel",
+                 "AXShowMenu"
+                ],
+                "children": []
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXToolbar",
+      "actions": [
+       "AXShowMenu"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenuButton",
+        "AXDescription": "filter",
+        "AXEnabled": true,
+        "actions": [
+         "AXShowMenu",
+         "AXPress",
+         "Name:Move previous\nTarget:0x0\nSelector:(null)",
+         "Name:Move next\nTarget:0x0\nSelector:(null)",
+         "Name:Remove from toolbar\nTarget:0x0\nSelector:(null)"
+        ],
+        "children": []
+       },
+       {
+        "AXRole": "AXButton",
+        "AXDescription": "Compose",
+        "AXEnabled": true,
+        "actions": [
+         "AXPress",
+         "Name:Move previous\nTarget:0x0\nSelector:(null)",
+         "Name:Move next\nTarget:0x0\nSelector:(null)",
+         "Name:Remove from toolbar\nTarget:0x0\nSelector:(null)"
+        ],
+        "children": []
+       },
+       {
+        "AXRole": "AXMenuButton",
+        "AXDescription": "Start FaceTime",
+        "AXEnabled": true,
+        "actions": [
+         "AXShowMenu",
+         "AXPress",
+         "Name:Move previous\nTarget:0x0\nSelector:(null)",
+         "Name:Remove from toolbar\nTarget:0x0\nSelector:(null)"
+        ],
+        "children": []
+       }
+      ]
+     },
+     {
+      "AXRole": "AXButton",
+      "AXEnabled": true,
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     },
+     {
+      "AXRole": "AXButton",
+      "AXEnabled": true,
+      "actions": [
+       "AXPress",
+       "AXZoomWindow",
+       "AXShowMenu"
+      ],
+      "children": [
+       {
+        "AXRole": "AXGroup",
+        "actions": [],
+        "children": [
+         {
+          "AXRole": "AXGroup",
+          "actions": [],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXButton",
+      "AXEnabled": true,
+      "actions": [
+       "AXPress"
+      ],
+      "children": []
+     }
+    ]
+   },
+   {
+    "AXRole": "AXMenuBar",
+    "AXEnabled": true,
+    "actions": [
+     "AXCancel"
+    ],
+    "children": [
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXTitle": "Apple",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_aboutThisMacRequested:",
+          "AXTitle": "About This Mac",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_systemInformationRequested:",
+          "AXTitle": "System Information",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_systemSettingsRequested:",
+          "AXTitle": "System Settings…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_appStoreRequested:",
+          "AXTitle": "App Store",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_recentsRequested:",
+          "AXTitle": "Recent Items",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Applications",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Messages",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Show “Messages” in Finder",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "System Settings",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Show “System Settings” in Finder",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Terminal",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Show “Terminal” in Finder",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Documents",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Install Lines.command",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_recentItemRequested:",
+              "AXTitle": "Show “Install Lines.command” in Finder",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Servers",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_clearRecentItemsRequested:",
+              "AXTitle": "Clear Menu",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_forceQuitPanelRequested:",
+          "AXTitle": "Force Quit…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_forceQuitRequested:",
+          "AXTitle": "Force Quit Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_sleepRequested:",
+          "AXTitle": "Sleep",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_restartRequested:",
+          "AXTitle": "Restart…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_restartNowRequested:",
+          "AXTitle": "Restart",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_shutDownRequested:",
+          "AXTitle": "Shut Down…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_shutDownNowRequested:",
+          "AXTitle": "Shut Down",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_lockScreenRequested:",
+          "AXTitle": "Lock Screen",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_logOutRequested:",
+          "AXTitle": "Log Out Lines…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_logOutNowRequested:",
+          "AXTitle": "Log Out Lines",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.application",
+      "AXTitle": "Messages",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "orderFrontStandardAboutPanel:",
+          "AXTitle": "About Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "settings…",
+          "AXTitle": "Settings…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "com.apple.menu.services",
+          "AXTitle": "Services",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_noServicesApplyAction:",
+              "AXTitle": "No Services Apply",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_configureServicesMenu:",
+              "AXTitle": "Services Settings…",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "hide:",
+          "AXTitle": "Hide Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "hideOtherApplications:",
+          "AXTitle": "Hide Others",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "unhideAllApplications:",
+          "AXTitle": "Show All",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "terminate:",
+          "AXTitle": "Quit Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "NSAlternateQuitMenuItem",
+          "AXTitle": "Quit and Keep Windows",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.file",
+      "AXTitle": "File",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "new_message",
+          "AXTitle": "New Message",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "performClose:",
+          "AXTitle": "Close",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "closeAll:",
+          "AXTitle": "Close All",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "open_conversation_in_new_window",
+          "AXTitle": "Open Conversation in New Window",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "quick_look",
+          "AXTitle": "Quick Look",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "print…",
+          "AXTitle": "Print…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.edit",
+      "AXTitle": "Edit",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "undo",
+          "AXTitle": "Undo",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "redo:",
+          "AXTitle": "Redo",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "cut:",
+          "AXTitle": "Cut",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "copy:",
+          "AXTitle": "Copy",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "paste:",
+          "AXTitle": "Paste",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "pasteAndMatchStyle:",
+          "AXTitle": "Paste and Match Style",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "delete:",
+          "AXTitle": "Delete",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "selectAll:",
+          "AXTitle": "Select All",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "com.apple.menu.find",
+          "AXTitle": "Find",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "find…",
+              "AXTitle": "Find…",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "find_next",
+              "AXTitle": "Find Next",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "find_previous",
+              "AXTitle": "Find Previous",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "com.apple.menu.spelling",
+          "AXTitle": "Spelling and Grammar",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "showGuessPanel:",
+              "AXTitle": "Show Spelling and Grammar",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "checkSpelling:",
+              "AXTitle": "Check Document Now",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "correct_spelling_automatically",
+              "AXTitle": "Correct Spelling Automatically",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "check_spelling_while_typing",
+              "AXTitle": "Check Spelling While Typing",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "capitalize_sentences_automatically",
+              "AXTitle": "Capitalize Sentences Automatically",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "com.apple.menu.substitutions",
+          "AXTitle": "Substitutions",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "orderFrontSubstitutionsPanel:",
+              "AXTitle": "Show Substitutions",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "smart_quotes",
+              "AXTitle": "Smart Quotes",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "smart_dashes",
+              "AXTitle": "Smart Dashes",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "smart_insert/delete",
+              "AXTitle": "Smart Insert/Delete",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "emoji_replacement",
+              "AXTitle": "Emoji Replacement",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "com.apple.command.speech",
+          "AXTitle": "Speech",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "startSpeaking:",
+              "AXTitle": "Start Speaking",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "stopSpeaking:",
+              "AXTitle": "Stop Speaking",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "send_message",
+          "AXTitle": "Send Message",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "reply_to_last_message…",
+          "AXTitle": "Reply to Last Message…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "continue_last_reply…",
+          "AXTitle": "Continue Last Reply…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "tapback_last_message…",
+          "AXTitle": "Tapback Last Message…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "edit_last_message…",
+          "AXTitle": "Edit Last Message…",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "send_later…",
+          "AXTitle": "Send Later…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_NSMenuItemAutoFillIdentifier",
+          "AXTitle": "AutoFill",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_handleInsertFromContactsCommand:",
+              "AXTitle": "Contact…",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_handleInsertFromPasswordsCommand:",
+              "AXTitle": "Passwords…",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_handleInsertFromCreditCardsCommand:",
+              "AXTitle": "Credit Card…",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "startDictation:",
+          "AXTitle": "Start Dictation…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "orderFrontCharacterPalette:",
+          "AXTitle": "Emoji & Symbols",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.view",
+      "AXTitle": "View",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "toggleTabBar:",
+          "AXTitle": "Show Tab Bar",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "toggleTabOverview:",
+          "AXTitle": "Show All Tabs",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "make_text_bigger",
+          "AXTitle": "Make Text Bigger",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "make_text_normal_size",
+          "AXTitle": "Make Text Normal Size",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "make_text_smaller",
+          "AXTitle": "Make Text Smaller",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "show_times",
+          "AXTitle": "Show Times",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "messages",
+          "AXTitle": "Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "spam",
+          "AXTitle": "Spam",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "recently_deleted",
+          "AXTitle": "Recently Deleted",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "Filter By",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "unread",
+          "AXTitle": "Unread",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "drafts",
+          "AXTitle": "Drafts",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "send_later",
+          "AXTitle": "Send Later",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "toggleFullScreen:",
+          "AXTitle": "Enter Full Screen",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.messages.conversationsmenu",
+      "AXTitle": "Conversation",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "show_details",
+          "AXTitle": "Show Details",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "add_to_contacts…",
+          "AXTitle": "Add to Contacts…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "mark_as_unread",
+          "AXTitle": "Mark as Unread",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "mark_all_as_read",
+          "AXTitle": "Mark All as Read",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "hide_alerts",
+          "AXTitle": "Hide Alerts",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "block_person…",
+          "AXTitle": "Block Person…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "delete_conversation…",
+          "AXTitle": "Delete Conversation…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "send_mail…",
+          "AXTitle": "Send Mail…",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "send_file…",
+          "AXTitle": "Send File…",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "share_my_screen",
+          "AXTitle": "Share My Screen",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "ask_to_share_screen",
+          "AXTitle": "Ask to Share Screen",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "facetime_video",
+          "AXTitle": "FaceTime Video",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "facetime_audio",
+          "AXTitle": "FaceTime Audio",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.messages.formatmenu",
+      "AXTitle": "Format",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "bold",
+          "AXTitle": "Bold",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "italic",
+          "AXTitle": "Italic",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "underline",
+          "AXTitle": "Underline",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "strikethrough",
+          "AXTitle": "Strikethrough",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "Text Effects",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "big",
+          "AXTitle": "Big",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "small",
+          "AXTitle": "Small",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "shake",
+          "AXTitle": "Shake",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "nod",
+          "AXTitle": "Nod",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "explode",
+          "AXTitle": "Explode",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "ripple",
+          "AXTitle": "Ripple",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "bloom",
+          "AXTitle": "Bloom",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "jitter",
+          "AXTitle": "Jitter",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.window",
+      "AXTitle": "Window",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "performMiniaturize:",
+          "AXTitle": "Minimize",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "miniaturizeAll:",
+          "AXTitle": "Minimize All",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "performZoom:",
+          "AXTitle": "Zoom",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "zoomAll:",
+          "AXTitle": "Zoom All",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_zoomFill:",
+          "AXTitle": "Fill",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_zoomCenter:",
+          "AXTitle": "Center",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "Move & Resize",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Halves",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomLeft:",
+              "AXTitle": "Left",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomRight:",
+              "AXTitle": "Right",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomTop:",
+              "AXTitle": "Top",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomBottom:",
+              "AXTitle": "Bottom",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Quarters",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomTopLeft:",
+              "AXTitle": "Top Left",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomTopRight:",
+              "AXTitle": "Top Right",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomBottomLeft:",
+              "AXTitle": "Bottom Left",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomBottomRight:",
+              "AXTitle": "Bottom Right",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "Arrange",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomLeftAndRight:",
+              "AXTitle": "Left & Right",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomLeftThreeUp:",
+              "AXTitle": "Left & Quarters",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomRightAndLeft:",
+              "AXTitle": "Right & Left",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomRightThreeUp:",
+              "AXTitle": "Right & Quarters",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomTopAndBottom:",
+              "AXTitle": "Top & Bottom",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomTopThreeUp:",
+              "AXTitle": "Top & Quarters",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomBottomAndTop:",
+              "AXTitle": "Bottom & Top",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomBottomThreeUp:",
+              "AXTitle": "Bottom & Quarters",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomQuarters:",
+              "AXTitle": "Quarters",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXTitle": "",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_zoomUntile:",
+              "AXTitle": "Return to Previous Size",
+              "AXEnabled": false,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "Full Screen Tile",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": [
+           {
+            "AXRole": "AXMenu",
+            "AXEnabled": true,
+            "actions": [
+             "AXCancel"
+            ],
+            "children": [
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_tileLeft:",
+              "AXTitle": "Left of Screen",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             },
+             {
+              "AXRole": "AXMenuItem",
+              "AXIdentifier": "_tileRight:",
+              "AXTitle": "Right of Screen",
+              "AXEnabled": true,
+              "actions": [
+               "AXCancel",
+               "AXPress",
+               "AXPick"
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "_removeWindowFromStageManagerSet:",
+          "AXTitle": "Remove Window from Set",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "arrangeInFront:",
+          "AXTitle": "Bring All to Front",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "alternateArrangeInFront:",
+          "AXTitle": "Arrange in Front",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "selectPreviousTab:",
+          "AXTitle": "Show Previous Tab",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "selectNextTab:",
+          "AXTitle": "Show Next Tab",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "moveTabToNewWindow:",
+          "AXTitle": "Move Tab to New Window",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "mergeAllWindows:",
+          "AXTitle": "Merge All Windows",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "go_to_next_conversation",
+          "AXTitle": "Go to Next Conversation",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "go_to_previous_conversation",
+          "AXTitle": "Go to Previous Conversation",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "messages",
+          "AXTitle": "Messages",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         },
+         {
+          "AXRole": "AXMenuItem",
+          "AXTitle": "",
+          "AXEnabled": false,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "AXRole": "AXMenuBarItem",
+      "AXIdentifier": "com.apple.menu.help",
+      "AXTitle": "Help",
+      "AXEnabled": true,
+      "actions": [
+       "AXCancel",
+       "AXPress",
+       "AXPick"
+      ],
+      "children": [
+       {
+        "AXRole": "AXMenu",
+        "AXEnabled": true,
+        "actions": [
+         "AXCancel"
+        ],
+        "children": [
+         {
+          "AXRole": "AXMenuItem",
+          "AXIdentifier": "showHelp:",
+          "AXTitle": "Messages Help",
+          "AXEnabled": true,
+          "actions": [
+           "AXCancel",
+           "AXPress",
+           "AXPick"
+          ],
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

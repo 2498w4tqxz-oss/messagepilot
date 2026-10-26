@@ -13,11 +13,20 @@ let package = Package(
       revision: "fdc5640bfcf936c3d8208bc15411944b7ed9819c")
   ],
   targets: [
+    // Pure logic shared by both workers. No Beeper dependency, never touches Messages on import,
+    // so every rule here is unit-testable against fixtures.
+    .target(name: "MessagePilotKit", linkerSettings: [.linkedLibrary("sqlite3")]),
     .testTarget(name: "MessagePilotScopedTests", dependencies: ["MessagePilotScoped"]),
-    .executableTarget(name: "MessagePilotScoped", linkerSettings: [.linkedLibrary("sqlite3")]),
+    .testTarget(
+      name: "MessagePilotKitTests", dependencies: ["MessagePilotKit"],
+      resources: [.copy("Fixtures")]),
+    .executableTarget(
+      name: "MessagePilotScoped", dependencies: ["MessagePilotKit"],
+      linkerSettings: [.linkedLibrary("sqlite3")]),
     .executableTarget(
       name: "MessagePilotNative",
       dependencies: [
+        "MessagePilotKit",
         .product(name: "IMessage", package: "platform-imessage"),
         .product(name: "PlatformSDK", package: "platform-imessage"),
       ]),

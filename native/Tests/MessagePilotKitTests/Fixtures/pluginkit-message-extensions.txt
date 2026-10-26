@@ -1,0 +1,97 @@
+     com.apple.PeopleMessageService.ScreenTime(1.0)
+	            Path = /System/Library/CoreServices/PeopleMessageService.app/Contents/PlugIns/PeopleMessagesScreenTime.appex
+	            UUID = 83C51C32-BD84-5D58-BA25-98114A477BF9
+	       Timestamp = 2026-10-24 10:58:09 +0000
+	             SDK = com.apple.message-payload-provider
+	   Parent Bundle = /System/Library/CoreServices/PeopleMessageService.app
+	    Display Name = Screen Time Request
+	      Short Name = PeopleMessagesScreenTime
+	     Parent Name = PeopleMessageService
+	        Platform = Mac Catalyst
+
+     com.apple.games.ChallengesMessageExtension(1.0)
+	            Path = /System/Library/ExtensionKit/Extensions/ChallengesMessageExtension.appex
+	            UUID = 72CC3154-6263-5AB0-8580-0DDB6A658694
+	       Timestamp = 2026-10-24 10:57:56 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = ChallengesMessageExtension
+	      Short Name = ChallengesMessageExtension
+	        Platform = Mac Catalyst
+
+     com.apple.GenerativePlaygroundApp.MessagesExtension(1.0)
+	            Path = /System/Applications/Image Playground.app/Contents/PlugIns/GenerativePlaygroundMessagesAppExtension.appex
+	            UUID = FC491DB4-B2E8-5F0A-8F2A-A8D490ADDBB4
+	       Timestamp = 2026-10-24 10:58:06 +0000
+	             SDK = com.apple.message-payload-provider
+	   Parent Bundle = /System/Applications/Image Playground.app
+	    Display Name = Image Playground
+	      Short Name = GenerativePlaygroundMessagesAppExtension
+	     Parent Name = Image Playground
+	        Platform = Mac Catalyst
+
+     com.apple.gamecenter.GameCenterUIService.GameCenterMessageExtension(1.0)
+	            Path = /System/Library/ExtensionKit/Extensions/GameCenterMessageExtension.appex
+	            UUID = 5D4583A7-8BAB-58DB-B0E5-A8352C1B3BD6
+	       Timestamp = 2026-10-24 10:57:53 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = Game Center
+	      Short Name = Game Center
+	        Platform = Mac Catalyst
+
+     com.apple.Stickers.UserGenerated.MessagesExtension(1.0)
+	            Path = /System/iOSSupport/System/Library/PrivateFrameworks/AvatarUI.framework/PlugIns/StickersUltraExtension.appex
+	            UUID = B071A97E-ABA0-52DA-9A81-EF1B04FC0D0A
+	       Timestamp = 2026-10-24 10:57:56 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = Stickers
+	      Short Name = Stickers
+	        Platform = Mac Catalyst
+
+     com.apple.PassbookUIService.PeerPaymentMessagesExtension(1.0)
+	            Path = /System/iOSSupport/System/Library/PrivateFrameworks/PassKitUI.framework/PlugIns/PeerPaymentMessagesExtension.appex
+	            UUID = A2998FD0-6837-51B1-BB93-56C22B97A879
+	       Timestamp = 2026-10-24 10:57:51 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = Apple Cash
+	      Short Name = Apple Cash
+	        Platform = Mac Catalyst
+
+     com.apple.PeopleMessageService.AskToBuy(1.0)
+	            Path = /System/Library/CoreServices/PeopleMessageService.app/Contents/PlugIns/PeopleMessagesAskToBuy.appex
+	            UUID = 266DBBF4-DC54-546B-8C74-F2FE3BD55227
+	       Timestamp = 2026-10-24 10:58:09 +0000
+	             SDK = com.apple.message-payload-provider
+	   Parent Bundle = /System/Library/CoreServices/PeopleMessageService.app
+	    Display Name = Ask To Buy Request
+	      Short Name = PeopleMessagesAskToBuy
+	     Parent Name = PeopleMessageService
+	        Platform = Mac Catalyst
+
+     com.apple.Animoji.StickersApp.MessagesExtension(1.0)
+	            Path = /System/iOSSupport/System/Library/PrivateFrameworks/AvatarUI.framework/PlugIns/AnimojiStickersExtension.appex
+	            UUID = ECDDC479-B073-5204-806F-4BC5EE36123C
+	       Timestamp = 2026-10-24 10:57:52 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = Memoji Stickers
+	      Short Name = Memoji Stickers
+	        Platform = Mac Catalyst
+
++    com.apple.siri.parsec.HashtagImagesApp.HashtagImagesExtension(1.0)
+	            Path = /System/iOSSupport/System/Library/PrivateFrameworks/SearchToShareCore.framework/Plugins/HashtagImagesExtension.appex
+	            UUID = 46A3CE88-B977-5B71-BEAC-4FD56B77CCCC
+	       Timestamp = 2026-10-24 10:57:50 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = #images
+	      Short Name = HashtagImagesExtension
+	        Platform = Mac Catalyst
+
+     com.apple.icloud.apps.messages.business.extension(1.0)
+	            Path = /System/iOSSupport/System/Library/Frameworks/BusinessChat.framework/PlugIns/Business.appex
+	            UUID = BB9DE9CF-FB06-5A18-9663-55D1E30D42EA
+	       Timestamp = 2026-10-24 10:57:52 +0000
+	             SDK = com.apple.message-payload-provider
+	    Display Name = Business
+	      Short Name = Business
+	        Platform = Mac Catalyst
+
+ (10 plug-ins)
