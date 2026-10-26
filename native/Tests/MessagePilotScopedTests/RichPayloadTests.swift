@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import MessagePilotScoped
+import MessagePilotKit
 
 final class RichPayloadTests: XCTestCase {
   func testOrdinarySendMustNotInheritReplyThread() {

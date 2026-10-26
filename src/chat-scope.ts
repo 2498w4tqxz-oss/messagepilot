@@ -23,6 +23,15 @@ export const chatOperations = new Set<Operation>([
   "chats.read",
   "chats.unread",
   "chats.typing",
+  // Message-level reads and sends inside an already permitted chat. Group management, deletion,
+  // the add menu and forwarding to other recipients stay unavailable to chat-scoped agents.
+  "messages.get",
+  "messages.reactions",
+  "messages.sticker",
+  "messages.sticker.attach",
+  "messages.schedule",
+  "messages.scheduled.cancel",
+  "attachments.download",
 ]);
 export function chatScope(
   config: Config,

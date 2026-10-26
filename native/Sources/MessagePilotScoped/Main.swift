@@ -1,6 +1,7 @@
 import AppKit
 import ApplicationServices
 import Foundation
+import MessagePilotKit
 import SQLite3
 
 struct Failure: Error, CustomStringConvertible {

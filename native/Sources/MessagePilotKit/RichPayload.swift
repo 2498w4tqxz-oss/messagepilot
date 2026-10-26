@@ -1,20 +1,20 @@
 import Foundation
 
 // Persisted payload evidence, independent of UI action completion.
-enum RichPayload {
-  static func matchesThread(_ message: [String: Any], expected: String?) -> Bool {
+public enum RichPayload {
+  public static func matchesThread(_ message: [String: Any], expected: String?) -> Bool {
     (message["thread_originator_guid"] as? String) == expected
   }
-  static let styleKeys = [
+  public static let styleKeys = [
     "bold": "__kIMTextBoldAttributeName", "italic": "__kIMTextItalicAttributeName",
     "underline": "__kIMTextUnderlineAttributeName",
     "strikethrough": "__kIMTextStrikethroughAttributeName",
   ]
-  static let textEffects = [
+  public static let textEffects = [
     "Big": "5", "Small": "11", "Shake": "9", "Nod": "8", "Explode": "12", "Ripple": "4",
     "Bloom": "6", "Jitter": "10",
   ]
-  static let expressive = [
+  public static let expressive = [
     "Slam": "com.apple.MobileSMS.expressivesend.impact",
     "Loud": "com.apple.MobileSMS.expressivesend.loud",
     "Gentle": "com.apple.MobileSMS.expressivesend.gentle",
@@ -28,7 +28,7 @@ enum RichPayload {
     "Fireworks": "com.apple.messages.effect.CKFireworksEffect",
     "Celebration": "com.apple.messages.effect.CKSparklesEffect",
   ]
-  static func covers(_ runs: [[String: Any]], range: NSRange, key: String, value: String) -> Bool {
+  public static func covers(_ runs: [[String: Any]], range: NSRange, key: String, value: String) -> Bool {
     guard range.location >= 0, range.length > 0 else { return false }
     var cursor = range.location
     let end = NSMaxRange(range)
@@ -42,7 +42,7 @@ enum RichPayload {
     }
     return false
   }
-  static func matches(
+  public static func matches(
     _ message: [String: Any], request: [String: Any], formatting: Bool, effect: Bool
   ) -> Bool {
     guard let text = request["text"] as? String, message["text"] as? String == text else {
